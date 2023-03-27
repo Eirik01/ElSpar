@@ -2,7 +2,9 @@ package com.team12.ElSpar.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,6 +17,7 @@ fun ElSparScreen(
     avgPrice: Double,
     maxPrice: Double,
     minPrice: Double,
+    onIntervalChange: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -25,5 +28,15 @@ fun ElSparScreen(
         Text(stringResource(R.string.avg_price, avgPrice))
         Text(stringResource(R.string.max_price, maxPrice))
         Text(stringResource(R.string.min_price, minPrice))
+        Button(
+            onClick = onIntervalChange,
+            content = {
+                Row(
+
+                ){
+                    Text(text = "see weekly rapport")
+                }
+            }
+        )
     }
 }

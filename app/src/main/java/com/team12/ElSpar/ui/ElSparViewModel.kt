@@ -30,13 +30,20 @@ class ElSparViewModel(
         getPowerPrice()
     }
 
-    fun getPowerPrice() {
+    fun getPowerPrice(
+        starttime: LocalDateTime = LocalDateTime.now(),
+        endtime: LocalDateTime = LocalDateTime.now(),
+
+        ) {
         viewModelScope.launch {
             _uiState.value = try {
 
                 ElSparUiState.Success(
-                    priceList = getPowerPriceUseCase()
-                )
+                    priceList = getPowerPriceUseCase(),
+                    startTime = starttime,
+                    endTime = endtime,
+
+                    )
             } catch (e: IOException) {
                 ElSparUiState.Error
             }
@@ -52,10 +59,9 @@ class ElSparViewModel(
                 (currentState as ElSparUiState.Success).copy(
                     priceList = getPowerPriceUseCase(
                         startTime = startTime,
-                        endTime =endTime
+                        endTime = endTime
                     )
                 )
-
             }
         }
     }
