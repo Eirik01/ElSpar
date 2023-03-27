@@ -17,7 +17,8 @@ fun ElSparScreen(
     avgPrice: Double,
     maxPrice: Double,
     minPrice: Double,
-    onIntervalChange: () -> Unit,
+    onIntervalChangeWeekly: () -> Unit,
+    onIntervalChangeMonthly: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -29,12 +30,22 @@ fun ElSparScreen(
         Text(stringResource(R.string.max_price, maxPrice))
         Text(stringResource(R.string.min_price, minPrice))
         Button(
-            onClick = onIntervalChange,
+            onClick = onIntervalChangeWeekly,
             content = {
                 Row(
 
                 ){
                     Text(text = "see weekly rapport")
+                }
+            }
+        )
+        Button(
+            onClick = onIntervalChangeMonthly,
+            content = {
+                Row(
+
+                ){
+                    Text(text = "see monthly rapport")
                 }
             }
         )
