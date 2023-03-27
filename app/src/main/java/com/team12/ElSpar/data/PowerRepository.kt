@@ -24,7 +24,7 @@ class DefaultPowerRepository(
             .forEach {
                 priceData.put(
                     LocalDateTime.parse(it.time_start.dropLast(6)),
-                    it.NOK_per_kWh
+                    it.NOK_per_kWh*1.25
                 )
             }
         return priceData.toMap()
