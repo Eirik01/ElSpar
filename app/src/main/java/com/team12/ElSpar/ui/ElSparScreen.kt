@@ -1,7 +1,5 @@
 package com.team12.ElSpar.ui
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +23,8 @@ fun ElSparScreen(
     avgPrice: Double,
     maxPrice: Double,
     minPrice: Double,
+    onIntervalChangeWeekly: () -> Unit,
+    onIntervalChangeMonthly: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedItem by remember { mutableStateOf("") }
@@ -122,18 +122,6 @@ fun ElSparScreen(
         Text(stringResource(R.string.avg_price, avgPrice))
         Text(stringResource(R.string.max_price, maxPrice))
         Text(stringResource(R.string.min_price, minPrice))
-    }*/
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ElSparTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            ElSparScreen(2.0,3.0,1.0)
-        }
     }
 }
