@@ -9,11 +9,14 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
+import com.team12.ElSpar.model.PriceArea
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.time.LocalDateTime
 
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
@@ -30,11 +33,41 @@ class ElSparViewModel(
     fun getPowerPrice() {
         viewModelScope.launch {
             _uiState.value = try {
+
                 ElSparUiState.Success(
                     priceList = getPowerPriceUseCase()
                 )
             } catch (e: IOException) {
                 ElSparUiState.Error
+            }
+        }
+    }
+
+    fun updateInterval(
+        startTime: LocalDateTime,
+        endTime: LocalDateTime
+    ){
+        viewModelScope.launch {
+            _uiState.update { currentState ->
+                (currentState as ElSparUiState.Success).copy(
+                    priceList = getPowerPriceUseCase(
+                        startTime = startTime,
+                        endTime =endTime
+                    )
+                )
+
+            }
+        }
+    }
+
+    fun updatePriceArea(
+        priceArea: PriceArea
+    ){
+        viewModelScope.launch {
+            _uiState.update { currentState ->
+                (currentState as ElSparUiState.Success).copy(
+                    priceList = getPowerPriceUseCase(priceArea = priceArea)
+                )
             }
         }
     }
