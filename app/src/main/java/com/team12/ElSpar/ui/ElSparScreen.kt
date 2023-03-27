@@ -9,12 +9,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.team12.ElSpar.R
+import java.time.LocalDateTime
 
 @Composable
 fun ElSparScreen(
-    avgPrice: Double,
-    maxPrice: Double,
-    minPrice: Double,
+    priceList: Map<LocalDateTime, Double>,
+    avgPrice: Double = priceList.values.average(),
+    maxPrice: Double = priceList.values.max(),
+    minPrice: Double = priceList.values.min(),
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -25,5 +27,6 @@ fun ElSparScreen(
         Text(stringResource(R.string.avg_price, avgPrice))
         Text(stringResource(R.string.max_price, maxPrice))
         Text(stringResource(R.string.min_price, minPrice))
+        PriceChart(priceList)
     }
 }

@@ -40,9 +40,7 @@ fun ElSparApp(
                 is ElSparUiState.Success ->
                     (elSparUiState as ElSparUiState.Success).let { currentState ->
                         ElSparScreen(
-                            avgPrice = currentState.priceList.values.average(),
-                            maxPrice = currentState.priceList.values.max(),
-                            minPrice = currentState.priceList.values.min(),
+                            priceList = currentState.priceList,
                             modifier = modifier,
                         )
                     }
