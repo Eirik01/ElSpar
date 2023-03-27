@@ -44,7 +44,8 @@ fun ElSparApp(
                         avgPrice = currentState.priceList.values.average(),
                         maxPrice = currentState.priceList.values.max(),
                         minPrice = currentState.priceList.values.min(),
-                        onIntervalChange = { getWeeklyRapport(elSparUiState,elSparViewModel)},
+                        onIntervalChangeWeekly = { getWeeklyRapport(elSparUiState,elSparViewModel) },
+                        onIntervalChangeMonthly = { getMonthlyRapport(elSparUiState,elSparViewModel) },
                         modifier = modifier,
                     )
                 }
@@ -63,6 +64,16 @@ fun getWeeklyRapport(
     }
 }
 
+
+fun getMonthlyRapport(
+    uiState : ElSparUiState,
+    viewModel : ElSparViewModel
+){
+    (uiState as ElSparUiState.Success).let { currentState ->
+        uiState.startTime = LocalDateTime.now().minusMonths(1)
+        viewModel.updateInterval(currentState.startTime,currentState.endTime)
+    }
+}
 
 @Composable
 fun LoadingScreen(
