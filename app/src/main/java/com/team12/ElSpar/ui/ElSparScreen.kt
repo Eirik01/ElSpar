@@ -7,10 +7,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.team12.ElSpar.R
 
 @Composable
 fun ElSparScreen(
-    currentPowerPrice: Double,
+    avgPrice: Double,
+    maxPrice: Double,
+    minPrice: Double,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -18,6 +22,8 @@ fun ElSparScreen(
         verticalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxSize()
     ) {
-        Text("" + currentPowerPrice)
+        Text(stringResource(R.string.avg_price, avgPrice))
+        Text(stringResource(R.string.max_price, maxPrice))
+        Text(stringResource(R.string.min_price, minPrice))
     }
 }

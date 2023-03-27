@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.time.LocalDateTime
 
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
@@ -31,18 +30,8 @@ class ElSparViewModel(
     fun getPowerPrice() {
         viewModelScope.launch {
             _uiState.value = try {
-                val currentPowerPrices = getPowerPriceUseCase()
                 ElSparUiState.Success(
-                    currentPowerPrice = currentPowerPrices.get(
-                        LocalDateTime.of(
-                            2023,
-                            3,
-                            23,
-                            0,
-                            0,
-                            0
-                        )
-                    ) ?: 0.0
+                    priceList = getPowerPriceUseCase()
                 )
             } catch (e: IOException) {
                 ElSparUiState.Error
