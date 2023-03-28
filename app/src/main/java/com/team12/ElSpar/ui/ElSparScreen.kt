@@ -205,7 +205,7 @@ val defModifier = Modifier
 
 
     ) {
-        
+
         //C1, nåværende
         Card(
             modifier = defModifier.weight(0.6f),
@@ -253,7 +253,7 @@ val defModifier = Modifier
             ) {
                 CardContent("Laveste - 12:00", minPrice.toString()) //Endre, skal være variabel
             }
-            
+
             Card(
                 modifier = defModifier.weight(0.5f),
                 colors = CardDefaults.cardColors(
