@@ -1,14 +1,12 @@
 package com.team12.ElSpar.ui
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team12.ElSpar.ui.theme.ElSparTheme
-
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
@@ -21,9 +19,10 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -34,6 +33,8 @@ fun ElSparScreen(
     avgPrice: Double,
     maxPrice: Double,
     minPrice: Double,
+    onIntervalChangeWeekly: () -> Unit = {},
+    onIntervalChangeMonthly: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var selectedItem by remember { mutableStateOf("") }
@@ -131,11 +132,24 @@ fun ElSparScreen(
 
         ) {
             //sett størrelsen med andre argument (0.5 = 50% av skjermen, 0.3 = 30% etc)
-            ScaffoldContent(it, 0.3f, avgPrice, maxPrice, minPrice)
-
+            ScaffoldContent(it, 0.4f, avgPrice, maxPrice, minPrice)
+                Button(
+                    onClick =  onIntervalChangeWeekly
+                    //modifier = Modifier.padding(it)
+                ){
+                    Text(text = "Jette week")
+                }
+                Button(
+                    onClick =  onIntervalChangeMonthly
+                    //modifier = Modifier.padding(it)
+                ){
+                    Text(text = "HEJ då (month")
+                }
             //Kan ha grafen her
             //Graph()
+
         }
+
 
     }
 
@@ -227,7 +241,7 @@ val defModifier = Modifier
                     textAlign = TextAlign.Justify
                 )
                 Text(
-                    text = avgPrice.toString(),
+                    text = roundOffDecimal(avgPrice).toString(),
                     fontSize = 42.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Justify
@@ -251,7 +265,7 @@ val defModifier = Modifier
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
-                CardContent("Laveste - 12:00", minPrice.toString()) //Endre, skal være variabel
+                CardContent("Laveste - 12:00", roundOffDecimal(minPrice).toString()) //Endre, skal være variabel
             }
 
             Card(
@@ -260,12 +274,18 @@ val defModifier = Modifier
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
-                CardContent("Høyeste - 16:00", maxPrice.toString()) //Endre, skal være variabel
+                CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
 
             }
+
         }
 
     }
+}
+fun roundOffDecimal(number: Double): Double? {
+    val df = DecimalFormat("#.##")
+    df.roundingMode = RoundingMode.CEILING
+    return df.format(number).toDouble()
 }
 @Preview(showBackground = true)
 @Composable
@@ -275,7 +295,8 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            ElSparScreen(74.0,91.0, 54.0)
+            ElSparScreen(74.9876,91.9876, 54.9876)
         }
     }
 }
+
