@@ -59,6 +59,7 @@ fun ElSparScreen(
                         OutlinedTextField(
                             readOnly = true,
                             value = selectedPriceArea,
+                            enabled = false,
                             onValueChange = {
                                 selectedPriceArea = it
                             },
@@ -71,7 +72,8 @@ fun ElSparScreen(
                             colors = TextFieldDefaults.outlinedTextFieldColors (
                                 focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer, //hide the indicator
                                 unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                                disabledBorderColor = MaterialTheme.colorScheme.primaryContainer
+                                disabledBorderColor = MaterialTheme.colorScheme.primaryContainer,
+                                disabledTextColor = Color.Black
                             )
                         )
 
@@ -148,6 +150,7 @@ fun ElSparScreen(
                 ){
                     Text(text = "HEJ då (month")
                 }
+
             //Kan ha grafen her
             //Graph()
 
