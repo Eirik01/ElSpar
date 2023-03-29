@@ -38,7 +38,9 @@ fun ElSparScreen(
     onIntervalChangeMonthly: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    var selectedItem by remember { mutableStateOf("") }
+    var selectedPriceArea by remember { mutableStateOf("") }
+    var selectedTimeInterval by remember { mutableStateOf("") }
+
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
@@ -56,9 +58,9 @@ fun ElSparScreen(
                     ) {
                         OutlinedTextField(
                             readOnly = true,
-                            value = selectedItem,
+                            value = selectedPriceArea,
                             onValueChange = {
-                                selectedItem = it
+                                selectedPriceArea = it
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -81,9 +83,9 @@ fun ElSparScreen(
                         ) {
                             list.forEach {label ->
                                 DropdownMenuItem(text = {Text(text = label)}, onClick = {
-                                    selectedItem = label
+                                    selectedPriceArea = label
                                     expanded = false
-                                    when(selectedItem){
+                                    when(selectedPriceArea){
                                         //Gjør noe basert på valgt område(selected item)
                                         else -> null
                                     }
@@ -254,7 +256,7 @@ val defModifier = Modifier
                         textAlign = TextAlign.Justify
                     )
                     Text(
-                        text = roundOffDecimal(avgPrice).toString(),
+                        text = roundOffDecimal(avgPrice*100).toString(),
                         fontSize = 42.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Justify
@@ -279,7 +281,7 @@ val defModifier = Modifier
                 Box(
                     modifier = defModifier.weight(0.5f)
                 ) {
-                    CardContent("Laveste - 12:00", roundOffDecimal(minPrice).toString()) //Endre, skal være variabel
+                    CardContent("Laveste - 12:00", roundOffDecimal(minPrice*100).toString()) //Endre, skal være variabel
                 }
                 //vertical Divider
                 Divider(
@@ -290,7 +292,7 @@ val defModifier = Modifier
                 Box(
                     modifier = defModifier.weight(0.5f)
                 ) {
-                    CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
+                    CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice*100).toString()) //Endre, skal være variabel
 
                 }
 
@@ -301,7 +303,7 @@ val defModifier = Modifier
 
 }
 fun roundOffDecimal(number: Double): Double? {
-    val df = DecimalFormat("#.##")
+    val df = DecimalFormat("#.#")
     df.roundingMode = RoundingMode.CEILING
     return df.format(number).toDouble()
 }
@@ -313,7 +315,7 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            ElSparScreen(74.9876,91.9876, 54.9876)
+            ElSparScreen(1.1776,2.2776, 00.0376)
         }
     }
 }
