@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -219,68 +220,85 @@ val defModifier = Modifier
 
 
     ) {
-
-        //C1, nåværende
+        //Kortet på toppen som holder info om nåværende, min og maks
         Card(
-            modifier = defModifier.weight(0.6f),
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
-
-        ) {
-
-            Column(
-                modifier = defModifier,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceEvenly
+            ),
+        ){
+            //C1, nåværende
+            Box(
+                modifier = defModifier.weight(0.6f)
             ) {
-                Text(
-                    text = "Gjennomsnitt",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    textAlign = TextAlign.Justify
+
+                Column(
+                    modifier = defModifier,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Row(horizontalArrangement = Arrangement.Start,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        Icon(
+                            imageVector = Icons.Default.Info,
+                            contentDescription = "Information icon"
+                        )
+                        Text(text = "Dagens strømpris",
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                    Text(
+                        text = "Gjennomsnitt",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Justify
+                    )
+                    Text(
+                        text = roundOffDecimal(avgPrice).toString(),
+                        fontSize = 42.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Justify
+                    )
+                    Text(
+                        text = "øre/kWh",
+                        fontSize = 16.sp,
+                        textAlign = TextAlign.Justify
+                    )
+                    Divider(
+                        modifier = Modifier.fillMaxWidth(0.9f).width(1.dp),
+                        color = Color.Gray
+                    )
+                }
+
+            }
+
+            //c2 og c4, laveste og høyeste
+            Row(
+                modifier = defModifier.weight(0.4f)
+            ) {
+                Box(
+                    modifier = defModifier.weight(0.5f)
+                ) {
+                    CardContent("Laveste - 12:00", roundOffDecimal(minPrice).toString()) //Endre, skal være variabel
+                }
+                //vertical Divider
+                Divider(
+                    color = Color.Gray,
+                    modifier = Modifier.fillMaxHeight(0.9f)
+                    .width(1.dp)
                 )
-                Text(
-                    text = roundOffDecimal(avgPrice).toString(),
-                    fontSize = 42.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Justify
-                )
-                Text(
-                    text = "øre/kWh",
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Justify
-                )
+                Box(
+                    modifier = defModifier.weight(0.5f)
+                ) {
+                    CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
+
+                }
+
             }
 
         }
-
-        //c2 og c4, laveste og høyeste
-        Row(
-            modifier = defModifier.weight(0.4f)
-        ) {
-            Card(
-                modifier = defModifier.weight(0.5f),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            ) {
-                CardContent("Laveste - 12:00", roundOffDecimal(minPrice).toString()) //Endre, skal være variabel
-            }
-
-            Card(
-                modifier = defModifier.weight(0.5f),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            ) {
-                CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
-
-            }
-
         }
 
-    }
 }
 fun roundOffDecimal(number: Double): Double? {
     val df = DecimalFormat("#.##")
