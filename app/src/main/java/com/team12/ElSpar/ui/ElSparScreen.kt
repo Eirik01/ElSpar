@@ -195,7 +195,7 @@ fun SwitchButton(
         onClick = {
             onSelectPricePeriod(btnPricePeriod)
         },
-        modifier = Modifier,
+        modifier = Modifier.width(120.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor =  (
                     if (currentPricePeriod == btnPricePeriod) selectedColor else unselectedColor
