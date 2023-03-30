@@ -38,8 +38,9 @@ fun ElSparScreen(
     onIntervalChangeMonthly: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+
     var selectedPriceArea by remember { mutableStateOf("") }
-    var selectedTimeInterval by remember { mutableStateOf("") }
+    var selectedTimeInterval = remember { mutableStateOf("") }
 
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
@@ -136,20 +137,14 @@ fun ElSparScreen(
             horizontalAlignment = Alignment.CenterHorizontally
 
         ) {
+
+            //val unselected
             //sett størrelsen med andre argument (0.5 = 50% av skjermen, 0.3 = 30% etc)
             ScaffoldContent(it, 0.4f, avgPrice, maxPrice, minPrice)
-                Button(
-                    onClick =  onIntervalChangeWeekly
-                    //modifier = Modifier.padding(it)
-                ){
-                    Text(text = "Jette week")
-                }
-                Button(
-                    onClick =  onIntervalChangeMonthly
-                    //modifier = Modifier.padding(it)
-                ){
-                    Text(text = "HEJ då (month")
-                }
+            SwitchButton(selectedTimeInterval, "day", "1 dag")
+            SwitchButton(selectedTimeInterval, "week", "7 dager")
+            SwitchButton(selectedTimeInterval, "month", "30 dager")
+
 
             //Kan ha grafen her
             //Graph()
@@ -169,6 +164,24 @@ fun ElSparScreen(
         Text(stringResource(R.string.max_price, maxPrice))
         Text(stringResource(R.string.min_price, minPrice))
     }*/
+}
+@Composable
+fun SwitchButton(selectedTimeInterval:MutableState<String>,btnTimeInterval:String, btnText:String = "BUTTON", funOnClick: () -> Unit = {}){
+    val unselectedColor = MaterialTheme.colorScheme.background;
+    val selectedColor = MaterialTheme.colorScheme.primaryContainer;
+    OutlinedButton(
+        onClick = { funOnClick
+            selectedTimeInterval.value = btnTimeInterval
+        },
+        modifier = Modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor =  (
+                    if (selectedTimeInterval.value == btnTimeInterval) selectedColor else unselectedColor
+                    )
+            )
+    ) {
+        Text(text = btnText, color = Color.Black)
+    }
 }
 @Composable
 fun CardContent(topText:String, midText:String){
@@ -270,7 +283,9 @@ val defModifier = Modifier
                         textAlign = TextAlign.Justify
                     )
                     Divider(
-                        modifier = Modifier.fillMaxWidth(0.9f).width(1.dp),
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .width(1.dp),
                         color = Color.Gray
                     )
                 }
@@ -289,8 +304,9 @@ val defModifier = Modifier
                 //vertical Divider
                 Divider(
                     color = Color.Gray,
-                    modifier = Modifier.fillMaxHeight(0.9f)
-                    .width(1.dp)
+                    modifier = Modifier
+                        .fillMaxHeight(0.9f)
+                        .width(1.dp)
                 )
                 Box(
                     modifier = defModifier.weight(0.5f)
