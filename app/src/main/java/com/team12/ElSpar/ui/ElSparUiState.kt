@@ -7,6 +7,8 @@ import java.time.LocalDateTime
 
 sealed interface ElSparUiState {
     data class Success(
+        val currentPriceArea: PriceArea,
+        val currentPricePeriod: PricePeriod,
         val priceList: Map<LocalDateTime, Double>
     ) : ElSparUiState
     object Loading : ElSparUiState
