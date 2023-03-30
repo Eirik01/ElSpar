@@ -1,7 +1,6 @@
 package com.team12.ElSpar.ui
 
 import android.annotation.SuppressLint
-import android.graphics.Region
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
@@ -31,19 +30,17 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 
-
-//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
+    currentPricePeriod: PricePeriod,
     onChangePricePeriod: (PricePeriod) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     var selectedPriceArea by remember { mutableStateOf("") }
-    var selectedTimeInterval = remember { mutableStateOf(PricePeriod.DAY) }
 
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
@@ -129,7 +126,7 @@ fun ElSparScreen(
                 }
             }
         }
-    ) {
+    ) { padding ->
         //HER GÅR DET SOM ER I "MIDTED" AV SCAFFOLDET
         Column(
             modifier = Modifier
@@ -145,11 +142,11 @@ fun ElSparScreen(
         ) {
 
             //Dette er rekken med knapper på toppen.
-            CreateTimeIntervalButtons(selectedTimeInterval, it) { onChangePricePeriod(it) }
+            CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
 
             //Dette er kortet på toppen.
             ScaffoldContent(
-                it,
+                padding,
                 avgPrice = priceList.values.average(),
                 maxPrice = priceList.values.max(),
                 minPrice = priceList.values.min())
@@ -175,40 +172,38 @@ fun ElSparScreen(
 }
 @Composable
 fun CreateTimeIntervalButtons(
-    selectedTimeInterval: MutableState<PricePeriod>,
+    currentPricePeriod: PricePeriod,
     topPaddingValues: PaddingValues,
     onSelectPricePeriod: (PricePeriod) -> Unit
 ){
     Row(modifier = Modifier.padding(top = topPaddingValues.calculateTopPadding()).height(40.dp)){
-        SwitchButton(selectedTimeInterval, PricePeriod.DAY, "1 dag") { onSelectPricePeriod(it) }
-        SwitchButton(selectedTimeInterval, PricePeriod.WEEK, "7 dager") { onSelectPricePeriod(it) }
-        SwitchButton(selectedTimeInterval, PricePeriod.MONTH, "30 dager") { onSelectPricePeriod(it) }
+        SwitchButton(currentPricePeriod, PricePeriod.DAY) { onSelectPricePeriod(it) }
+        SwitchButton(currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
+        SwitchButton(currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
     }
 
 
 }
 @Composable
 fun SwitchButton(
-    selectedTimeInterval: MutableState<PricePeriod>,
-    btnTimeInterval: PricePeriod,
-    btnText: String = "BUTTON",
+    currentPricePeriod: PricePeriod,
+    btnPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit){
     val unselectedColor = MaterialTheme.colorScheme.background;
     val selectedColor = MaterialTheme.colorScheme.primaryContainer;
     OutlinedButton(
         onClick = {
-            selectedTimeInterval.value = btnTimeInterval
-            onSelectPricePeriod(btnTimeInterval)
+            onSelectPricePeriod(btnPricePeriod)
         },
         modifier = Modifier.width(120.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor =  (
-                    if (selectedTimeInterval.value == btnTimeInterval) selectedColor else unselectedColor
+                    if (currentPricePeriod == btnPricePeriod) selectedColor else unselectedColor
                     )
             ),
         shape = CutCornerShape(1.dp)
     ) {
-        Text(text = btnText, color = Color.Black)
+        Text(text = btnPricePeriod.text, color = Color.Black)
     }
 }
 @Composable
