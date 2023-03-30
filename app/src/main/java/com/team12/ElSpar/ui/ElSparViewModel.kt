@@ -10,6 +10,7 @@ import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
 import com.team12.ElSpar.model.PriceArea
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,7 +32,7 @@ class ElSparViewModel(
     }
 
     fun getPowerPrice() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = try {
 
                 ElSparUiState.Success(
@@ -47,7 +48,7 @@ class ElSparViewModel(
         startTime: LocalDateTime,
         endTime: LocalDateTime
     ){
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { currentState ->
                 (currentState as ElSparUiState.Success).copy(
                     priceList = getPowerPriceUseCase(
@@ -60,10 +61,11 @@ class ElSparViewModel(
         }
     }
 
+    //starting coroutine on IO-thread because getPowerPriceUseCase uses network call
     fun updatePriceArea(
         priceArea: PriceArea
     ){
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _uiState.update { currentState ->
                 (currentState as ElSparUiState.Success).copy(
                     priceList = getPowerPriceUseCase(priceArea = priceArea)
