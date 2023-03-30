@@ -29,4 +29,8 @@ object FakePowerDataSource {
         LocalDateTime.of(2023, 1, 30, 0, 0) to  priceData1.NOK_per_kWh,
         LocalDateTime.of(2023, 1, 30, 1, 0) to  priceData2.NOK_per_kWh,
     )
+    val priceDataMapMVA = mapOf<LocalDateTime, Double>(
+        LocalDateTime.of(2023, 1, 30, 0, 0) to  priceData1.NOK_per_kWh*1.25,
+        LocalDateTime.of(2023, 1, 30, 1, 0) to  priceData2.NOK_per_kWh*1.25,
+    )
 }
