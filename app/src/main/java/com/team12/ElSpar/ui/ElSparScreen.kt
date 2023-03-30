@@ -200,7 +200,7 @@ fun SwitchButton(
             selectedTimeInterval.value = btnTimeInterval
             onSelectPricePeriod(btnTimeInterval)
         },
-        modifier = Modifier,
+        modifier = Modifier.width(120.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor =  (
                     if (selectedTimeInterval.value == btnTimeInterval) selectedColor else unselectedColor
