@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team12.ElSpar.ui.theme.ElSparTheme
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
@@ -22,8 +24,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.team12.ElSpar.model.PricePeriod
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.time.LocalDateTime
 
 
 //@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -31,16 +35,13 @@ import java.text.DecimalFormat
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElSparScreen(
-    avgPrice: Double,
-    maxPrice: Double,
-    minPrice: Double,
-    onIntervalChangeWeekly: () -> Unit = {},
-    onIntervalChangeMonthly: () -> Unit = {},
+    priceList: Map<LocalDateTime, Double>,
+    onChangePricePeriod: (PricePeriod) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     var selectedPriceArea by remember { mutableStateOf("") }
-    var selectedTimeInterval = remember { mutableStateOf("") }
+    var selectedTimeInterval = remember { mutableStateOf(PricePeriod.DAY) }
 
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
@@ -48,7 +49,7 @@ fun ElSparScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {Column(){
+                title = { Column(){
                     //dropdown-meny
                     val list: List<String> = listOf("NO1 – Østlandet","NO2 – Sørlandet","NO3 – Midt-Norge","NO4 – Nord-Norge","NO5 – Vestlandet")
                     var textFiledSize by remember { mutableStateOf(Size.Zero) }
@@ -140,10 +141,15 @@ fun ElSparScreen(
 
             //val unselected
             //sett størrelsen med andre argument (0.5 = 50% av skjermen, 0.3 = 30% etc)
-            ScaffoldContent(it, 0.4f, avgPrice, maxPrice, minPrice)
-            SwitchButton(selectedTimeInterval, "day", "1 dag")
-            SwitchButton(selectedTimeInterval, "week", "7 dager")
-            SwitchButton(selectedTimeInterval, "month", "30 dager")
+            ScaffoldContent(
+                it,
+                0.4f,
+                avgPrice = priceList.values.average(),
+                maxPrice = priceList.values.max(),
+                minPrice = priceList.values.min())
+            SwitchButton(selectedTimeInterval, PricePeriod.DAY, "1 dag") { onChangePricePeriod(it) }
+            SwitchButton(selectedTimeInterval, PricePeriod.WEEK, "7 dager") { onChangePricePeriod(it) }
+            SwitchButton(selectedTimeInterval, PricePeriod.MONTH, "30 dager") { onChangePricePeriod(it) }
 
 
             //Kan ha grafen her
@@ -166,12 +172,17 @@ fun ElSparScreen(
     }*/
 }
 @Composable
-fun SwitchButton(selectedTimeInterval:MutableState<String>,btnTimeInterval:String, btnText:String = "BUTTON", funOnClick: () -> Unit = {}){
+fun SwitchButton(
+    selectedTimeInterval: MutableState<PricePeriod>,
+    btnTimeInterval: PricePeriod,
+    btnText: String = "BUTTON",
+    onSelectPricePeriod: (PricePeriod) -> Unit){
     val unselectedColor = MaterialTheme.colorScheme.background;
     val selectedColor = MaterialTheme.colorScheme.primaryContainer;
     OutlinedButton(
-        onClick = { funOnClick
+        onClick = {
             selectedTimeInterval.value = btnTimeInterval
+
         },
         modifier = Modifier,
         colors = ButtonDefaults.buttonColors(
@@ -334,7 +345,6 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            ElSparScreen(1.1776,2.2776, 00.0376)
         }
     }
 }

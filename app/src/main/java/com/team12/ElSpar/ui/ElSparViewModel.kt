@@ -10,6 +10,7 @@ import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
 import com.team12.ElSpar.model.PriceArea
+import com.team12.ElSpar.model.PricePeriod
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,61 +22,46 @@ import java.time.LocalDateTime
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
     private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase,
+    initialPricePeriod: PricePeriod = PricePeriod.DAY,
+    initialPriceArea: PriceArea = PriceArea.NO1
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<ElSparUiState> =
         MutableStateFlow(ElSparUiState.Loading)
     val uiState: StateFlow<ElSparUiState> = _uiState.asStateFlow()
+
+    private var currentPricePeriod = initialPricePeriod
+    private var currentPriceArea = initialPriceArea
 
     init {
         getPowerPrice()
     }
 
     fun getPowerPrice(
-        starttime: LocalDateTime = LocalDateTime.now(),
-        endtime: LocalDateTime = LocalDateTime.now(),
-
-        ) {
+        pricePeriod: PricePeriod = currentPricePeriod,
+        priceArea: PriceArea = currentPriceArea
+    ) {
         viewModelScope.launch {
             _uiState.value = try {
-
                 ElSparUiState.Success(
-                    priceList = getPowerPriceUseCase(),
-                    startTime = starttime,
-                    endTime = endtime,
-
+                    priceList = getPowerPriceUseCase(
+                        startTime = LocalDateTime.now().minusDays(pricePeriod.days.toLong()),
+                        priceArea = priceArea
                     )
+                )
             } catch (e: IOException) {
                 ElSparUiState.Error
             }
         }
     }
 
-    fun updateInterval(
-        startTime: LocalDateTime,
-        endTime: LocalDateTime
-    ){
-        viewModelScope.launch {
-            _uiState.update { currentState ->
-                (currentState as ElSparUiState.Success).copy(
-                    priceList = getPowerPriceUseCase(
-                        startTime = startTime,
-                        endTime = endTime
-                    )
-                )
-            }
-        }
+    fun updatePricePeriod(pricePeriod: PricePeriod) {
+        currentPricePeriod = pricePeriod
+        getPowerPrice()
     }
 
-    fun updatePriceArea(
-        priceArea: PriceArea
-    ){
-        viewModelScope.launch {
-            _uiState.update { currentState ->
-                (currentState as ElSparUiState.Success).copy(
-                    priceList = getPowerPriceUseCase(priceArea = priceArea)
-                )
-            }
-        }
+    fun updatePriceArea(priceArea: PriceArea) {
+        currentPriceArea = priceArea
+        getPowerPrice()
     }
 
     companion object {
