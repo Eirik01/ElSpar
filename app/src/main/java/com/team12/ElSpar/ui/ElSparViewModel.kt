@@ -46,7 +46,7 @@ class ElSparViewModel(
             _uiState.value = try {
                 ElSparUiState.Success(
                     priceList = getPowerPriceUseCase(
-                        startTime = LocalDateTime.now().minusDays(pricePeriod.days.toLong()),
+                        startTime = LocalDateTime.now().minusDays(pricePeriod.days-1L),
                         priceArea = priceArea
                     )
                 )

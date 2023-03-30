@@ -147,10 +147,13 @@ fun ElSparScreen(
                 avgPrice = priceList.values.average(),
                 maxPrice = priceList.values.max(),
                 minPrice = priceList.values.min())
-            SwitchButton(selectedTimeInterval, PricePeriod.DAY, "1 dag") { onChangePricePeriod(it) }
-            SwitchButton(selectedTimeInterval, PricePeriod.WEEK, "7 dager") { onChangePricePeriod(it) }
-            SwitchButton(selectedTimeInterval, PricePeriod.MONTH, "30 dager") { onChangePricePeriod(it) }
+            Row{
+                SwitchButton(selectedTimeInterval, PricePeriod.DAY, "1 dag") { onChangePricePeriod(it) }
+                SwitchButton(selectedTimeInterval, PricePeriod.WEEK, "7 dager") { onChangePricePeriod(it) }
+                SwitchButton(selectedTimeInterval, PricePeriod.MONTH, "30 dager") { onChangePricePeriod(it) }
+            }
 
+            PriceChart(priceList)
 
             //Kan ha grafen her
             //Graph()
@@ -173,15 +176,13 @@ fun ElSparScreen(
 }
 @Composable
 fun SwitchButton(
-    selectedTimeInterval: MutableState<PricePeriod>,
-    btnTimeInterval: PricePeriod,
+    pricePeriod: PricePeriod,
     btnText: String = "BUTTON",
     onSelectPricePeriod: (PricePeriod) -> Unit){
     val unselectedColor = MaterialTheme.colorScheme.background;
     val selectedColor = MaterialTheme.colorScheme.primaryContainer;
     OutlinedButton(
         onClick = {
-            selectedTimeInterval.value = btnTimeInterval
             onSelectPricePeriod(btnTimeInterval)
         },
         modifier = Modifier,

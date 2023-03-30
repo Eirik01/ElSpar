@@ -10,15 +10,16 @@ import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.team12.ElSpar.model.PriceEntry
+import com.team12.ElSpar.model.PricePeriod
 import java.time.LocalDateTime
 
 @Composable
 fun PriceChart(
     priceList: Map<LocalDateTime, Double>,
+    pricePeriod: PricePeriod,
     modifier: Modifier = Modifier,
     chartEntryModelProducer: ChartEntryModelProducer =
         priceList.entries
-            .map { it.key to it.value }
             .mapIndexed { index, (date, y) ->
                 PriceEntry(date, index.toFloat(), y.toFloat())
             }.let { ChartEntryModelProducer(it) },
