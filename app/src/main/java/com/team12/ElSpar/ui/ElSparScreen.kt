@@ -147,12 +147,13 @@ fun ElSparScreen(
             //Dette er kortet på toppen.
             ScaffoldContent(
                 padding,
+
                 avgPrice = priceList.values.average(),
                 maxPrice = priceList.values.max(),
                 minPrice = priceList.values.min())
 
             //Kan ha grafen her
-            //Graph()
+            PriceChart(priceList, currentPricePeriod)
 
         }
 
@@ -243,7 +244,7 @@ fun CardContent(topText:String, midText:String){
 }
 @Composable
 fun ScaffoldContent(
-    padding:PaddingValues,
+    padding: PaddingValues,
     avgPrice: Double,
     maxPrice: Double,
     minPrice: Double,
@@ -356,7 +357,6 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-
         }
     }
 }
