@@ -38,12 +38,13 @@ fun ElSparApp(
                 is ElSparUiState.Loading -> LoadingScreen(modifier)
                 is ElSparUiState.Error -> ErrorScreen(modifier)
                 is ElSparUiState.Success ->
-                    (elSparUiState as ElSparUiState.Success).let { currentState ->
-                        ElSparScreen(
-                            priceList = currentState.priceList,
-                            modifier = modifier,
-                        )
-                    }
+                (elSparUiState as ElSparUiState.Success).let { currentState ->
+                    ElSparScreen(
+                        priceList = currentState.priceList,
+                        onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
+                        modifier = modifier,
+                    )
+                }
             }
         }
     }
