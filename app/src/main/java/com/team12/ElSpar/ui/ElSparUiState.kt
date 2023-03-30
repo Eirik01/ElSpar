@@ -1,5 +1,8 @@
 package com.team12.ElSpar.ui
 
+import com.team12.ElSpar.model.PriceArea
+import com.team12.ElSpar.model.PricePeriod
+import java.time.Duration
 import java.time.LocalDateTime
 
 sealed interface ElSparUiState {
@@ -8,4 +11,5 @@ sealed interface ElSparUiState {
     ) : ElSparUiState
     object Loading : ElSparUiState
     object Error : ElSparUiState
+
 }
