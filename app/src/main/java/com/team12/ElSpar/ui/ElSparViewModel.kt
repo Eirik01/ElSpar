@@ -22,20 +22,23 @@ import java.time.LocalDateTime
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
     private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase,
-    private val initialPricePeriod: PricePeriod = PricePeriod.DAY,
-    private val initialPriceArea: PriceArea = PriceArea.NO1
+    initialPricePeriod: PricePeriod = PricePeriod.DAY,
+    initialPriceArea: PriceArea = PriceArea.NO1
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<ElSparUiState> =
         MutableStateFlow(ElSparUiState.Loading)
     val uiState: StateFlow<ElSparUiState> = _uiState.asStateFlow()
 
+    private var currentPricePeriod = initialPricePeriod
+    private var currentPriceArea = initialPriceArea
+
     init {
-        getPowerPrice(initialPricePeriod, initialPriceArea)
+        getPowerPrice()
     }
 
     fun getPowerPrice(
-        pricePeriod: PricePeriod,
-        priceArea: PriceArea
+        pricePeriod: PricePeriod = currentPricePeriod,
+        priceArea: PriceArea = currentPriceArea
     ) {
         viewModelScope.launch {
             _uiState.value = try {
@@ -49,6 +52,16 @@ class ElSparViewModel(
                 ElSparUiState.Error
             }
         }
+    }
+
+    fun updatePricePeriod(pricePeriod: PricePeriod) {
+        currentPricePeriod = pricePeriod
+        getPowerPrice()
+    }
+
+    fun updatePriceArea(priceArea: PriceArea) {
+        currentPriceArea = priceArea
+        getPowerPrice()
     }
 
     companion object {
