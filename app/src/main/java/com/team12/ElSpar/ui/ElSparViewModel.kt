@@ -10,6 +10,7 @@ import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
 import com.team12.ElSpar.model.PriceArea
+import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,11 +37,12 @@ class ElSparViewModel(
         getPowerPrice()
     }
 
+
     fun getPowerPrice(
         pricePeriod: PricePeriod = currentPricePeriod,
         priceArea: PriceArea = currentPriceArea
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO){
             _uiState.value = try {
                 ElSparUiState.Success(
                     priceList = getPowerPriceUseCase(
