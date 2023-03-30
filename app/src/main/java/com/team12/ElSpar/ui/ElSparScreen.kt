@@ -141,7 +141,7 @@ fun ElSparScreen(
             //val unselected
             //sett størrelsen med andre argument (0.5 = 50% av skjermen, 0.3 = 30% etc)
             ScaffoldContent(it, 0.4f, avgPrice, maxPrice, minPrice)
-            SwitchButton(selectedTimeInterval, "day", "1 dag")
+            SwitchButton(selectedTimeInterval, "day", "1 dag", onIntervalChangeWeekly)
             SwitchButton(selectedTimeInterval, "week", "7 dager")
             SwitchButton(selectedTimeInterval, "month", "30 dager")
 
