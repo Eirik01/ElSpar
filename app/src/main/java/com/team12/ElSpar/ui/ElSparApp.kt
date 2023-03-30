@@ -41,6 +41,7 @@ fun ElSparApp(
                 (elSparUiState as ElSparUiState.Success).let { currentState ->
                     ElSparScreen(
                         priceList = currentState.priceList,
+                        currentPricePeriod = currentState.currentPricePeriod,
                         onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
                         modifier = modifier,
                     )

@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -29,19 +30,17 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDateTime
 
-
-//@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
+    currentPricePeriod: PricePeriod,
     onChangePricePeriod: (PricePeriod) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
     var selectedPriceArea by remember { mutableStateOf("") }
-    var selectedTimeInterval = remember { mutableStateOf(PricePeriod.DAY) }
 
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
@@ -127,7 +126,7 @@ fun ElSparScreen(
                 }
             }
         }
-    ) {
+    ) { padding ->
         //HER GÅR DET SOM ER I "MIDTED" AV SCAFFOLDET
         Column(
             modifier = Modifier
@@ -135,25 +134,22 @@ fun ElSparScreen(
                 .fillMaxHeight()
                 .padding(top = 10.dp),
 
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+
+            //Plass mellom hvert element
+            verticalArrangement = Arrangement.spacedBy(10.dp)
 
         ) {
 
-            //val unselected
-            //sett størrelsen med andre argument (0.5 = 50% av skjermen, 0.3 = 30% etc)
+            //Dette er rekken med knapper på toppen.
+            CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
+
+            //Dette er kortet på toppen.
             ScaffoldContent(
-                it,
-                0.4f,
+                padding,
                 avgPrice = priceList.values.average(),
                 maxPrice = priceList.values.max(),
                 minPrice = priceList.values.min())
-            Row{
-                SwitchButton(selectedTimeInterval, PricePeriod.DAY, "1 dag") { onChangePricePeriod(it) }
-                SwitchButton(selectedTimeInterval, PricePeriod.WEEK, "7 dager") { onChangePricePeriod(it) }
-                SwitchButton(selectedTimeInterval, PricePeriod.MONTH, "30 dager") { onChangePricePeriod(it) }
-            }
-
-            PriceChart(priceList)
 
             //Kan ha grafen her
             //Graph()
@@ -175,24 +171,39 @@ fun ElSparScreen(
     }*/
 }
 @Composable
+fun CreateTimeIntervalButtons(
+    currentPricePeriod: PricePeriod,
+    topPaddingValues: PaddingValues,
+    onSelectPricePeriod: (PricePeriod) -> Unit
+){
+    Row(modifier = Modifier.padding(top = topPaddingValues.calculateTopPadding()).height(40.dp)){
+        SwitchButton(currentPricePeriod, PricePeriod.DAY) { onSelectPricePeriod(it) }
+        SwitchButton(currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
+        SwitchButton(currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
+    }
+
+
+}
+@Composable
 fun SwitchButton(
-    pricePeriod: PricePeriod,
-    btnText: String = "BUTTON",
+    currentPricePeriod: PricePeriod,
+    btnPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit){
     val unselectedColor = MaterialTheme.colorScheme.background;
     val selectedColor = MaterialTheme.colorScheme.primaryContainer;
     OutlinedButton(
         onClick = {
-            onSelectPricePeriod(btnTimeInterval)
+            onSelectPricePeriod(btnPricePeriod)
         },
-        modifier = Modifier,
+        modifier = Modifier.width(120.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor =  (
-                    if (selectedTimeInterval.value == btnTimeInterval) selectedColor else unselectedColor
+                    if (currentPricePeriod == btnPricePeriod) selectedColor else unselectedColor
                     )
-            )
+            ),
+        shape = CutCornerShape(1.dp)
     ) {
-        Text(text = btnText, color = Color.Black)
+        Text(text = btnPricePeriod.text, color = Color.Black)
     }
 }
 @Composable
@@ -244,8 +255,8 @@ val defModifier = Modifier
     Column(
         modifier = Modifier
             .fillMaxWidth(0.95f)
-            .padding(padding)
-            .fillMaxHeight(height),
+            //.padding(top = padding.calculateTopPadding()),
+            .height(230.dp),
         horizontalAlignment = Alignment.CenterHorizontally
 
 
