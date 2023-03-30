@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.team12.ElSpar.model.PricePeriod
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -31,11 +32,7 @@ import java.text.DecimalFormat
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ElSparScreen(
-    avgPrice: Double,
-    maxPrice: Double,
-    minPrice: Double,
-    onIntervalChangeWeekly: () -> Unit = {},
-    onIntervalChangeMonthly: () -> Unit = {},
+    onIntervalChange: (PricePeriod) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedPriceArea by remember { mutableStateOf("") }
@@ -138,21 +135,7 @@ fun ElSparScreen(
         ) {
             //sett størrelsen med andre argument (0.5 = 50% av skjermen, 0.3 = 30% etc)
             ScaffoldContent(it, 0.4f, avgPrice, maxPrice, minPrice)
-                Button(
-                    onClick =  onIntervalChangeWeekly
-                    //modifier = Modifier.padding(it)
-                ){
-                    Text(text = "Jette week")
-                }
-                Button(
-                    onClick =  onIntervalChangeMonthly
-                    //modifier = Modifier.padding(it)
-                ){
-                    Text(text = "HEJ då (month")
-                }
 
-            //Kan ha grafen her
-            //Graph()
 
         }
 
