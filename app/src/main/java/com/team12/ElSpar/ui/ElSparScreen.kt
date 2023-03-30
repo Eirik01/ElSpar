@@ -182,7 +182,7 @@ fun SwitchButton(
     OutlinedButton(
         onClick = {
             selectedTimeInterval.value = btnTimeInterval
-
+            onSelectPricePeriod(btnTimeInterval)
         },
         modifier = Modifier,
         colors = ButtonDefaults.buttonColors(
