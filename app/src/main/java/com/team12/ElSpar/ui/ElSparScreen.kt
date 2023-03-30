@@ -1,6 +1,7 @@
 package com.team12.ElSpar.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Region
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
@@ -11,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -135,22 +137,22 @@ fun ElSparScreen(
                 .fillMaxHeight()
                 .padding(top = 10.dp),
 
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+
+            //Plass mellom hvert element
+            verticalArrangement = Arrangement.spacedBy(10.dp)
 
         ) {
 
-            //val unselected
-            //sett størrelsen med andre argument (0.5 = 50% av skjermen, 0.3 = 30% etc)
+            //Dette er rekken med knapper på toppen.
+            CreateTimeIntervalButtons(selectedTimeInterval, it) { onChangePricePeriod(it) }
+
+            //Dette er kortet på toppen.
             ScaffoldContent(
                 it,
-                0.4f,
                 avgPrice = priceList.values.average(),
                 maxPrice = priceList.values.max(),
                 minPrice = priceList.values.min())
-            SwitchButton(selectedTimeInterval, PricePeriod.DAY, "1 dag") { onChangePricePeriod(it) }
-            SwitchButton(selectedTimeInterval, PricePeriod.WEEK, "7 dager") { onChangePricePeriod(it) }
-            SwitchButton(selectedTimeInterval, PricePeriod.MONTH, "30 dager") { onChangePricePeriod(it) }
-
 
             //Kan ha grafen her
             //Graph()
@@ -172,6 +174,20 @@ fun ElSparScreen(
     }*/
 }
 @Composable
+fun CreateTimeIntervalButtons(
+    selectedTimeInterval: MutableState<PricePeriod>,
+    topPaddingValues: PaddingValues,
+    onSelectPricePeriod: (PricePeriod) -> Unit
+){
+    Row(modifier = Modifier.padding(top = topPaddingValues.calculateTopPadding()).height(40.dp)){
+        SwitchButton(selectedTimeInterval, PricePeriod.DAY, "1 dag") { onSelectPricePeriod(it) }
+        SwitchButton(selectedTimeInterval, PricePeriod.WEEK, "7 dager") { onSelectPricePeriod(it) }
+        SwitchButton(selectedTimeInterval, PricePeriod.MONTH, "30 dager") { onSelectPricePeriod(it) }
+    }
+
+
+}
+@Composable
 fun SwitchButton(
     selectedTimeInterval: MutableState<PricePeriod>,
     btnTimeInterval: PricePeriod,
@@ -189,7 +205,8 @@ fun SwitchButton(
             containerColor =  (
                     if (selectedTimeInterval.value == btnTimeInterval) selectedColor else unselectedColor
                     )
-            )
+            ),
+        shape = CutCornerShape(1.dp)
     ) {
         Text(text = btnText, color = Color.Black)
     }
@@ -232,7 +249,6 @@ fun CardContent(topText:String, midText:String){
 @Composable
 fun ScaffoldContent(
     padding:PaddingValues,
-    height:Float,
     avgPrice: Double,
     maxPrice: Double,
     minPrice: Double,
@@ -243,8 +259,8 @@ val defModifier = Modifier
     Column(
         modifier = Modifier
             .fillMaxWidth(0.95f)
-            .padding(padding)
-            .fillMaxHeight(height),
+            //.padding(top = padding.calculateTopPadding()),
+            .height(230.dp),
         horizontalAlignment = Alignment.CenterHorizontally
 
 
@@ -345,6 +361,7 @@ fun DefaultPreview() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+
         }
     }
 }
