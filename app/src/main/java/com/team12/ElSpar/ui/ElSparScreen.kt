@@ -37,7 +37,9 @@ fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
     onChangePricePeriod: (PricePeriod) -> Unit,
-    modifier: Modifier = Modifier
+    tempList : List<Double>,
+    modifier: Modifier = Modifier,
+
 ) {
 
     var selectedPriceArea by remember { mutableStateOf("") }
@@ -154,7 +156,7 @@ fun ElSparScreen(
 
             //Kan ha grafen her
             PriceChart(priceList, currentPricePeriod)
-
+            TemperatureText(tempList)
         }
 
 
@@ -170,6 +172,16 @@ fun ElSparScreen(
         Text(stringResource(R.string.max_price, maxPrice))
         Text(stringResource(R.string.min_price, minPrice))
     }*/
+}
+
+@Composable
+fun TemperatureText(
+    tempList : List<Double>
+){
+    Text("max: ${tempList.max()}")
+    Text("average: ${tempList.average()}")
+    Text("min: ${tempList.min()}")
+
 }
 @Composable
 fun CreateTimeIntervalButtons(
@@ -341,7 +353,7 @@ val defModifier = Modifier
             }
 
         }
-        }
+    }
 
 }
 fun roundOffDecimal(number: Double): Double? {
