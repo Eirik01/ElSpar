@@ -6,20 +6,28 @@ import java.time.LocalDateTime
 
 interface WeatherRepository {
     suspend fun getWeatherDataPerLocation(
-        time: String,
         station : String,
+        time: String,
         element : String
-    ):ObservationData
+    ):ObservationData?
 }
 
 class DefaultWeatherRepository(
     private val metApiService: MetApiService
 ):WeatherRepository  {
     override suspend fun getWeatherDataPerLocation(
-        time: String,
         station: String,
+        time: String,
         element : String
-    ): ObservationData {
-        return metApiService.getWeatherDataPerLocation(time,station,element)
+    ): ObservationData? {
+        val output = metApiService.getWeatherDataPerLocation(
+            station = station,
+            time = time,
+            element = element
+        )
+        if(output != null){
+            return output
+        }
+        return null
     }
 }

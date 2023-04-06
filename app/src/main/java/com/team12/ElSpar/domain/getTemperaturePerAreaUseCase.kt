@@ -7,13 +7,21 @@ class GetTemperatureDataPerLocation(
     private val weatherRepository : WeatherRepository
 ) {
     suspend operator fun invoke(
-        time: String,
         station: String,
+        time: String,
         element : String
     ):List<Double>{
         val temperatureList : MutableList<Double> = mutableListOf()
-        for(observation in  weatherRepository.getWeatherDataPerLocation(time,station,element).observations){
-            temperatureList.add(observation.value)
+        val data = weatherRepository.getWeatherDataPerLocation(
+            station = station,
+            time = time,
+            element = element
+            )
+        if(data != null){
+            for(observation in data.observations){
+                temperatureList.add(observation.value)
+            }
+            return temperatureList
         }
         return temperatureList
     }

@@ -54,8 +54,9 @@ class ElSparViewModel(
                     ),
                     tempList = getTempDataPerLocation(
                         // could also be a range of dates
-                        time = LocalDateTime.now().toString().substring(0,13), // ex. 2023-04-04T10
                         station = "sn18700", //blindern,
+                        // data is unavailable for the current hour and sometimes in the last hour.
+                        time = LocalDateTime.now().minusHours(2).toString().substring(0,13), // ex. 2023-04-04T10
                         element = "air_temperature"
                     )
                 )
@@ -64,6 +65,7 @@ class ElSparViewModel(
             }
         }
     }
+
 
     fun updatePricePeriod(pricePeriod: PricePeriod) {
         currentPricePeriod = pricePeriod

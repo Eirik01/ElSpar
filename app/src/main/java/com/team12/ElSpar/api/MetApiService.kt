@@ -8,15 +8,16 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-
+import java.io.BufferedReader
+import java.io.InputStreamReader
 
 
 interface MetApiService {
     suspend fun getWeatherDataPerLocation(
-        time: String,
         station : String,
+        time: String,
         element: String ,
-    ):ObservationData
+    ):ObservationData?
 }
 
 
@@ -29,18 +30,44 @@ class DefaultMetApiService(
         time: String,
         element: String ,
 
-    ): ObservationData {
-        val url : String = baseURL+
-                "sources=${station}" +
-                "&referencetime=${time}" +
-                "&elements=${element}"
-        //Log.d("URL",endURL)
-        val response : HttpResponse =  client.get(url){
-            header(HttpHeaders.Accept, ContentType.Application.Json)
+    ): ObservationData? {
+        val token : String = "bbf931fb-056d-4d69-bb71-e47e18596d1e"
+        if(validateToken(token) == 0){
+            val url : String = baseURL+
+                    "sources=${station}" +
+                    "&referencetime=${time}" +
+                    "&elements=${element}"
+            //Log.d("URL",endURL)
+            val response : HttpResponse =  client.get(url){
+                header(HttpHeaders.Accept, ContentType.Application.Json)
+                header(HttpHeaders.Authorization, "Bearer $token")
+            }
+            val responseString: String = response.toString()
+            val observationData: ObservationData = Json.decodeFromString(responseString)
+            Log.d("observationList", observationData.observations.toString())
+            return observationData
         }
-        val responseString: String = response.toString()
-        val observationData: ObservationData = Json.decodeFromString(responseString)
-        Log.d("observationList", observationData.observations.toString())
-        return observationData
+        return null
+    }
+
+     fun validateToken(token : String): Int{
+        val command = "curl --user $token: \"https://frost.met.no/observations/availableTimeSeries/v0.jsonld?sources=SN18700&elements=wind_speed\""
+
+        val processBuilder = ProcessBuilder(command.split(" "))
+        val process = processBuilder.start()
+
+        val reader = BufferedReader(InputStreamReader(process.inputStream))
+        val output = StringBuilder()
+
+        var line: String? = reader.readLine()
+        while (line != null) {
+            output.append(line + "\n")
+            line = reader.readLine()
+        }
+
+        val exitCode = process.waitFor()
+        //val result = output.toString()
+        Log.d("exitCode",exitCode.toString())
+        return exitCode
     }
 }
