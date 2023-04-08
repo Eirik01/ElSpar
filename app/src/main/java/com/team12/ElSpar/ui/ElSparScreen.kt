@@ -295,7 +295,7 @@ val defModifier = Modifier
                         textAlign = TextAlign.Justify
                     )
                     Text(
-                        text = roundOffDecimal(avgPrice*100).toString(),
+                        text = roundOffDecimal(avgPrice).toString(),
                         fontSize = 42.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Justify
@@ -322,7 +322,7 @@ val defModifier = Modifier
                 Box(
                     modifier = defModifier.weight(0.5f)
                 ) {
-                    CardContent("Laveste - 12:00", roundOffDecimal(minPrice*100).toString()) //Endre, skal være variabel
+                    CardContent("Laveste - 12:00", roundOffDecimal(minPrice).toString()) //Endre, skal være variabel
                 }
                 //vertical Divider
                 Divider(
@@ -334,7 +334,7 @@ val defModifier = Modifier
                 Box(
                     modifier = defModifier.weight(0.5f)
                 ) {
-                    CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice*100).toString()) //Endre, skal være variabel
+                    CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
 
                 }
 
