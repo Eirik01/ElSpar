@@ -43,6 +43,7 @@ fun ElSparApp(
                         priceList = currentState.priceList,
                         currentPricePeriod = currentState.currentPricePeriod,
                         onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
+                        onUpdatePriceArea = {elSparViewModel.updatePriceArea(it)},
                         modifier = modifier,
                     )
                 }

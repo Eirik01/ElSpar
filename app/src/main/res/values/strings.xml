@@ -3,4 +3,12 @@
     <string name="avg_price">Gjennomsnitt i dag: %.2f kr\/kWh</string>
     <string name="max_price">Høyeste i dag: %.2f kr\/kWh</string>
     <string name="min_price">Minste i dag: %.2f kr\/kWh</string>
+
+    <string-array name="districtList">
+        <item>NO1 – Østlandet</item>
+        <item>NO2 – Sørlandet</item>
+        <item>NO3 – Midt-Norge</item>
+        <item>NO4 – Nord-Norge</item>
+        <item>NO5 – Vestlandet</item>
+    </string-array>
 </resources>
