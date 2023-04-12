@@ -21,10 +21,13 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.team12.ElSpar.R
+import com.team12.ElSpar.model.PriceArea
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
@@ -38,6 +41,7 @@ fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
     onChangePricePeriod: (PricePeriod) -> Unit,
+    onUpdatePriceArea: (PriceArea) -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -51,7 +55,7 @@ fun ElSparScreen(
             CenterAlignedTopAppBar(
                 title = { Column(){
                     //dropdown-meny
-                    val list: List<String> = listOf("NO1 – Østlandet","NO2 – Sørlandet","NO3 – Midt-Norge","NO4 – Nord-Norge","NO5 – Vestlandet")
+                    val list: List<String> = stringArrayResource(id = R.array.districtList).asList()
                     var textFiledSize by remember { mutableStateOf(Size.Zero) }
 
                     Column(
@@ -90,8 +94,11 @@ fun ElSparScreen(
                                     selectedPriceArea = label
                                     expanded = false
                                     when(selectedPriceArea){
-                                        //Gjør noe basert på valgt område(selected item)
-                                        else -> null
+                                        "NO1 – Østlandet" -> onUpdatePriceArea(PriceArea.NO1)
+                                        "NO2 – Sørlandet" -> onUpdatePriceArea(PriceArea.NO2)
+                                        "NO3 – Midt-Norge" -> onUpdatePriceArea(PriceArea.NO3)
+                                        "NO4 – Nord-Norge" -> onUpdatePriceArea(PriceArea.NO4)
+                                        "NO5 – Vestlandet" -> onUpdatePriceArea(PriceArea.NO5)
                                     }
                                 })
                             }
