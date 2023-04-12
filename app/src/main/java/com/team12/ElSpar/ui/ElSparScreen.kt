@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.team12.ElSpar.model.PricePeriod
+import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDateTime
