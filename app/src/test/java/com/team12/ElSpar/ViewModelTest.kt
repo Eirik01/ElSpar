@@ -7,6 +7,7 @@ import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
 import com.team12.ElSpar.fake.*
 import com.team12.ElSpar.model.PriceArea
+import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.rules.TestDispatcherRule
 import com.team12.ElSpar.ui.ElSparUiState
 import com.team12.ElSpar.ui.ElSparViewModel
@@ -48,7 +49,7 @@ class ViewModelTest {
             sleep(3000)
 
             assertEquals(
-                ElSparUiState.Success(FakePowerDataSource.priceDataMapMVA),
+                ElSparUiState.Success(PriceArea.NO1, PricePeriod.DAY, FakePowerDataSource.priceDataMapMVA),
                 elSparViewModel.uiState.value
             )
         }
