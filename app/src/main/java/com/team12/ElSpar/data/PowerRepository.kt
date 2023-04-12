@@ -22,13 +22,11 @@ class DefaultPowerRepository(
     ): Map<LocalDateTime, Double> {
         val priceData = mutableMapOf<LocalDateTime, Double>()
         val key = Pair(date.toLocalDate(), area)
-        if (localRepo[key] != null) {
-            return localRepo[key]!!
-        }
+        if (localRepo[key] != null) return localRepo[key]!!
         hvaKosterStrommenApiService
             .getPowerPricesByDate(date, area)
             .forEach {
-                priceData[LocalDateTime.parse(it.time_start.dropLast(6))] = it.NOK_per_kWh*1.25
+                priceData[LocalDateTime.parse(it.time_start.dropLast(6))] = it.NOK_per_kWh*125
             }
         localRepo[key] = priceData
         return priceData.toMap()
