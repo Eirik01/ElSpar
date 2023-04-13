@@ -22,6 +22,7 @@ class DefaultPowerRepository(
     ): Map<LocalDateTime, Double> {
         val priceData = mutableMapOf<LocalDateTime, Double>()
         val key = Pair(date.toLocalDate(), area)
+
         if (localRepo[key] != null) return localRepo[key]!!
         hvaKosterStrommenApiService
             .getPowerPricesByDate(date, area)

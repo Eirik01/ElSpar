@@ -9,6 +9,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
+import com.team12.ElSpar.domain.GetTemperatureDataPerLocation
 import com.team12.ElSpar.model.PriceArea
 import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
@@ -22,6 +23,7 @@ import java.time.LocalDateTime
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
     private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase,
+    private val getTempDataPerLocation : GetTemperatureDataPerLocation,
     initialPricePeriod: PricePeriod = PricePeriod.DAY,
     initialPriceArea: PriceArea = PriceArea.NO1
 ) : ViewModel() {
@@ -49,13 +51,23 @@ class ElSparViewModel(
                     priceList = getPowerPriceUseCase(
                         startTime = LocalDateTime.now().minusDays(pricePeriod.days-1L),
                         priceArea = priceArea
+                    ),
+                    getTempDataPerLocation(
+                        // could also be a range of dates
+                        station = "sn18700", //blindern,
+                        // data is unavailable for the current hour and sometimes in the last hour.
+                        time = LocalDateTime.now().minusHours(2).toString().substring(0,13), // ex. 2023-04-04T10
+                        element = "air_temperature"
                     )
+
+
                 )
             } catch (e: IOException) {
                 ElSparUiState.Error
             }
         }
     }
+
 
     fun updatePricePeriod(pricePeriod: PricePeriod) {
         currentPricePeriod = pricePeriod
@@ -73,9 +85,11 @@ class ElSparViewModel(
                 val application = this[APPLICATION_KEY] as ElSparApplication
                 val getCurrentPowerPriceUseCase = application.container.getPowerPriceUseCase
                 val getProjectedPowerPriceUseCase = application.container.getProjectedPowerPriceUseCase
+                val getTempDataPerLocation = application.container.getTemperatureDataPerLocation
                 ElSparViewModel(
                     getPowerPriceUseCase = getCurrentPowerPriceUseCase,
                     getProjectedPowerPriceUseCase = getProjectedPowerPriceUseCase,
+                    getTempDataPerLocation = getTempDataPerLocation
                 )
             }
         }

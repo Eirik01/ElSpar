@@ -42,7 +42,7 @@ fun ElSparScreen(
     currentPricePeriod: PricePeriod,
     currentPriceArea: PriceArea,
     onChangePricePeriod: (PricePeriod) -> Unit,
-    onChangePriceArea: (PriceArea) -> Unit,
+    tempList : List<Double>, PriceArea) -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -152,7 +152,7 @@ fun ElSparScreen(
 
             //Kan ha grafen her
             PriceChart(priceList, currentPricePeriod)
-
+            TemperatureText(tempList)
         }
     }
 
@@ -166,6 +166,16 @@ fun ElSparScreen(
         Text(stringResource(R.string.max_price, maxPrice))
         Text(stringResource(R.string.min_price, minPrice))
     }*/
+}
+
+@Composable
+fun TemperatureText(
+    tempList : List<Double>
+){
+    Text("max: ${tempList.max()}")
+    Text("average: ${tempList.average()}")
+    Text("min: ${tempList.min()}")
+
 }
 @Composable
 fun CreateTimeIntervalButtons(
@@ -358,14 +368,14 @@ fun ScaffoldContent(
                 ) {
                     CardContent(
                         "Høyeste - ${timeOf(maxPrice)}",
-                        roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
+                        roundOffDecimal(maxPrice).toString())
 
                 }
 
             }
 
         }
-        }
+    }
 
 }
 fun roundOffDecimal(number: Double): Double {
@@ -403,6 +413,7 @@ fun DefaultPreview() {
                 currentPricePeriod = PricePeriod.DAY,
                 currentPriceArea = PriceArea.NO1,
                 onChangePricePeriod = { updatePricePeriod(it) },
+                tempList = listOf()
                 onChangePriceArea = {updatePriceArea(it)}
             )
         }
