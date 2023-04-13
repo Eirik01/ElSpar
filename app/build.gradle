@@ -86,8 +86,7 @@ dependencies {
 
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
-
-
+    implementation 'androidx.navigation:navigation-runtime-ktx:2.5.3'
 
 
     testImplementation 'junit:junit:4.13.2'

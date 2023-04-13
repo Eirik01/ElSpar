@@ -78,16 +78,14 @@ fun ElSparApp(
                 is ElSparUiState.Error -> ErrorScreen(modifier)
                 is ElSparUiState.Success ->
                 (elSparUiState as ElSparUiState.Success).let { currentState ->
-<<<<<<< HEAD
                     ElSparScreen(
                         priceList = currentState.priceList,
                         currentPricePeriod = currentState.currentPricePeriod,
                         onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
                         tempList = currentState.tempList,
                         modifier = modifier,
-
+                        onUpdatePriceArea = {elSparViewModel.updatePriceArea(it)}
                     )
-=======
 
                     NavHost(navController = navController, startDestination = "ElSparScreen") {
                         composable("InformationScreen") {
@@ -99,7 +97,8 @@ fun ElSparApp(
                                 currentPricePeriod = currentState.currentPricePeriod,
                                 onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
                                 onUpdatePriceArea = {elSparViewModel.updatePriceArea(it)},
-                                modifier = modifier
+                                modifier = modifier,
+                                tempList = currentState.tempList
                             )
                         }
                         composable("SettingsScreen") {
@@ -108,7 +107,6 @@ fun ElSparApp(
                     }
                     //ShowMainScreen();
 
->>>>>>> 28d0a05f2df4f61d32b51375d0ad0c9b9177a651
                 }
             }
         }

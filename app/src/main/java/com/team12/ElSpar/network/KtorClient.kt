@@ -26,7 +26,6 @@ object KtorClient {
                 realm = "Access to the '/' path"
             }
         }
-
-         */
+*/
     }
 }

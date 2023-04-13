@@ -42,14 +42,9 @@ fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
     onChangePricePeriod: (PricePeriod) -> Unit,
-<<<<<<< HEAD
     tempList : List<Double>,
     modifier: Modifier = Modifier,
-
-=======
     onUpdatePriceArea: (PriceArea) -> Unit,
-    modifier: Modifier = Modifier
->>>>>>> 28d0a05f2df4f61d32b51375d0ad0c9b9177a651
 ) {
 
     var selectedPriceArea by remember { mutableStateOf("") }
@@ -413,7 +408,8 @@ fun DefaultPreview() {
                 priceList = getPowerPricesByDate(LocalDateTime.of(1,1,1,1,1), PriceArea.NO1),
                 currentPricePeriod = PricePeriod.DAY,
                 onChangePricePeriod = { updatePricePeriod(it) },
-                onUpdatePriceArea = {updatePriceArea(it)}
+                onUpdatePriceArea = {updatePriceArea(it)},
+                tempList = listOf() // dummy
             )
         }
     }
