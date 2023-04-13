@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -46,10 +47,11 @@ fun ElSparScreen(
 ) {
 
     var selectedPriceArea by remember { mutableStateOf("") }
-
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
+    var placeHolderPadding by remember { mutableStateOf(0) }
+    val maxPlaceHolderPadding = 7
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -60,7 +62,6 @@ fun ElSparScreen(
 
                     Column(
                         modifier = Modifier.padding(20.dp)
-
                     ) {
                         OutlinedTextField(
                             readOnly = true,
@@ -74,7 +75,11 @@ fun ElSparScreen(
                                 .onGloballyPositioned { coordinates ->
                                     textFiledSize = coordinates.size.toSize()
                                 },
-                            label = {Text(text = "Velg prisområde")},
+                            label = {Text(
+                                text = "Velg prisområde",
+                                modifier = Modifier.padding(top = placeHolderPadding.dp)
+                            )},
+
                             colors = TextFieldDefaults.outlinedTextFieldColors (
                                 focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer, //hide the indicator
                                 unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
@@ -93,6 +98,7 @@ fun ElSparScreen(
                                 DropdownMenuItem(text = {Text(text = label)}, onClick = {
                                     selectedPriceArea = label
                                     expanded = false
+                                    placeHolderPadding = maxPlaceHolderPadding
                                     when(selectedPriceArea){
                                         "NO1 – Østlandet" -> onUpdatePriceArea(PriceArea.NO1)
                                         "NO2 – Sørlandet" -> onUpdatePriceArea(PriceArea.NO2)
@@ -115,9 +121,9 @@ fun ElSparScreen(
                             contentDescription = "Velg prisområde"
                         )
                     }
-                }
+                },
             )
-        },
+        }/*,
         bottomBar = {
             BottomAppBar(
                 modifier = Modifier.fillMaxWidth(),
@@ -133,7 +139,7 @@ fun ElSparScreen(
 
                 }
             }
-        }
+        }*/
     ) { padding ->
         //HER GÅR DET SOM ER I "MIDTED" AV SCAFFOLDET
         Column(
@@ -164,8 +170,6 @@ fun ElSparScreen(
             PriceChart(priceList, currentPricePeriod)
 
         }
-
-
     }
 
     /*
@@ -186,18 +190,19 @@ fun CreateTimeIntervalButtons(
     onSelectPricePeriod: (PricePeriod) -> Unit
 ){
     Row(modifier = Modifier.padding(top = topPaddingValues.calculateTopPadding()).height(40.dp)){
-        SwitchButton(currentPricePeriod, PricePeriod.DAY) { onSelectPricePeriod(it) }
-        SwitchButton(currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
-        SwitchButton(currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
+        SwitchButton(40, 0, currentPricePeriod, PricePeriod.DAY) { onSelectPricePeriod(it) }
+        SwitchButton(0, 0, currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
+        SwitchButton(0, 40, currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
     }
-
-
 }
 @Composable
 fun SwitchButton(
+    leftRound:Int = 0,
+    rightRound:Int = 0,
     currentPricePeriod: PricePeriod,
     btnPricePeriod: PricePeriod,
-    onSelectPricePeriod: (PricePeriod) -> Unit){
+    onSelectPricePeriod: (PricePeriod) -> Unit)
+    {
     val unselectedColor = MaterialTheme.colorScheme.background;
     val selectedColor = MaterialTheme.colorScheme.primaryContainer;
     OutlinedButton(
@@ -210,7 +215,13 @@ fun SwitchButton(
                     if (currentPricePeriod == btnPricePeriod) selectedColor else unselectedColor
                     )
             ),
-        shape = CutCornerShape(1.dp)
+        shape = RoundedCornerShape(
+            topStartPercent = leftRound,
+            topEndPercent = rightRound,
+            bottomEndPercent = rightRound,
+            bottomStartPercent = leftRound
+        )
+        //shape = CutCornerShape(1.dp)
     ) {
         Text(text = btnPricePeriod.text, color = Color.Black)
     }
@@ -360,11 +371,34 @@ fun roundOffDecimal(number: Double): Double? {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
+    fun getPowerPricesByDate(
+        date: LocalDateTime,
+        area: PriceArea
+    ): Map<LocalDateTime, Double>
+    {
+        return  mapOf<LocalDateTime, Double>(
+            LocalDateTime.of(2023, 1, 30, 0, 0) to  10.0,
+            LocalDateTime.of(2023, 1, 30, 1, 0) to  10.0,
+        )
+    }
+
+    //Test data
+    fun updatePricePeriod(pricePeriod: PricePeriod) {
+    }
+    fun updatePriceArea(v: PriceArea) {
+    }
+
     ElSparTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
+            ElSparScreen(
+                priceList = getPowerPricesByDate(LocalDateTime.of(1,1,1,1,1), PriceArea.NO1),
+                currentPricePeriod = PricePeriod.DAY,
+                onChangePricePeriod = { updatePricePeriod(it) },
+                onUpdatePriceArea = {updatePriceArea(it)}
+            )
         }
     }
 }
