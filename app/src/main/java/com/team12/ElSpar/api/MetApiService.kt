@@ -3,12 +3,14 @@ package com.team12.ElSpar.api
 import android.util.Log
 import com.team12.ElSpar.model.ObservationData
 import io.ktor.client.*
+import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStreamReader
 
 
@@ -26,47 +28,64 @@ class DefaultMetApiService(
     private val baseURL: String = "https://frost.met.no/observations/v0.jsonld?",
 ):MetApiService{
     override suspend fun getWeatherDataPerLocation(
-        station : String, // blindern
+        station : String,
         time: String,
         element: String ,
-
     ): ObservationData? {
-        val token : String = "bbf931fb-056d-4d69-bb71-e47e18596d1e"
-        if(validateToken(token) == 0){
-            val url : String = baseURL+
-                    "sources=${station}" +
-                    "&referencetime=${time}" +
-                    "&elements=${element}"
-            //Log.d("URL",endURL)
-            val response : HttpResponse =  client.get(url){
-                header(HttpHeaders.Accept, ContentType.Application.Json)
-                header(HttpHeaders.Authorization, "Bearer $token")
+        try{
+            val token : String = "be4467b2-932e-4e03-b9ff-60023760c6a2"
+            val url = baseURL+"sources=$station&referencetime=$time&elements=$element"
+            Log.d("code",authenticate(token, url).toString())
+            val response : HttpResponse =  client.get(baseURL){
+                headers {
+                    //append("X-Gravitee-API-Key", token)
+                    append(HttpHeaders.Accept, ContentType.Application.Json)
+                }
+                parameter("sources", station)
+                parameter("referencetime", time)
+                parameter("elements", element)
             }
             val responseString: String = response.toString()
             val observationData: ObservationData = Json.decodeFromString(responseString)
             Log.d("observationList", observationData.observations.toString())
             return observationData
+
+        }catch(e: IOException){
+            Log.d("METAPI Connection", "Connection failed")
+            e.printStackTrace()
+            return null
         }
-        return null
     }
 
+<<<<<<< Updated upstream
      fun validateToken(token : String): Int{
         val command = "curl --user $token: '$url'"
         val processBuilder = ProcessBuilder(command.split(" "))
         val process = processBuilder.start()
+=======
+    fun authenticate(clientID: String, url: String): Int {
+        val command : String = "curl -X GET --user $clientID: '$url'"
+        Log.d("Auth", "Running command: $command")
 
-        val reader = BufferedReader(InputStreamReader(process.inputStream))
-        val output = StringBuilder()
+        try {
+            val process = Runtime.getRuntime().exec(command)
+>>>>>>> Stashed changes
 
-        var line: String? = reader.readLine()
-        while (line != null) {
-            output.append(line + "\n")
-            line = reader.readLine()
+            val inputStream = process.inputStream
+            val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+
+            var line: String? = null
+            while ({ line = bufferedReader.readLine(); line }() != null) {
+                Log.d("process", "Output: $line")
+            }
+
+            process.waitFor()
+            Log.d("process","Authentication Successful")
+            return process.exitValue()
+        } catch (e: Exception) {
+            Log.e("process", "Command execution failed $e")
+            return -1
         }
-
-        val exitCode = process.waitFor()
-        //val result = output.toString()
-        Log.d("exitCode",exitCode.toString())
-        return exitCode
     }
+
 }

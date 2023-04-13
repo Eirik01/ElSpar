@@ -1,5 +1,6 @@
 package com.team12.ElSpar.domain
 
+import android.util.Log
 import com.team12.ElSpar.data.WeatherRepository
 import com.team12.ElSpar.model.Observation
 
@@ -21,8 +22,10 @@ class GetTemperatureDataPerLocation(
             for(observation in data.observations){
                 temperatureList.add(observation.value)
             }
+            Log.d("temperatureList",temperatureList.toString())
             return temperatureList
         }
+        Log.d("temperatureList",temperatureList.toString())
         return temperatureList
     }
 }

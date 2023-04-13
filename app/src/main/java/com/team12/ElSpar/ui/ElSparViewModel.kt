@@ -52,13 +52,15 @@ class ElSparViewModel(
                         startTime = LocalDateTime.now().minusDays(pricePeriod.days-1L),
                         priceArea = priceArea
                     ),
-                    tempList = getTempDataPerLocation(
+                    getTempDataPerLocation(
                         // could also be a range of dates
                         station = "sn18700", //blindern,
                         // data is unavailable for the current hour and sometimes in the last hour.
                         time = LocalDateTime.now().minusHours(2).toString().substring(0,13), // ex. 2023-04-04T10
                         element = "air_temperature"
                     )
+
+
                 )
             } catch (e: IOException) {
                 ElSparUiState.Error
