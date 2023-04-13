@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -195,8 +194,8 @@ fun SwitchButton(
     btnPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit)
     {
-    val unselectedColor = MaterialTheme.colorScheme.background;
-    val selectedColor = MaterialTheme.colorScheme.primaryContainer;
+    val unselectedColor = MaterialTheme.colorScheme.background
+    val selectedColor = MaterialTheme.colorScheme.primaryContainer
     OutlinedButton(
         onClick = {
             onSelectPricePeriod(btnPricePeriod)
@@ -388,8 +387,9 @@ fun DefaultPreview() {
             ElSparScreen(
                 priceList = getPowerPricesByDate(LocalDateTime.of(1,1,1,1,1), PriceArea.NO1),
                 currentPricePeriod = PricePeriod.DAY,
+                currentPriceArea = PriceArea.NO1,
                 onChangePricePeriod = { updatePricePeriod(it) },
-                onUpdatePriceArea = {updatePriceArea(it)}
+                onChangePriceArea = {updatePriceArea(it)}
             )
         }
     }

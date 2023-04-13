@@ -59,9 +59,7 @@ fun ElSparApp(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = {
-            //TODO
-        },
+        topBar = { },
         bottomBar = {
             //Legger navbar her ettersom den skal på alle skjermene
             NavBar(navController);
@@ -73,33 +71,32 @@ fun ElSparApp(
                 .padding(padding),
             color = MaterialTheme.colorScheme.background
         ) {
-            when (elSparUiState) {
-                is ElSparUiState.Loading -> LoadingScreen(modifier)
-                is ElSparUiState.Error -> ErrorScreen(modifier)
-                is ElSparUiState.Success ->
-                (elSparUiState as ElSparUiState.Success).let { currentState ->
-
-                    NavHost(navController = navController, startDestination = "ElSparScreen") {
-                        composable("InformationScreen") {
-                            InformationScreen()
-                        }
-                        composable("ElSparScreen") {
-                            ElSparScreen(
-                                priceList = currentState.priceList,
-                                currentPricePeriod = currentState.currentPricePeriod,
-                                onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
-                                onUpdatePriceArea = {elSparViewModel.updatePriceArea(it)},
-                                modifier = modifier
-                            )
-                        }
-                        composable("SettingsScreen") {
-                            SettingsScreen()
-                        }
+            NavHost(navController = navController, startDestination = "ElSparScreen") {
+                composable("InformationScreen") {
+                    InformationScreen()
+                }
+                composable("ElSparScreen") {
+                    when (elSparUiState) {
+                        is ElSparUiState.Loading -> LoadingScreen(modifier)
+                        is ElSparUiState.Error -> ErrorScreen(modifier)
+                        is ElSparUiState.Success ->
+                            (elSparUiState as ElSparUiState.Success).run {
+                                ElSparScreen(
+                                    priceList = priceList,
+                                    currentPricePeriod = currentPricePeriod,
+                                    currentPriceArea = currentPriceArea,
+                                    onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
+                                    onChangePriceArea = { elSparViewModel.updatePriceArea(it) },
+                                    modifier = modifier
+                                )
+                            }
                     }
-                    //ShowMainScreen();
-
+                }
+                composable("SettingsScreen") {
+                    SettingsScreen()
                 }
             }
+            //ShowMainScreen();
         }
     }
 }
