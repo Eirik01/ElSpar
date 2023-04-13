@@ -25,6 +25,7 @@ import com.patrykandpatrick.vico.core.extension.transformToSpannable
 import com.patrykandpatrick.vico.core.marker.Marker
 import com.team12.ElSpar.model.PricePeriod
 import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.time.LocalDateTime
 
 @Composable
@@ -32,9 +33,10 @@ fun PriceChart(
     priceList: Map<LocalDateTime, Double>,
     pricePeriod: PricePeriod,
     modifier: Modifier = Modifier,
-    pattern: String = "%.01f",
+    pattern: DecimalFormat = DecimalFormat("#.#")
+        .apply { roundingMode = RoundingMode.CEILING },
     startAxisValueFormatter: AxisValueFormatter<AxisPosition.Vertical.Start> =
-        DecimalFormatAxisValueFormatter(".#", RoundingMode.CEILING),
+        DecimalFormatAxisValueFormatter(pattern.toPattern(), RoundingMode.CEILING),
     bottomAxisValueFormatter: AxisValueFormatter<AxisPosition.Horizontal.Bottom> =
         AxisValueFormatter { value, chartValues ->
             (chartValues.chartEntryModel.entries.first().getOrNull(value.toInt()) as? PriceEntry)
@@ -62,8 +64,8 @@ fun PriceChart(
             )
         }
     },
-    chartStyle: ChartStyle = m3ChartStyle().also {
-        it.lineChart.lines.first().pointConnector = PriceChartPointConnector()
+    chartStyle: ChartStyle = m3ChartStyle().apply {
+        lineChart.lines.first().pointConnector = PriceChartPointConnector()
     }
 ) {
     ProvideChartStyle(chartStyle) {
