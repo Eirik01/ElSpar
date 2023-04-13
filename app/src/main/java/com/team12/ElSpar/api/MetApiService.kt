@@ -7,9 +7,12 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.client.utils.EmptyContent.headers
 import io.ktor.http.*
+import io.ktor.util.*
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import java.io.BufferedReader
@@ -36,20 +39,8 @@ class DefaultMetApiService(
         element: String ,
     ): ObservationData? {
         try{
-            val clientIdAndSecret : String = "bbf931fb-056d-4d69-bb71-e47e18596d1e:598596f9-1aaf-44fe-ac3f-fd447f2303e9"
             val json = Json { ignoreUnknownKeys = true }
-            // curl -d 'client_id=bbf931fb-056d-4d69-bb71-e47e18596d1e&client_secret=598596f9-1aaf-44fe-ac3f-fd447f2303e9&grant_type=client_credentials' 'https://frost.met.no/auth/accessToken'
-            val tokenResponse : HttpResponse = client.get("https://frost.met.no/auth/accessToken") {
-                headers{
-                    append(HttpHeaders.Authorization,"Basic $clientIdAndSecret")
-                }
-            }.body()
-            Log.d("tokenResponse",tokenResponse.toString())
-            val tokenResponseString :String = tokenResponse.bodyAsText()
-            val rootToken = json.decodeFromString<JsonElement>(tokenResponseString)
-            val jsonToken = rootToken.jsonObject["access_token"]
-            val token = jsonToken.toString()
-            //val token : String = "-2qxydmNjQX5xN-645naGdomBvF-uY5bj61NRfQ8yj0=|AAAAAAAAKUIAAAGHf_VwbQAAAAI="
+            val token : String = fetchToken(json) // should really be cached
             val response : HttpResponse =  client.get(baseURL){
                 headers {
                     append(HttpHeaders.Authorization, "Bearer $token")
@@ -59,22 +50,40 @@ class DefaultMetApiService(
                 parameter("referencetime", time)
                 parameter("elements", element)
             }.body()
-
             val responseString: String = response.bodyAsText()
-            val root = json.decodeFromString<JsonElement>(responseString)
-            val dataArray = root.jsonObject["data"] as JsonArray
-            val observationData = json.decodeFromString<ObservationData>(dataArray[0].toString())
-            Log.d("data",observationData.toString())
-            Log.d("observationList", observationData.observations.toString())
-            return observationData
-
-
+            return parseFrostJson(json, responseString)
         }catch(e: Exception){
-            Log.d("METAPI Connection", "Connection failed \nException: $e")
+            Log.d("METAPI Connection", "Connection failed \n$e")
             e.printStackTrace()
             //dummy data
-
-            return ObservationData("1","2",listOf(Observation("1",69.00, "","1","")))
+            return ObservationData("0","0",listOf(Observation("0",0.0, "0","0","0")))
         }
+    }
+    @OptIn(InternalAPI::class)
+    suspend fun fetchToken(json : Json):String{
+        val params = listOf(
+            "client_id" to "bbf931fb-056d-4d69-bb71-e47e18596d1e",
+            "client_secret" to "598596f9-1aaf-44fe-ac3f-fd447f2303e9",
+            "grant_type" to "client_credentials"
+        )
+        val tokenResponse : HttpResponse = runBlocking{
+            client.post("https://frost.met.no/auth/accessToken") {
+                body = FormDataContent(Parameters.build{
+                    params.forEach { (key, value) -> append(key, value) }
+                })
+            }
+        }
+        val tokenResponseString :String = tokenResponse.bodyAsText()
+        val rootToken = json.decodeFromString<JsonElement>(tokenResponseString)
+        val jsonToken = rootToken.jsonObject["access_token"]
+        return jsonToken.toString().substring(1,jsonToken.toString().length-1)
+    }
+    suspend fun parseFrostJson(
+        json : Json,
+        responseString : String
+    ): ObservationData{
+        val root = json.decodeFromString<JsonElement>(responseString)
+        val dataArray = root.jsonObject["data"] as JsonArray
+        return json.decodeFromString<ObservationData>(dataArray[0].toString())
     }
 }
