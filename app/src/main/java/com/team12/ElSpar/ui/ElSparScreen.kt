@@ -47,6 +47,7 @@ fun ElSparScreen(
     onChangePriceArea: (PriceArea) -> Unit,
     onDateForward: () -> Unit,
     onDateBack: () -> Unit,
+    tempList : List<Double>,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -151,8 +152,6 @@ fun ElSparScreen(
             //Dette er rekken med knapper på toppen.
             CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
 
-            DateSelection(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
-
             //Dette er kortet på toppen.
             ScaffoldContent(padding, priceList, currentPricePeriod)
 
@@ -214,6 +213,16 @@ fun DateSelection(
     }
 }
 
+
+@Composable
+fun TemperatureText(
+    tempList : List<Double>
+){
+    Text("max: ${tempList.max()}")
+    Text("average: ${tempList.average()}")
+    Text("min: ${tempList.min()}")
+
+}
 @Composable
 fun CreateTimeIntervalButtons(
     currentPricePeriod: PricePeriod,
@@ -453,7 +462,8 @@ fun DefaultPreview() {
                 onChangePricePeriod = { updatePricePeriod(it) },
                 onChangePriceArea = {updatePriceArea(it)},
                 onDateBack = { },
-                onDateForward = { }
+                onDateForward = { },
+                tempList = listOf()
             )
         }
     }
