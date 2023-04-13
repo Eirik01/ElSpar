@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -22,7 +21,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -41,13 +40,11 @@ import java.time.LocalDateTime
 fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
+    currentPriceArea: PriceArea,
     onChangePricePeriod: (PricePeriod) -> Unit,
-    tempList : List<Double>,
-    modifier: Modifier = Modifier,
-    onUpdatePriceArea: (PriceArea) -> Unit,
+    tempList : List<Double>, PriceArea) -> Unit,
+    modifier: Modifier = Modifier
 ) {
-
-    var selectedPriceArea by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
@@ -56,31 +53,26 @@ fun ElSparScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Column(){
+                title = { Column{
                     //dropdown-meny
-                    val list: List<String> = stringArrayResource(id = R.array.districtList).asList()
                     var textFiledSize by remember { mutableStateOf(Size.Zero) }
 
                     Column(
-                        modifier = Modifier.padding(20.dp)
+                        modifier = modifier.padding(20.dp)
                     ) {
                         OutlinedTextField(
                             readOnly = true,
-                            value = selectedPriceArea,
+                            value = currentPriceArea.text,
                             enabled = false,
-                            onValueChange = {
-                                selectedPriceArea = it
-                            },
-                            modifier = Modifier
+                            onValueChange = {},
+                            modifier = modifier
                                 .fillMaxWidth()
                                 .onGloballyPositioned { coordinates ->
                                     textFiledSize = coordinates.size.toSize()
                                 },
                             label = {Text(
-                                text = "Velg prisområde",
-                                modifier = Modifier.padding(top = placeHolderPadding.dp)
-                            )},
-
+                                text = stringResource(R.string.pick_price_area),
+                                modifier = Modifier.padding(top = placeHolderPadding.dp))},
                             colors = TextFieldDefaults.outlinedTextFieldColors (
                                 focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer, //hide the indicator
                                 unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
@@ -93,33 +85,29 @@ fun ElSparScreen(
                             expanded = expanded,
                             onDismissRequest = { expanded = false },
                             modifier = Modifier
-                                .width(with(LocalDensity.current){textFiledSize.width.toDp()})
+                                .width(with(LocalDensity.current){ textFiledSize.width.toDp() })
                         ) {
-                            list.forEach {label ->
-                                DropdownMenuItem(text = {Text(text = label)}, onClick = {
-                                    selectedPriceArea = label
-                                    expanded = false
-                                    placeHolderPadding = maxPlaceHolderPadding
-                                    when(selectedPriceArea){
-                                        "NO1 – Østlandet" -> onUpdatePriceArea(PriceArea.NO1)
-                                        "NO2 – Sørlandet" -> onUpdatePriceArea(PriceArea.NO2)
-                                        "NO3 – Midt-Norge" -> onUpdatePriceArea(PriceArea.NO3)
-                                        "NO4 – Nord-Norge" -> onUpdatePriceArea(PriceArea.NO4)
-                                        "NO5 – Vestlandet" -> onUpdatePriceArea(PriceArea.NO5)
+                            PriceArea.values().forEach {
+                                DropdownMenuItem(
+                                    text = {Text(text = it.text)},
+                                    onClick = {
+                                        expanded = false
+                                        placeHolderPadding = maxPlaceHolderPadding
+                                        onChangePriceArea(it)
                                     }
-                                })
+                                )
                             }
                         }
                     }
                 }},
-                modifier = Modifier,
+                modifier = modifier,
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 actions = {
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
                             imageVector = icon,
-                            contentDescription = "Velg prisområde"
+                            contentDescription = stringResource(R.string.pick_price_area)
                         )
                     }
                 },
@@ -160,12 +148,7 @@ fun ElSparScreen(
             CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
 
             //Dette er kortet på toppen.
-            ScaffoldContent(
-                padding,
-
-                avgPrice = priceList.values.average(),
-                maxPrice = priceList.values.max(),
-                minPrice = priceList.values.min())
+            ScaffoldContent(padding, priceList, currentPricePeriod)
 
             //Kan ha grafen her
             PriceChart(priceList, currentPricePeriod)
@@ -205,6 +188,8 @@ fun CreateTimeIntervalButtons(
         SwitchButton(0, 0, currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
         SwitchButton(0, 40, currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
     }
+
+
 }
 @Composable
 fun SwitchButton(
@@ -214,8 +199,8 @@ fun SwitchButton(
     btnPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit)
     {
-    val unselectedColor = MaterialTheme.colorScheme.background;
-    val selectedColor = MaterialTheme.colorScheme.primaryContainer;
+    val unselectedColor = MaterialTheme.colorScheme.background
+    val selectedColor = MaterialTheme.colorScheme.primaryContainer
     OutlinedButton(
         onClick = {
             onSelectPricePeriod(btnPricePeriod)
@@ -275,13 +260,28 @@ fun CardContent(topText:String, midText:String){
 @Composable
 fun ScaffoldContent(
     padding: PaddingValues,
-    avgPrice: Double,
-    maxPrice: Double,
-    minPrice: Double,
+    priceList: Map<LocalDateTime, Double>,
+    pricePeriod: PricePeriod,
     modifier: Modifier = Modifier){
-val defModifier = Modifier
-    .padding(2.dp)
-    .fillMaxSize()
+
+    val avgPrice = priceList.values.average()
+    val minPrice = priceList.values.min()
+    val maxPrice = priceList.values.max()
+
+    val timeOf: (Double) -> String = { price ->
+        priceList
+            .filterValues { it == price }
+            .keys
+            .first()
+            .run {
+                if (pricePeriod == PricePeriod.DAY) "$hour:00"
+                else "$dayOfMonth.$monthValue $hour:00"
+            }
+    }
+
+    val defModifier = Modifier
+        .padding(2.dp)
+        .fillMaxSize()
     Column(
         modifier = Modifier
             .fillMaxWidth(0.95f)
@@ -352,7 +352,9 @@ val defModifier = Modifier
                 Box(
                     modifier = defModifier.weight(0.5f)
                 ) {
-                    CardContent("Laveste - 12:00", roundOffDecimal(minPrice).toString()) //Endre, skal være variabel
+                    CardContent(
+                        "Laveste - ${timeOf(minPrice)}",
+                        roundOffDecimal(minPrice).toString())
                 }
                 //vertical Divider
                 Divider(
@@ -364,7 +366,9 @@ val defModifier = Modifier
                 Box(
                     modifier = defModifier.weight(0.5f)
                 ) {
-                    CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
+                    CardContent(
+                        "Høyeste - ${timeOf(maxPrice)}",
+                        roundOffDecimal(maxPrice).toString())
 
                 }
 
@@ -374,7 +378,7 @@ val defModifier = Modifier
     }
 
 }
-fun roundOffDecimal(number: Double): Double? {
+fun roundOffDecimal(number: Double): Double {
     val df = DecimalFormat("#.#")
     df.roundingMode = RoundingMode.CEILING
     return df.format(number).toDouble()
@@ -407,9 +411,10 @@ fun DefaultPreview() {
             ElSparScreen(
                 priceList = getPowerPricesByDate(LocalDateTime.of(1,1,1,1,1), PriceArea.NO1),
                 currentPricePeriod = PricePeriod.DAY,
+                currentPriceArea = PriceArea.NO1,
                 onChangePricePeriod = { updatePricePeriod(it) },
-                onUpdatePriceArea = {updatePriceArea(it)},
-                tempList = listOf() // dummy
+                tempList = listOf()
+                onChangePriceArea = {updatePriceArea(it)}
             )
         }
     }

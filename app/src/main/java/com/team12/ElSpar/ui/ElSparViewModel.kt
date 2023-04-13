@@ -82,7 +82,7 @@ class ElSparViewModel(
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = checkNotNull(this[APPLICATION_KEY] as ElSparApplication)
+                val application = this[APPLICATION_KEY] as ElSparApplication
                 val getCurrentPowerPriceUseCase = application.container.getPowerPriceUseCase
                 val getProjectedPowerPriceUseCase = application.container.getProjectedPowerPriceUseCase
                 val getTempDataPerLocation = application.container.getTemperatureDataPerLocation
