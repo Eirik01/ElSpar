@@ -51,8 +51,7 @@ class DefaultMetApiService(
     }
 
      fun validateToken(token : String): Int{
-        val command = "curl --user $token: \"https://frost.met.no/observations/availableTimeSeries/v0.jsonld?sources=SN18700&elements=wind_speed\""
-
+        val command = "curl --user $token: '$url'"
         val processBuilder = ProcessBuilder(command.split(" "))
         val process = processBuilder.start()
 
