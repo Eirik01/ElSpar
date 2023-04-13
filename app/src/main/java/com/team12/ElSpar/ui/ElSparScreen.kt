@@ -148,12 +148,7 @@ fun ElSparScreen(
             CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
 
             //Dette er kortet på toppen.
-            ScaffoldContent(
-                padding,
-
-                avgPrice = priceList.values.average(),
-                maxPrice = priceList.values.max(),
-                minPrice = priceList.values.min())
+            ScaffoldContent(padding, priceList, currentPricePeriod)
 
             //Kan ha grafen her
             PriceChart(priceList, currentPricePeriod)
@@ -255,13 +250,28 @@ fun CardContent(topText:String, midText:String){
 @Composable
 fun ScaffoldContent(
     padding: PaddingValues,
-    avgPrice: Double,
-    maxPrice: Double,
-    minPrice: Double,
+    priceList: Map<LocalDateTime, Double>,
+    pricePeriod: PricePeriod,
     modifier: Modifier = Modifier){
-val defModifier = Modifier
-    .padding(2.dp)
-    .fillMaxSize()
+
+    val avgPrice = priceList.values.average()
+    val minPrice = priceList.values.min()
+    val maxPrice = priceList.values.max()
+
+    val timeOf: (Double) -> String = { price ->
+        priceList
+            .filterValues { it == price }
+            .keys
+            .first()
+            .run {
+                if (pricePeriod == PricePeriod.DAY) "$hour:00"
+                else "$dayOfMonth.$monthValue $hour:00"
+            }
+    }
+
+    val defModifier = Modifier
+        .padding(2.dp)
+        .fillMaxSize()
     Column(
         modifier = Modifier
             .fillMaxWidth(0.95f)
@@ -332,7 +342,9 @@ val defModifier = Modifier
                 Box(
                     modifier = defModifier.weight(0.5f)
                 ) {
-                    CardContent("Laveste - 12:00", roundOffDecimal(minPrice).toString()) //Endre, skal være variabel
+                    CardContent(
+                        "Laveste - ${timeOf(minPrice)}",
+                        roundOffDecimal(minPrice).toString())
                 }
                 //vertical Divider
                 Divider(
@@ -344,7 +356,9 @@ val defModifier = Modifier
                 Box(
                     modifier = defModifier.weight(0.5f)
                 ) {
-                    CardContent("Høyeste - 16:00", roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
+                    CardContent(
+                        "Høyeste - ${timeOf(maxPrice)}",
+                        roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
 
                 }
 
