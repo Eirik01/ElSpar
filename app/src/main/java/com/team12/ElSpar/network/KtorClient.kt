@@ -1,6 +1,5 @@
 package com.team12.ElSpar.network
 
-import android.util.Log
 import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -14,7 +13,6 @@ object KtorClient {
             json()
 
         }
-        /*
         install(Auth) {
             basic {
                 credentials {
@@ -26,6 +24,5 @@ object KtorClient {
                 realm = "Access to the '/' path"
             }
         }
-*/
     }
 }

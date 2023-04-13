@@ -152,11 +152,15 @@ fun ElSparScreen(
             //Dette er rekken med knapper på toppen.
             CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
 
+            DateSelection(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
+
             //Dette er kortet på toppen.
             ScaffoldContent(padding, priceList, currentPricePeriod)
 
             //Kan ha grafen her
             PriceChart(priceList, currentPricePeriod)
+
+            //TemperatureText(tempList)
 
         }
     }
@@ -229,7 +233,9 @@ fun CreateTimeIntervalButtons(
     topPaddingValues: PaddingValues,
     onSelectPricePeriod: (PricePeriod) -> Unit
 ){
-    Row(modifier = Modifier.padding(top = topPaddingValues.calculateTopPadding()).height(40.dp)){
+    Row(modifier = Modifier
+        .padding(top = topPaddingValues.calculateTopPadding())
+        .height(40.dp)){
         SwitchButton(40, 0, currentPricePeriod, PricePeriod.DAY) { onSelectPricePeriod(it) }
         SwitchButton(0, 0, currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
         SwitchButton(0, 40, currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }

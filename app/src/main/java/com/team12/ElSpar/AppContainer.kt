@@ -7,6 +7,7 @@ import com.team12.ElSpar.api.MetApiService
 import com.team12.ElSpar.data.DefaultPowerRepository
 import com.team12.ElSpar.data.DefaultWeatherRepository
 import com.team12.ElSpar.data.PowerRepository
+import com.team12.ElSpar.data.WeatherRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
 import com.team12.ElSpar.domain.GetTemperatureDataPerLocation
@@ -28,7 +29,7 @@ class DefaultAppContainer : AppContainer {
         DefaultPowerRepository(hvaKosterStrommenApiService)
 
     private val weatherRepository: WeatherRepository =
-        DefaultWeatherRepository()
+        DefaultWeatherRepository(metApiService)
 
     private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase =
         GetProjectedPowerPriceUseCase(

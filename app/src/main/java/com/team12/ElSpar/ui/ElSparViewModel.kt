@@ -8,7 +8,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
-import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
 import com.team12.ElSpar.domain.GetTemperatureDataPerLocation
 import com.team12.ElSpar.model.PriceArea
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
@@ -112,6 +112,7 @@ class ElSparViewModel(
                 val getPowerPriceUseCase = application.container.getPowerPriceUseCase
                 ElSparViewModel(
                     getPowerPriceUseCase = getPowerPriceUseCase,
+                    getTempDataPerLocation = getTempDataPerLocation
                 )
             }
         }
