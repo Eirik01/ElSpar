@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 
 interface PowerRepository {
     suspend fun getPowerPricesByDate(
-        date: LocalDateTime,
+        date: LocalDate,
         area: PriceArea
     ): Map<LocalDateTime, Double>
 }
@@ -17,11 +17,11 @@ class DefaultPowerRepository(
 ) : PowerRepository {
     private val localRepo = mutableMapOf<Pair<LocalDate, PriceArea>, Map<LocalDateTime, Double>>()
     override suspend fun getPowerPricesByDate(
-        date: LocalDateTime,
+        date: LocalDate,
         area: PriceArea
     ): Map<LocalDateTime, Double> {
         val priceData = mutableMapOf<LocalDateTime, Double>()
-        val key = Pair(date.toLocalDate(), area)
+        val key = Pair(date, area)
         if (localRepo[key] != null) return localRepo[key]!!
         hvaKosterStrommenApiService
             .getPowerPricesByDate(date, area)

@@ -8,7 +8,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
-import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
 import com.team12.ElSpar.model.PriceArea
 import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
@@ -17,13 +16,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
-    private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase,
     initialPricePeriod: PricePeriod = PricePeriod.DAY,
-    initialPriceArea: PriceArea = PriceArea.NO1
+    initialPriceArea: PriceArea = PriceArea.NO1,
+    initialEndDate: LocalDate = LocalDate.now()
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<ElSparUiState> =
         MutableStateFlow(ElSparUiState.Loading)
@@ -31,6 +30,7 @@ class ElSparViewModel(
 
     private var currentPricePeriod = initialPricePeriod
     private var currentPriceArea = initialPriceArea
+    private var currentEndDate = initialEndDate
 
     init {
         getPowerPrice()
@@ -39,16 +39,19 @@ class ElSparViewModel(
 
     fun getPowerPrice(
         pricePeriod: PricePeriod = currentPricePeriod,
-        priceArea: PriceArea = currentPriceArea
+        priceArea: PriceArea = currentPriceArea,
+        endDate: LocalDate = currentEndDate
     ) {
         viewModelScope.launch(Dispatchers.IO){
             _uiState.value = try {
                 ElSparUiState.Success(
                     currentPriceArea = priceArea,
                     currentPricePeriod = pricePeriod,
+                    currentEndDate = endDate,
                     priceList = getPowerPriceUseCase(
-                        startTime = LocalDateTime.now().minusDays(pricePeriod.days-1L),
-                        priceArea = priceArea
+                        endDate = endDate,
+                        period = pricePeriod,
+                        area = priceArea
                     )
                 )
             } catch (e: IOException) {
@@ -58,12 +61,13 @@ class ElSparViewModel(
     }
 
     private fun cache(
-        buffer: Int = 30
+        buffer: PricePeriod = PricePeriod.MONTH
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             getPowerPriceUseCase(
-                startTime = LocalDateTime.now().minusDays(buffer - 1L),
-                priceArea = currentPriceArea
+                endDate = LocalDate.now(),
+                period = buffer,
+                area = currentPriceArea
             )
         }
     }
@@ -79,15 +83,23 @@ class ElSparViewModel(
         cache()
     }
 
+    fun dateForward() {
+        currentEndDate = currentEndDate.plusDays(currentPricePeriod.days.toLong())
+        getPowerPrice()
+    }
+
+    fun dateBack() {
+        currentEndDate = currentEndDate.minusDays(currentPricePeriod.days.toLong())
+        getPowerPrice()
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as ElSparApplication
-                val getCurrentPowerPriceUseCase = application.container.getPowerPriceUseCase
-                val getProjectedPowerPriceUseCase = application.container.getProjectedPowerPriceUseCase
+                val getPowerPriceUseCase = application.container.getPowerPriceUseCase
                 ElSparViewModel(
-                    getPowerPriceUseCase = getCurrentPowerPriceUseCase,
-                    getProjectedPowerPriceUseCase = getProjectedPowerPriceUseCase,
+                    getPowerPriceUseCase = getPowerPriceUseCase,
                 )
             }
         }

@@ -32,6 +32,7 @@ import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -41,8 +42,11 @@ fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
     currentPriceArea: PriceArea,
+    currentEndDate: LocalDate,
     onChangePricePeriod: (PricePeriod) -> Unit,
     onChangePriceArea: (PriceArea) -> Unit,
+    onDateForward: () -> Unit,
+    onDateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -147,6 +151,8 @@ fun ElSparScreen(
             //Dette er rekken med knapper på toppen.
             CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
 
+            DateSelection(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
+
             //Dette er kortet på toppen.
             ScaffoldContent(padding, priceList, currentPricePeriod)
 
@@ -167,6 +173,47 @@ fun ElSparScreen(
         Text(stringResource(R.string.min_price, minPrice))
     }*/
 }
+
+@Composable
+fun DateSelection(
+    currentPricePeriod: PricePeriod,
+    currentEndDate: LocalDate,
+    onDateBack: () -> Unit,
+    onDateForward: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = { onDateBack() }
+        ) { Icon(
+            Icons.Filled.ArrowBack,
+            contentDescription = "Back",
+            modifier = Modifier.size(ButtonDefaults.IconSize)
+        ) }
+
+        Text(
+            text = if (currentPricePeriod == PricePeriod.DAY) {
+                "${currentEndDate.dayOfMonth}.${currentEndDate.monthValue}"
+                } else {
+                    currentEndDate.minusDays(currentPricePeriod.days-1L).run {
+                        "$dayOfMonth.$monthValue - " +
+                                "${currentEndDate.dayOfMonth}.${currentEndDate.monthValue}"
+                    }
+                },
+            fontSize = 24.sp
+        )
+
+        IconButton(
+            onClick = { onDateForward() }
+        ) { Icon(
+            Icons.Filled.ArrowForward,
+            contentDescription = "Forward",
+            modifier = Modifier.size(ButtonDefaults.IconSize)
+        ) }
+    }
+}
+
 @Composable
 fun CreateTimeIntervalButtons(
     currentPricePeriod: PricePeriod,
@@ -402,8 +449,11 @@ fun DefaultPreview() {
                 priceList = getPowerPricesByDate(LocalDateTime.of(1,1,1,1,1), PriceArea.NO1),
                 currentPricePeriod = PricePeriod.DAY,
                 currentPriceArea = PriceArea.NO1,
+                currentEndDate = LocalDate.now(),
                 onChangePricePeriod = { updatePricePeriod(it) },
-                onChangePriceArea = {updatePriceArea(it)}
+                onChangePriceArea = {updatePriceArea(it)},
+                onDateBack = { },
+                onDateForward = { }
             )
         }
     }
