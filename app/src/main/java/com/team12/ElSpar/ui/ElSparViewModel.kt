@@ -34,8 +34,8 @@ class ElSparViewModel(
 
     init {
         getPowerPrice()
+        cache()
     }
-
 
     fun getPowerPrice(
         pricePeriod: PricePeriod = currentPricePeriod,
@@ -57,6 +57,17 @@ class ElSparViewModel(
         }
     }
 
+    private fun cache(
+        buffer: Int = 30
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getPowerPriceUseCase(
+                startTime = LocalDateTime.now().minusDays(buffer - 1L),
+                priceArea = currentPriceArea
+            )
+        }
+    }
+
     fun updatePricePeriod(pricePeriod: PricePeriod) {
         currentPricePeriod = pricePeriod
         getPowerPrice()
@@ -65,6 +76,7 @@ class ElSparViewModel(
     fun updatePriceArea(priceArea: PriceArea) {
         currentPriceArea = priceArea
         getPowerPrice()
+        cache()
     }
 
     companion object {
