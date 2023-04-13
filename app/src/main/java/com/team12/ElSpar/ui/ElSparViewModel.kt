@@ -15,7 +15,6 @@ import com.team12.ElSpar.model.PricePeriod
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.time.LocalDateTime
@@ -71,7 +70,7 @@ class ElSparViewModel(
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = checkNotNull(this[APPLICATION_KEY] as ElSparApplication)
+                val application = this[APPLICATION_KEY] as ElSparApplication
                 val getCurrentPowerPriceUseCase = application.container.getPowerPriceUseCase
                 val getProjectedPowerPriceUseCase = application.container.getProjectedPowerPriceUseCase
                 ElSparViewModel(
