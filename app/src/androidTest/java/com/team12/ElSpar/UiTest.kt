@@ -24,23 +24,20 @@ class UiTest {
             )
         }
 
-        //Sjekker om knappene finnes og at noe skjer når de trykkes
-
-        //FIKS:: Sjekker hardkodet tekst. Teksten skal korrelere med knappene sin tekst, finnes i string resource
+        //Finn knappene
         var btn = rule.onNodeWithText(PricePeriod.DAY.text);
         var btn2 = rule.onNodeWithText(PricePeriod.WEEK.text);
         var btn3 = rule.onNodeWithText(PricePeriod.MONTH.text);
 
+        //Sjekk om de finnes
+        btn.assertExists("Button does not exist");
+        btn2.assertExists("Button does not exist");
+        btn3.assertExists("Button does not exist");
 
-        //Trykk og sjekk om de er valgt
+        //Sjekk om noe skjer når man trykker på dem
         btn.assertHasClickAction();
-        btn.assertExists("Butten does not exist");
-
         btn2.assertHasClickAction();
-        btn2.assertExists("Butten does not exist");
-
         btn3.assertHasClickAction();
-        btn3.assertExists("Butten does not exist");
     }
 
     //Test data
