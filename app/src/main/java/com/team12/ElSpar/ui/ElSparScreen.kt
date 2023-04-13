@@ -21,7 +21,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -40,41 +40,35 @@ import java.time.LocalDateTime
 fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
+    currentPriceArea: PriceArea,
     onChangePricePeriod: (PricePeriod) -> Unit,
-    onUpdatePriceArea: (PriceArea) -> Unit,
+    onChangePriceArea: (PriceArea) -> Unit,
     modifier: Modifier = Modifier
 ) {
-
-    var selectedPriceArea by remember { mutableStateOf("") }
-
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Column(){
+                title = { Column{
                     //dropdown-meny
-                    val list: List<String> = stringArrayResource(id = R.array.districtList).asList()
                     var textFiledSize by remember { mutableStateOf(Size.Zero) }
 
                     Column(
-                        modifier = Modifier.padding(20.dp)
-
+                        modifier = modifier.padding(20.dp)
                     ) {
                         OutlinedTextField(
                             readOnly = true,
-                            value = selectedPriceArea,
+                            value = currentPriceArea.text,
                             enabled = false,
-                            onValueChange = {
-                                selectedPriceArea = it
-                            },
-                            modifier = Modifier
+                            onValueChange = {},
+                            modifier = modifier
                                 .fillMaxWidth()
                                 .onGloballyPositioned { coordinates ->
                                     textFiledSize = coordinates.size.toSize()
                                 },
-                            label = {Text(text = "Velg prisområde")},
+                            label = {Text(text = stringResource(R.string.pick_price_area))},
                             colors = TextFieldDefaults.outlinedTextFieldColors (
                                 focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer, //hide the indicator
                                 unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
@@ -87,32 +81,28 @@ fun ElSparScreen(
                             expanded = expanded,
                             onDismissRequest = { expanded = false },
                             modifier = Modifier
-                                .width(with(LocalDensity.current){textFiledSize.width.toDp()})
+                                .width(with(LocalDensity.current){ textFiledSize.width.toDp() })
                         ) {
-                            list.forEach {label ->
-                                DropdownMenuItem(text = {Text(text = label)}, onClick = {
-                                    selectedPriceArea = label
-                                    expanded = false
-                                    when(selectedPriceArea){
-                                        "NO1 – Østlandet" -> onUpdatePriceArea(PriceArea.NO1)
-                                        "NO2 – Sørlandet" -> onUpdatePriceArea(PriceArea.NO2)
-                                        "NO3 – Midt-Norge" -> onUpdatePriceArea(PriceArea.NO3)
-                                        "NO4 – Nord-Norge" -> onUpdatePriceArea(PriceArea.NO4)
-                                        "NO5 – Vestlandet" -> onUpdatePriceArea(PriceArea.NO5)
+                            PriceArea.values().forEach {
+                                DropdownMenuItem(
+                                    text = {Text(text = it.text)},
+                                    onClick = {
+                                        expanded = false
+                                        onChangePriceArea(it)
                                     }
-                                })
+                                )
                             }
                         }
                     }
                 }},
-                modifier = Modifier,
+                modifier = modifier,
                 scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(),
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
                 actions = {
                     IconButton(onClick = { expanded = !expanded }) {
                         Icon(
                             imageVector = icon,
-                            contentDescription = "Velg prisområde"
+                            contentDescription = stringResource(R.string.pick_price_area)
                         )
                     }
                 }
@@ -198,8 +188,8 @@ fun SwitchButton(
     currentPricePeriod: PricePeriod,
     btnPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit){
-    val unselectedColor = MaterialTheme.colorScheme.background;
-    val selectedColor = MaterialTheme.colorScheme.primaryContainer;
+    val unselectedColor = MaterialTheme.colorScheme.background
+    val selectedColor = MaterialTheme.colorScheme.primaryContainer
     OutlinedButton(
         onClick = {
             onSelectPricePeriod(btnPricePeriod)
@@ -352,7 +342,7 @@ val defModifier = Modifier
         }
 
 }
-fun roundOffDecimal(number: Double): Double? {
+fun roundOffDecimal(number: Double): Double {
     val df = DecimalFormat("#.#")
     df.roundingMode = RoundingMode.CEILING
     return df.format(number).toDouble()

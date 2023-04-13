@@ -4,6 +4,7 @@ import android.app.Application
 
 class ElSparApplication : Application() {
     lateinit var container: AppContainer
+        private set
 
     override fun onCreate() {
         super.onCreate()
