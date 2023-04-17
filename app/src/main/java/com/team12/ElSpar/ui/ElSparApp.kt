@@ -62,7 +62,7 @@ fun ElSparApp(
         topBar = { },
         bottomBar = {
             //Legger navbar her ettersom den skal på alle skjermene
-            NavBar(navController);
+            NavBar(navController)
         }
     ) { padding ->
         Surface(
@@ -85,9 +85,11 @@ fun ElSparApp(
                                     priceList = priceList,
                                     currentPricePeriod = currentPricePeriod,
                                     currentPriceArea = currentPriceArea,
+                                    currentEndDate = currentEndDate,
                                     onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
                                     onChangePriceArea = { elSparViewModel.updatePriceArea(it) },
-                                    tempList = tempList,
+                                    onDateForward = { elSparViewModel.dateForward() },
+                                    onDateBack = { elSparViewModel.dateBack() },
                                     modifier = modifier
                                 )
                             }

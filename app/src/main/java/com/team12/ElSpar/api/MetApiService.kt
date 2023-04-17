@@ -9,15 +9,11 @@ import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
-import io.ktor.client.utils.EmptyContent.headers
 import io.ktor.http.*
 import io.ktor.util.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
 
 
 interface MetApiService {
@@ -37,7 +33,7 @@ class DefaultMetApiService(
         station : String,
         time: String,
         element: String ,
-    ): ObservationData? {
+    ): ObservationData {
         try{
             val json = Json { ignoreUnknownKeys = true }
             val token : String = fetchToken(json) // should really be cached
@@ -78,7 +74,7 @@ class DefaultMetApiService(
         val jsonToken = rootToken.jsonObject["access_token"]
         return jsonToken.toString().substring(1,jsonToken.toString().length-1)
     }
-    suspend fun parseFrostJson(
+    fun parseFrostJson(
         json : Json,
         responseString : String
     ): ObservationData{

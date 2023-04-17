@@ -32,6 +32,7 @@ import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -41,8 +42,11 @@ fun ElSparScreen(
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
     currentPriceArea: PriceArea,
+    currentEndDate: LocalDate,
     onChangePricePeriod: (PricePeriod) -> Unit,
-    tempList : List<Double>, PriceArea) -> Unit,
+    onChangePriceArea: (PriceArea) -> Unit,
+    onDateForward: () -> Unit,
+    onDateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -147,12 +151,16 @@ fun ElSparScreen(
             //Dette er rekken med knapper på toppen.
             CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
 
+            DateSelection(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
+
             //Dette er kortet på toppen.
             ScaffoldContent(padding, priceList, currentPricePeriod)
 
             //Kan ha grafen her
             PriceChart(priceList, currentPricePeriod)
-            TemperatureText(tempList)
+
+            //TemperatureText(tempList)
+
         }
     }
 
@@ -169,6 +177,47 @@ fun ElSparScreen(
 }
 
 @Composable
+fun DateSelection(
+    currentPricePeriod: PricePeriod,
+    currentEndDate: LocalDate,
+    onDateBack: () -> Unit,
+    onDateForward: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(
+            onClick = { onDateBack() }
+        ) { Icon(
+            Icons.Filled.ArrowBack,
+            contentDescription = "Back",
+            modifier = Modifier.size(ButtonDefaults.IconSize)
+        ) }
+
+        Text(
+            text = if (currentPricePeriod == PricePeriod.DAY) {
+                "${currentEndDate.dayOfMonth}.${currentEndDate.monthValue}"
+                } else {
+                    currentEndDate.minusDays(currentPricePeriod.days-1L).run {
+                        "$dayOfMonth.$monthValue - " +
+                                "${currentEndDate.dayOfMonth}.${currentEndDate.monthValue}"
+                    }
+                },
+            fontSize = 24.sp
+        )
+
+        IconButton(
+            onClick = { onDateForward() }
+        ) { Icon(
+            Icons.Filled.ArrowForward,
+            contentDescription = "Forward",
+            modifier = Modifier.size(ButtonDefaults.IconSize)
+        ) }
+    }
+}
+
+/*
+@Composable
 fun TemperatureText(
     tempList : List<Double>
 ){
@@ -177,13 +226,16 @@ fun TemperatureText(
     Text("min: ${tempList.min()}")
 
 }
+ */
 @Composable
 fun CreateTimeIntervalButtons(
     currentPricePeriod: PricePeriod,
     topPaddingValues: PaddingValues,
     onSelectPricePeriod: (PricePeriod) -> Unit
 ){
-    Row(modifier = Modifier.padding(top = topPaddingValues.calculateTopPadding()).height(40.dp)){
+    Row(modifier = Modifier
+        .padding(top = topPaddingValues.calculateTopPadding())
+        .height(40.dp)){
         SwitchButton(40, 0, currentPricePeriod, PricePeriod.DAY) { onSelectPricePeriod(it) }
         SwitchButton(0, 0, currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
         SwitchButton(0, 40, currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
@@ -368,14 +420,14 @@ fun ScaffoldContent(
                 ) {
                     CardContent(
                         "Høyeste - ${timeOf(maxPrice)}",
-                        roundOffDecimal(maxPrice).toString())
+                        roundOffDecimal(maxPrice).toString()) //Endre, skal være variabel
 
                 }
 
             }
 
         }
-    }
+        }
 
 }
 fun roundOffDecimal(number: Double): Double {
@@ -412,9 +464,11 @@ fun DefaultPreview() {
                 priceList = getPowerPricesByDate(LocalDateTime.of(1,1,1,1,1), PriceArea.NO1),
                 currentPricePeriod = PricePeriod.DAY,
                 currentPriceArea = PriceArea.NO1,
+                currentEndDate = LocalDate.now(),
                 onChangePricePeriod = { updatePricePeriod(it) },
-                tempList = listOf()
-                onChangePriceArea = {updatePriceArea(it)}
+                onChangePriceArea = {updatePriceArea(it)},
+                onDateBack = { },
+                onDateForward = { },
             )
         }
     }
