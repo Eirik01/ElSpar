@@ -8,7 +8,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
-import com.team12.ElSpar.domain.GetTemperatureDataPerLocation
 import com.team12.ElSpar.model.PriceArea
 import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
@@ -18,11 +17,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
-    private val getTempDataPerLocation : GetTemperatureDataPerLocation,
     initialPricePeriod: PricePeriod = PricePeriod.DAY,
     initialPriceArea: PriceArea = PriceArea.NO1,
     initialEndDate: LocalDate = LocalDate.now()
@@ -56,13 +53,6 @@ class ElSparViewModel(
                         endDate = endDate,
                         period = pricePeriod,
                         area = priceArea
-                    ),
-                    tempList = getTempDataPerLocation(
-                        // could also be a range of dates
-                        station = "sn18700", //blindern,
-                        // data is unavailable for the current hour and sometimes in the last hour.
-                        time = LocalDateTime.now().minusHours(2).toString().substring(0,13), // ex. 2023-04-04T10
-                        element = "air_temperature"
                     )
                 )
             } catch (e: IOException) {
@@ -108,11 +98,9 @@ class ElSparViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = this[APPLICATION_KEY] as ElSparApplication
-                val getTempDataPerLocation = application.container.getTemperatureDataPerLocation
                 val getPowerPriceUseCase = application.container.getPowerPriceUseCase
                 ElSparViewModel(
                     getPowerPriceUseCase = getPowerPriceUseCase,
-                    getTempDataPerLocation = getTempDataPerLocation
                 )
             }
         }

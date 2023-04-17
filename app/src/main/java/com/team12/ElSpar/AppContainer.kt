@@ -10,12 +10,11 @@ import com.team12.ElSpar.data.PowerRepository
 import com.team12.ElSpar.data.WeatherRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
-import com.team12.ElSpar.domain.GetTemperatureDataPerLocation
+import com.team12.ElSpar.domain.GetTemperatureUseCase
 import com.team12.ElSpar.network.KtorClient
 
 interface AppContainer {
     val getPowerPriceUseCase: GetPowerPriceUseCase
-    val getTemperatureDataPerLocation : GetTemperatureDataPerLocation
 }
 
 class DefaultAppContainer : AppContainer {
@@ -31,10 +30,14 @@ class DefaultAppContainer : AppContainer {
     private val weatherRepository: WeatherRepository =
         DefaultWeatherRepository(metApiService)
 
+    private val getTemperatureUseCase: GetTemperatureUseCase =
+        GetTemperatureUseCase(
+            weatherRepository = weatherRepository
+        )
+
     private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase =
         GetProjectedPowerPriceUseCase(
-            powerRepository = powerRepository,
-            weatherRepository = weatherRepository
+            getTemperatureUseCase = getTemperatureUseCase
         )
 
     override val getPowerPriceUseCase: GetPowerPriceUseCase =
@@ -43,9 +46,6 @@ class DefaultAppContainer : AppContainer {
             getProjectedPowerPriceUseCase = getProjectedPowerPriceUseCase
         )
 
-    override val getTemperatureDataPerLocation: GetTemperatureDataPerLocation =
-        GetTemperatureDataPerLocation(
-            weatherRepository = weatherRepository
-        )
+
 
 }

@@ -7,8 +7,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 class GetProjectedPowerPriceUseCase(
-    powerRepository: PowerRepository,
-    weatherRepository: WeatherRepository,
+    getTemperatureUseCase: GetTemperatureUseCase
 ) {
     operator fun invoke(date: LocalDate, area: PriceArea): Map<LocalDateTime, Double> {
         val projectedPriceData = mutableMapOf<LocalDateTime, Double>()

@@ -2,9 +2,8 @@ package com.team12.ElSpar.domain
 
 import android.util.Log
 import com.team12.ElSpar.data.WeatherRepository
-import com.team12.ElSpar.model.Observation
 
-class GetTemperatureDataPerLocation(
+class GetTemperatureUseCase(
     private val weatherRepository : WeatherRepository
 ) {
     suspend operator fun invoke(

@@ -90,7 +90,6 @@ fun ElSparApp(
                                     onChangePriceArea = { elSparViewModel.updatePriceArea(it) },
                                     onDateForward = { elSparViewModel.dateForward() },
                                     onDateBack = { elSparViewModel.dateBack() },
-                                    tempList = tempList,
                                     modifier = modifier
                                 )
                             }
