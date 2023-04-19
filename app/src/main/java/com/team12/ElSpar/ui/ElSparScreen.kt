@@ -34,6 +34,8 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.TextStyle
+import java.util.*
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -196,11 +198,11 @@ fun DateSelection(
 
         Text(
             text = if (currentPricePeriod == PricePeriod.DAY) {
-                "${currentEndDate.dayOfMonth}.${currentEndDate.monthValue}"
+                "${currentEndDate.dayOfMonth}.${currentEndDate.month.getDisplayName(TextStyle.FULL, Locale("nb"))}"
                 } else {
                     currentEndDate.minusDays(currentPricePeriod.days-1L).run {
-                        "$dayOfMonth.$monthValue - " +
-                                "${currentEndDate.dayOfMonth}.${currentEndDate.monthValue}"
+                        "$dayOfMonth.${month.getDisplayName(TextStyle.FULL, Locale("nb"))} - " +
+                                "${currentEndDate.dayOfMonth}.${currentEndDate.month.getDisplayName(TextStyle.FULL, Locale("nb"))}"
                     }
                 },
             fontSize = 24.sp
