@@ -14,7 +14,7 @@ class GetProjectedPowerPriceUseCase(
         for (h in 0..23) {
             projectedPriceData[date.atStartOfDay().plusHours(h.toLong())] = 0.0
         }
-        return projectedPriceData
+        return projectedPriceData.toMap()
     }
 
 }
