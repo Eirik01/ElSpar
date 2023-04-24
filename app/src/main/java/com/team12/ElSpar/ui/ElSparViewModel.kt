@@ -68,8 +68,6 @@ class ElSparViewModel(
     }
 
 
-
-
     private fun cache(
         buffer: PricePeriod = PricePeriod.MONTH
     ) {
