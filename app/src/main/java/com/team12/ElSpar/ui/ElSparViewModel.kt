@@ -91,8 +91,7 @@ class ElSparViewModel(
         cache()
     }
 
-    fun updateCoordinatesForPriceArea(priceArea: PriceArea): Pair<String,String>{
-        //var priceAreaCoords : Pair<String,String>
+    fun updateCoordinatesForPriceArea(priceArea: PriceArea){
         currentCoordinates = when (priceArea){
             PriceArea.NO1 -> "60.79" to "11.08"
             PriceArea.NO2 -> "59.14" to "7.80"
@@ -100,8 +99,7 @@ class ElSparViewModel(
             PriceArea.NO4 -> "68.29" to "17.53"
             else -> "60.83" to "7.61"
         }
-        Log.d("priceCoords",currentCoordinates.toString())
-        return currentCoordinates
+        //Log.d("priceCoords",currentCoordinates.toString())
     }
 
     fun dateForward() {
