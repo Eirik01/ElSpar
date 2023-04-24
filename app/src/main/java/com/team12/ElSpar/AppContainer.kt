@@ -15,6 +15,7 @@ import com.team12.ElSpar.network.KtorClient
 
 interface AppContainer {
     val getPowerPriceUseCase: GetPowerPriceUseCase
+    val getTemperatureUseCase : GetTemperatureUseCase
 }
 
 class DefaultAppContainer : AppContainer {
@@ -30,7 +31,7 @@ class DefaultAppContainer : AppContainer {
     private val weatherRepository: WeatherRepository =
         DefaultWeatherRepository(metApiService)
 
-    private val getTemperatureUseCase: GetTemperatureUseCase =
+    override val getTemperatureUseCase: GetTemperatureUseCase =
         GetTemperatureUseCase(
             weatherRepository = weatherRepository
         )
