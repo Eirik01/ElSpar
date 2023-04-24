@@ -7,24 +7,24 @@ class GetTemperatureUseCase(
     private val weatherRepository : WeatherRepository
 ) {
     suspend operator fun invoke(
-        station: String,
-        time: String,
-        element : String
+        lon: String,
+        lat: String,
+        alt : String
     ):List<Double>{
         val temperatureList : MutableList<Double> = mutableListOf()
         val data = weatherRepository.getWeatherDataPerLocation(
-            station = station,
-            time = time,
-            element = element
-            )
+            lon = lon,
+            lat = lat,
+            alt = alt
+        )
         if(data != null){
-            for(observation in data.observations){
-                temperatureList.add(observation.value)
+            for(observation in data.timeseries){
+                temperatureList.add(observation.air_temperature)
             }
-            Log.d("temperatureList",temperatureList.toString())
+            //Log.d("temperatureList",temperatureList.toString())
             return temperatureList
         }
-        Log.d("temperatureList",temperatureList.toString())
+        //Log.d("temperatureList",temperatureList.toString())
         return temperatureList
     }
 }
