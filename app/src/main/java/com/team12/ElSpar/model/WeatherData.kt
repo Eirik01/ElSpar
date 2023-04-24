@@ -3,27 +3,14 @@ package com.team12.ElSpar.model
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
 @Serializable
 data class Observation(
-    @SerialName("elementId")
-    val elementId: String,
-    @SerialName("value")
-    val value: Double,
-    @SerialName("unit")
-    val unit: String,
-    @SerialName("timeOffset")
-    val timeOffset: String,
-    @SerialName("timeResolution")
-    val timeResolution: String
+    @SerialName("air_temperature")
+    val air_temperature: Double,
+    @SerialName("wind_speed")
+    val wind_speed: Double,
 )
 
-@Serializable
 data class ObservationData(
-    @SerialName("sourceId")
-    val sourceId: String,
-    @SerialName("referenceTime")
-    val referenceTime: String,
-    @SerialName("observations")
-    val observations: List<Observation>
+    val timeseries: List<Observation>
 )
