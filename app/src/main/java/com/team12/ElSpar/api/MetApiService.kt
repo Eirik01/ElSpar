@@ -16,7 +16,6 @@ interface MetApiService {
     suspend fun getWeatherDataPerLocation(
         lat : String, //latitude
         lon: String, // longtitude
-        alt: String ,// altitude
     ):ObservationData?
 }
 
@@ -27,7 +26,6 @@ class DefaultMetApiService(
     override suspend fun getWeatherDataPerLocation(
         lat : String, //latitude
         lon: String, // longtitude
-        alt: String ,// altitude
     ): ObservationData {
         try{
             val json = Json { ignoreUnknownKeys = true }
@@ -37,22 +35,19 @@ class DefaultMetApiService(
                 }
                 parameter("lat", lat)
                 parameter("lon", lon)
-                parameter("altitude", alt)
             }.body()
             val responseString: String = response.bodyAsText()
-            Log.d("responseString",responseString)
             val observationData = parseJson(json, responseString)
-            if(observationData != null){
-                return observationData
-            }else{
-                //dummy data
-                return ObservationData(listOf(Observation(0.0,0.0)))
+            if(observationData == null){
+                return ObservationData(listOf(Observation(0.0,0.0,"")))
             }
+            return observationData
+
         }catch(e: Exception){
             Log.d("METAPI Connection", "Connection failed \n$e")
             e.printStackTrace()
             //dummy data
-            return ObservationData(listOf(Observation(0.0,0.0)))
+            return ObservationData(listOf(Observation(0.0,0.0,"")))
         }
     }
 
@@ -66,23 +61,19 @@ class DefaultMetApiService(
         val observationList : MutableList<Observation> = mutableListOf()
         if (timeseriesArray != null) {
             timeseriesArray.forEach {
+                val time : String = it.jsonObject["time"].toString()
                 val data: JsonObject? = it.jsonObject["data"]?.jsonObject
                 val instant: JsonObject? = data?.jsonObject?.get("instant")?.jsonObject
                 val details: JsonObject? = instant?.jsonObject?.get("details")?.jsonObject
-                val obs: Observation = json.decodeFromString(details.toString())
+                val obs = Observation(
+                    details?.jsonObject?.get("air_temperature").toString().toDouble(),
+                    details?.jsonObject?.get("wind_speed").toString().toDouble(),
+                    time
+                    )
                 observationList.add(obs)
             }
             return ObservationData(observationList)
         }
         return null
     }
-}
-
-fun parseFrostJson(
-    json : Json,
-    responseString : String
-): ObservationData{
-    val root = json.decodeFromString<JsonElement>(responseString)
-    val dataArray = root.jsonObject["data"] as JsonArray
-    return json.decodeFromString<ObservationData>(dataArray[0].toString())
 }

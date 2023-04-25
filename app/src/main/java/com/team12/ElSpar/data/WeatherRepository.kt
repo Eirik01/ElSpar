@@ -8,7 +8,6 @@ interface WeatherRepository {
     suspend fun getWeatherDataPerLocation(
         lon : String,
         lat: String,
-        alt : String
     ):ObservationData?
 }
 
@@ -18,12 +17,10 @@ class DefaultWeatherRepository(
     override suspend fun getWeatherDataPerLocation(
         lat: String,
         lon: String,
-        alt : String
     ): ObservationData? {
         val output = metApiService.getWeatherDataPerLocation(
             lat = lat,
             lon = lon,
-            alt = alt
         )
         if(output != null){
             return output
