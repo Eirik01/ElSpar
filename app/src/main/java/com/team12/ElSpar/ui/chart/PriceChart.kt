@@ -1,22 +1,36 @@
 package com.team12.ElSpar.ui.chart
 
+import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.compose.chart.line.lineSpec
+import com.patrykandpatrick.vico.compose.component.shape.shader.fromComponent
+import com.patrykandpatrick.vico.compose.component.shape.shader.verticalGradient
+import com.patrykandpatrick.vico.compose.component.shapeComponent
 import com.patrykandpatrick.vico.compose.m3.style.m3ChartStyle
 import com.patrykandpatrick.vico.compose.style.ChartStyle
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
+import com.patrykandpatrick.vico.core.DefaultColors.Dark.axisGuidelineColor
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
+import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis.TickPosition.Edge.spacing
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
+import com.patrykandpatrick.vico.core.component.shape.Shapes
+import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShader
+import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.extension.appendCompat
@@ -64,13 +78,33 @@ fun PriceChart(
             )
         }
     },
-    chartStyle: ChartStyle = m3ChartStyle().apply {
+
+    chartStyle: ChartStyle = m3ChartStyle()
+        /*
+        .apply {
         lineChart.lines.first().pointConnector = PriceChartPointConnector()
     }
+    */
+
 ) {
     ProvideChartStyle(chartStyle) {
         Chart(
             chart = lineChart(
+                lines = listOf(
+                    lineSpec(
+                        lineColor = MaterialTheme.colorScheme.primary,
+                        lineBackgroundShader = verticalGradient(
+                            colors = arrayOf(
+                                Color(0xFFB36D6D).copy(0.6f),
+                                Color.Yellow.copy(0.5f),
+                                Color(0xFF597d4f).copy(0.4f)
+                            ),
+                            positions = floatArrayOf(0.1f, 0.9f, 1f)
+                        )
+                    ),
+                ).apply {
+                    first().pointConnector = PriceChartPointConnector()
+                },
                 spacing = 4.dp,
                 axisValuesOverrider = AxisValuesOverrider.adaptiveYValues(1f),
             ),
@@ -89,6 +123,7 @@ fun PriceChart(
             marker = marker,
             modifier = modifier
         )
+        chartStyle.lineChart.lines.first().pointConnector = PriceChartPointConnector()
     }
 }
 

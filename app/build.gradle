@@ -90,4 +90,9 @@ dependencies {
     //Navigasjon
     def nav_version = "2.5.3" //Bør flyttes
     implementation("androidx.navigation:navigation-compose:$nav_version")
+
+    //Gradient colors
+    implementation 'com.siddroid:holi:1.0.1'
+
+
 }
