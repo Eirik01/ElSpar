@@ -250,8 +250,6 @@ fun CreateTimeIntervalButtons(
         SwitchButton(0, 0, currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
         SwitchButton(0, 40, currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
     }
-
-
 }
 @Composable
 fun SwitchButton(
@@ -437,50 +435,6 @@ fun ScaffoldContent(
             }
 
         }
-        }
+    }
 
 }
-fun roundOffDecimal(number: Double): Double {
-    val df = DecimalFormat("#.#")
-    df.roundingMode = RoundingMode.CEILING
-    return df.format(number).toDouble()
-}
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    fun getPowerPricesByDate(
-        date: LocalDateTime,
-        area: PriceArea
-    ): Map<LocalDateTime, Double>
-    {
-        return  mapOf<LocalDateTime, Double>(
-            LocalDateTime.of(2023, 1, 30, 0, 0) to  10.0,
-            LocalDateTime.of(2023, 1, 30, 1, 0) to  10.0,
-        )
-    }
-
-    //Test data
-    fun updatePricePeriod(pricePeriod: PricePeriod) {
-    }
-    fun updatePriceArea(v: PriceArea) {
-    }
-
-    ElSparTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            ElSparScreen(
-                priceList = getPowerPricesByDate(LocalDateTime.of(1,1,1,1,1), PriceArea.NO1),
-                currentPricePeriod = PricePeriod.DAY,
-                currentPriceArea = PriceArea.NO1,
-                currentEndDate = LocalDate.now(),
-                onChangePricePeriod = { updatePricePeriod(it) },
-                onChangePriceArea = {updatePriceArea(it)},
-                onDateBack = { },
-                onDateForward = { },
-            )
-        }
-    }
-}
-
