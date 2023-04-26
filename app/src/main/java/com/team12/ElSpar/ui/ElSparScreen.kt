@@ -11,6 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -137,7 +139,7 @@ fun ElSparScreen(
         }*/
     ) { padding ->
         //HER GÅR DET SOM ER I "MIDTED" AV SCAFFOLDET
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
@@ -149,17 +151,23 @@ fun ElSparScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp)
 
         ) {
-
             //Dette er rekken med knapper på toppen.
-            CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
-
-            DateSelection(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
+            item {
+                CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
+            }
+            item {
+                DateSelection(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
+            }
 
             //Dette er kortet på toppen.
-            ScaffoldContent(padding, priceList, currentPricePeriod)
+            item {
+                ScaffoldContent(padding, priceList, currentPricePeriod)
+            }
 
             //Kan ha grafen her
-            PriceChart(priceList, currentPricePeriod)
+            item {
+                PriceChart(priceList, currentPricePeriod)
+            }
 
             //TemperatureText(tempList)
 
