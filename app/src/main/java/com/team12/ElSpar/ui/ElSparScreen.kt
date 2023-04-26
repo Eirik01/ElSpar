@@ -11,6 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -137,7 +139,7 @@ fun ElSparScreen(
         }*/
     ) { padding ->
         //HER GÅR DET SOM ER I "MIDTED" AV SCAFFOLDET
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
@@ -149,17 +151,23 @@ fun ElSparScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp)
 
         ) {
-
             //Dette er rekken med knapper på toppen.
-            CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
-
-            DateSelection(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
+            item {
+                CreateTimeIntervalButtons(currentPricePeriod, padding) { onChangePricePeriod(it) }
+            }
+            item {
+                DateSelection(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
+            }
 
             //Dette er kortet på toppen.
-            ScaffoldContent(padding, priceList, currentPricePeriod)
+            item {
+                ScaffoldContent(padding, priceList, currentPricePeriod)
+            }
 
             //Kan ha grafen her
-            PriceChart(priceList, currentPricePeriod)
+            item {
+                PriceChart(priceList, currentPricePeriod)
+            }
 
             //TemperatureText(tempList)
 
@@ -242,8 +250,6 @@ fun CreateTimeIntervalButtons(
         SwitchButton(0, 0, currentPricePeriod, PricePeriod.WEEK) { onSelectPricePeriod(it) }
         SwitchButton(0, 40, currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
     }
-
-
 }
 @Composable
 fun SwitchButton(
@@ -429,50 +435,6 @@ fun ScaffoldContent(
             }
 
         }
-        }
+    }
 
 }
-fun roundOffDecimal(number: Double): Double {
-    val df = DecimalFormat("#.#")
-    df.roundingMode = RoundingMode.CEILING
-    return df.format(number).toDouble()
-}
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    fun getPowerPricesByDate(
-        date: LocalDateTime,
-        area: PriceArea
-    ): Map<LocalDateTime, Double>
-    {
-        return  mapOf<LocalDateTime, Double>(
-            LocalDateTime.of(2023, 1, 30, 0, 0) to  10.0,
-            LocalDateTime.of(2023, 1, 30, 1, 0) to  10.0,
-        )
-    }
-
-    //Test data
-    fun updatePricePeriod(pricePeriod: PricePeriod) {
-    }
-    fun updatePriceArea(v: PriceArea) {
-    }
-
-    ElSparTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            ElSparScreen(
-                priceList = getPowerPricesByDate(LocalDateTime.of(1,1,1,1,1), PriceArea.NO1),
-                currentPricePeriod = PricePeriod.DAY,
-                currentPriceArea = PriceArea.NO1,
-                currentEndDate = LocalDate.now(),
-                onChangePricePeriod = { updatePricePeriod(it) },
-                onChangePriceArea = {updatePriceArea(it)},
-                onDateBack = { },
-                onDateForward = { },
-            )
-        }
-    }
-}
-

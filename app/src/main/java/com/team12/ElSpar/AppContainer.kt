@@ -48,7 +48,7 @@ class DefaultAppContainer(
     //DOMAIN LAYER USE CASES
     private val getTemperatureUseCase: GetTemperatureUseCase =
         GetTemperatureUseCase(
-            weatherRepository = weatherRepository,
+            weatherRepository = weatherRepository
         )
 
     private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase =
@@ -59,6 +59,9 @@ class DefaultAppContainer(
     override val getPowerPriceUseCase: GetPowerPriceUseCase =
         GetPowerPriceUseCase(
             powerRepository = powerRepository,
-            getProjectedPowerPriceUseCase = getProjectedPowerPriceUseCase,
+            getProjectedPowerPriceUseCase = getProjectedPowerPriceUseCase
         )
+
+
+
 }

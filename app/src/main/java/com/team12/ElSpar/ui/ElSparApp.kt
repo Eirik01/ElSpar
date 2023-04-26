@@ -1,6 +1,5 @@
 package com.team12.ElSpar.ui
 
-import android.window.SplashScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -55,14 +54,15 @@ fun ElSparApp(
     modifier: Modifier = Modifier
 ) {
     val elSparUiState: ElSparUiState
-            by elSparViewModel.uiState.collectAsState()
+    by elSparViewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { },
         bottomBar = {
-            if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController)
+            //Legger navbar her ettersom den skal på alle skjermene
+            NavBar(navController)
         }
     ) { padding ->
         Surface(
@@ -71,24 +71,38 @@ fun ElSparApp(
                 .padding(padding),
             color = MaterialTheme.colorScheme.background
         ) {
-            NavHost(navController = navController, startDestination = "ElSparScreen") {
-                composable("InformationScreen") {
-                    InformationScreen()
-                }
-                composable("ElSparScreen") {
                     when (elSparUiState) {
-                        is ElSparUiState.SelectArea ->
-                            (elSparUiState as ElSparUiState.SelectArea).run {
-                                SelectAreaScreen(
-                                    currentPriceArea = currentPriceArea,
-                                    onChangePriceArea = { elSparViewModel.updatePriceArea(it) }
-                                )
-                            }
                         is ElSparUiState.Loading -> LoadingScreen(modifier)
                         is ElSparUiState.Error -> ErrorScreen(modifier)
                         is ElSparUiState.Success ->
                             (elSparUiState as ElSparUiState.Success).run {
-                                ElSparScreen(
+
+                                NavHost(navController = navController, startDestination = "ElSparScreen") {
+                                    composable("InformationScreen") {
+                                        InformationScreen(
+                                            priceList = priceList,
+                                        )
+                                    }
+                                    composable("ElSparScreen") {
+
+                                    MainScreen(
+                                        priceList = priceList,
+                                        currentPricePeriod = currentPricePeriod,
+                                        currentPriceArea = currentPriceArea,
+                                        currentEndDate = currentEndDate,
+                                        onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
+                                        onChangePriceArea = { elSparViewModel.updatePriceArea(it) },
+                                        onDateForward = { elSparViewModel.dateForward() },
+                                        onDateBack = { elSparViewModel.dateBack() },
+                                        modifier = modifier
+                                    )
+                                }
+
+                                composable("SettingsScreen") {
+                                        SettingsScreen()
+                                    }
+                                }
+                                /*ElSparScreen(
                                     priceList = priceList,
                                     currentPricePeriod = currentPricePeriod,
                                     currentPriceArea = currentPriceArea,
@@ -98,14 +112,11 @@ fun ElSparApp(
                                     onDateForward = { elSparViewModel.dateForward() },
                                     onDateBack = { elSparViewModel.dateBack() },
                                     modifier = modifier
-                                )
+                                )*/
                             }
                     }
-                }
-                composable("SettingsScreen") {
-                    SettingsScreen()
-                }
-            }
+
+            //ShowMainScreen();
         }
     }
 }

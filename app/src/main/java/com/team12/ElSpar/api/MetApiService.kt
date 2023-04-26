@@ -5,81 +5,75 @@ import com.team12.ElSpar.model.Observation
 import com.team12.ElSpar.model.ObservationData
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
-import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.util.*
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 
 
 interface MetApiService {
     suspend fun getWeatherDataPerLocation(
-        station : String,
-        time: String,
-        element: String ,
+        lat : String, //latitude
+        lon: String, // longtitude
     ):ObservationData?
 }
 
-
 class DefaultMetApiService(
     private val client: HttpClient,
-    private val baseURL: String = "https://frost.met.no/observations/v0.jsonld?",
+    private val baseURL: String = "https://api.met.no/weatherapi/locationforecast/2.0/compact?",
 ):MetApiService{
     override suspend fun getWeatherDataPerLocation(
-        station : String,
-        time: String,
-        element: String ,
+        lat : String, //latitude
+        lon: String, // longtitude
     ): ObservationData {
         try{
             val json = Json { ignoreUnknownKeys = true }
-            val token : String = fetchToken(json) // should really be cached
             val response : HttpResponse =  client.get(baseURL){
                 headers {
-                    append(HttpHeaders.Authorization, "Bearer $token")
                     append(HttpHeaders.Accept, ContentType.Application.Json)
                 }
-                parameter("sources", station)
-                parameter("referencetime", time)
-                parameter("elements", element)
+                parameter("lat", lat)
+                parameter("lon", lon)
             }.body()
             val responseString: String = response.bodyAsText()
-            return parseFrostJson(json, responseString)
+            val observationData = parseJson(json, responseString)
+            if(observationData == null){
+                return ObservationData(listOf(Observation(0.0,0.0,"")))
+            }
+            return observationData
+
         }catch(e: Exception){
             Log.d("METAPI Connection", "Connection failed \n$e")
             e.printStackTrace()
             //dummy data
-            return ObservationData("0","0",listOf(Observation("0",0.0, "0","0","0")))
+            return ObservationData(listOf(Observation(0.0,0.0,"")))
         }
     }
-    @OptIn(InternalAPI::class)
-    suspend fun fetchToken(json : Json):String{
-        val params = listOf(
-            "client_id" to "bbf931fb-056d-4d69-bb71-e47e18596d1e",
-            "client_secret" to "598596f9-1aaf-44fe-ac3f-fd447f2303e9",
-            "grant_type" to "client_credentials"
-        )
-        val tokenResponse : HttpResponse = runBlocking{
-            client.post("https://frost.met.no/auth/accessToken") {
-                body = FormDataContent(Parameters.build{
-                    params.forEach { (key, value) -> append(key, value) }
-                })
-            }
-        }
-        val tokenResponseString :String = tokenResponse.bodyAsText()
-        val rootToken = json.decodeFromString<JsonElement>(tokenResponseString)
-        val jsonToken = rootToken.jsonObject["access_token"]
-        return jsonToken.toString().substring(1,jsonToken.toString().length-1)
-    }
-    fun parseFrostJson(
+
+    fun parseJson(
         json : Json,
         responseString : String
-    ): ObservationData{
-        val root = json.decodeFromString<JsonElement>(responseString)
-        val dataArray = root.jsonObject["data"] as JsonArray
-        return json.decodeFromString<ObservationData>(dataArray[0].toString())
+    ): ObservationData?{
+        val root : JsonObject = json.decodeFromString<JsonObject>(responseString)
+        val properties = root.jsonObject["properties"]
+        val timeseriesArray: JsonArray? = properties?.jsonObject?.get("timeseries")?.jsonArray
+        val observationList : MutableList<Observation> = mutableListOf()
+        if (timeseriesArray != null) {
+            timeseriesArray.forEach {
+                val time : String = it.jsonObject["time"].toString()
+                val data: JsonObject? = it.jsonObject["data"]?.jsonObject
+                val instant: JsonObject? = data?.jsonObject?.get("instant")?.jsonObject
+                val details: JsonObject? = instant?.jsonObject?.get("details")?.jsonObject
+                val obs = Observation(
+                    details?.jsonObject?.get("air_temperature").toString().toDouble(),
+                    details?.jsonObject?.get("wind_speed").toString().toDouble(),
+                    time
+                    )
+                observationList.add(obs)
+            }
+            return ObservationData(observationList)
+        }
+        return null
     }
 }

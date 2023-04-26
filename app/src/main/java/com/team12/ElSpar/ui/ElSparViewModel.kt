@@ -23,7 +23,8 @@ class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
     private val settingsRepository: SettingsRepository,
     initialPricePeriod: PricePeriod = PricePeriod.DAY,
-    initialEndDate: LocalDate = LocalDate.now()
+    initialEndDate: LocalDate = LocalDate.now(),
+    initialCoordinates : Pair<String,String> = "60.79" to "11.08" // parametres in locationforecast2.0 API
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<ElSparUiState> =
         MutableStateFlow(ElSparUiState.Loading)
@@ -32,6 +33,7 @@ class ElSparViewModel(
     private var currentPricePeriod = initialPricePeriod
     private var currentEndDate = initialEndDate
     private lateinit var currentPriceArea: Settings.PriceArea
+    private var currentCoordinates = initialCoordinates
 
     init {
         startup()
@@ -52,6 +54,7 @@ class ElSparViewModel(
             }
         }
     }
+
 
     fun getPowerPrice(
         pricePeriod: PricePeriod = currentPricePeriod,
@@ -101,6 +104,17 @@ class ElSparViewModel(
             getPowerPrice()
             cache()
         }
+    }
+
+    fun updateCoordinatesForPriceArea(priceArea: PriceArea){
+        currentCoordinates = when (priceArea){
+            PriceArea.NO1 -> "60.79" to "11.08"
+            PriceArea.NO2 -> "59.14" to "7.80"
+            PriceArea.NO3 -> "63.03" to "9.65"
+            PriceArea.NO4 -> "68.29" to "17.53"
+            else -> "60.83" to "7.61"
+        }
+        //Log.d("priceCoords",currentCoordinates.toString())
     }
 
     fun dateForward() {

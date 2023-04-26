@@ -3,29 +3,27 @@ package com.team12.ElSpar.domain
 import android.util.Log
 import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.data.WeatherRepository
+import java.time.LocalDateTime
 
 class GetTemperatureUseCase(
     private val weatherRepository : WeatherRepository,
 ) {
     suspend operator fun invoke(
-        station: String,
-        time: String,
-        element : String
-    ):List<Double>{
-        val temperatureList : MutableList<Double> = mutableListOf()
+        lon: String,
+        lat: String,
+    ):Map<String,Double>{
+        val temperatureMap : MutableMap<String,Double> = mutableMapOf()
         val data = weatherRepository.getWeatherDataPerLocation(
-            station = station,
-            time = time,
-            element = element
-            )
+            lon = lon,
+            lat = lat,
+        )
         if(data != null){
-            for(observation in data.observations){
-                temperatureList.add(observation.value)
+            for(observation in data.timeseries){
+                temperatureMap[observation.time] = observation.air_temperature
             }
-            Log.d("temperatureList",temperatureList.toString())
-            return temperatureList
+            //Log.d("temperatureList",temperatureMap.toString())
+            return temperatureMap
         }
-        Log.d("temperatureList",temperatureList.toString())
-        return temperatureList
+        return temperatureMap
     }
 }
