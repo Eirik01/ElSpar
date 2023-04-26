@@ -4,5 +4,7 @@
     <string name="max_price">Høyeste i dag: %.2f kr\/kWh</string>
     <string name="min_price">Minste i dag: %.2f kr\/kWh</string>
     <string name="pick_price_area">Velg prisområde</string>
+    <string name="prisomraderPlaceholder">prisomrader placeholder</string>
 
 </resources>
+

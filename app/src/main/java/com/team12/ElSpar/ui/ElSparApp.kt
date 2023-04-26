@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui
 
+import android.window.SplashScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -11,11 +12,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.navigation.NavHostController
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.team12.ElSpar.model.PriceArea
 
 @Composable
 fun NavBar(navController: NavHostController){
@@ -53,8 +56,50 @@ fun ElSparApp(
     elSparViewModel: ElSparViewModel,
     modifier: Modifier = Modifier
 ) {
+    SplashScreen(
+        currentPriceArea = PriceArea.NO1,
+        onChangePriceArea = { elSparViewModel.updatePriceArea(it) }
+    )
+    /*MainScreen(
+        elSparViewModel = elSparViewModel,
+        modifier = Modifier
+    )*/
+}
+
+
+@Composable
+fun LoadingScreen(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("LOADING")
+    }
+}
+
+@Composable
+fun ErrorScreen(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("ERROR")
+    }
+}
+
+@Composable
+fun MainScreen(
+    elSparViewModel: ElSparViewModel,
+    modifier: Modifier = Modifier
+) {
     val elSparUiState: ElSparUiState
-    by elSparViewModel.uiState.collectAsState()
+            by elSparViewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
     Scaffold(
@@ -104,29 +149,13 @@ fun ElSparApp(
     }
 }
 
-
 @Composable
-fun LoadingScreen(
-    modifier: Modifier = Modifier
+fun SplashScreen(
+    currentPriceArea: PriceArea,
+    onChangePriceArea: (PriceArea) -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("LOADING")
-    }
-}
-
-@Composable
-fun ErrorScreen(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("ERROR")
-    }
+    LandingScreen(
+        currentPriceArea = currentPriceArea,
+        onChangePriceArea = onChangePriceArea,
+    )
 }
