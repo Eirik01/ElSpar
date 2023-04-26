@@ -71,17 +71,38 @@ fun ElSparApp(
                 .padding(padding),
             color = MaterialTheme.colorScheme.background
         ) {
-            NavHost(navController = navController, startDestination = "ElSparScreen") {
-                composable("InformationScreen") {
-                    InformationScreen()
-                }
-                composable("ElSparScreen") {
                     when (elSparUiState) {
                         is ElSparUiState.Loading -> LoadingScreen(modifier)
                         is ElSparUiState.Error -> ErrorScreen(modifier)
                         is ElSparUiState.Success ->
                             (elSparUiState as ElSparUiState.Success).run {
-                                ElSparScreen(
+
+                                NavHost(navController = navController, startDestination = "ElSparScreen") {
+                                    composable("InformationScreen") {
+                                        InformationScreen(
+                                            priceList = priceList,
+                                        )
+                                    }
+                                    composable("ElSparScreen") {
+
+                                    MainScreen(
+                                        priceList = priceList,
+                                        currentPricePeriod = currentPricePeriod,
+                                        currentPriceArea = currentPriceArea,
+                                        currentEndDate = currentEndDate,
+                                        onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
+                                        onChangePriceArea = { elSparViewModel.updatePriceArea(it) },
+                                        onDateForward = { elSparViewModel.dateForward() },
+                                        onDateBack = { elSparViewModel.dateBack() },
+                                        modifier = modifier
+                                    )
+                                }
+
+                                composable("SettingsScreen") {
+                                        SettingsScreen()
+                                    }
+                                }
+                                /*ElSparScreen(
                                     priceList = priceList,
                                     currentPricePeriod = currentPricePeriod,
                                     currentPriceArea = currentPriceArea,
@@ -91,14 +112,10 @@ fun ElSparApp(
                                     onDateForward = { elSparViewModel.dateForward() },
                                     onDateBack = { elSparViewModel.dateBack() },
                                     modifier = modifier
-                                )
+                                )*/
                             }
                     }
-                }
-                composable("SettingsScreen") {
-                    SettingsScreen()
-                }
-            }
+
             //ShowMainScreen();
         }
     }

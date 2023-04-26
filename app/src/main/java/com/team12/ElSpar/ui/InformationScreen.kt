@@ -33,7 +33,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 
 @Composable
-fun InformationScreen() {
+fun InformationScreen(
+    priceList: Map<LocalDateTime, Double>
+    ) {
     Column(
         modifier = Modifier
             .fillMaxHeight().verticalScroll(rememberScrollState())
@@ -41,9 +43,8 @@ fun InformationScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ){
-
         //ALLE COMPOSABLES SOM SKAL VISES PÅ SKJERMEN GÅR HER vv
-        Card_CurrentPrice();
+        Card_CurrentPrice(priceList);
         ContentRow(
             "10min dusj", 1.42f, 0.04f,
             "Klesvask", 0.13f, 0.01f
@@ -52,8 +53,6 @@ fun InformationScreen() {
             "Ovn (30min)", 0.23f, 0.05f,
             "Lade bil (30kWh)", 5.27f, -1.23f
         );
-
-
         //Tekst på bunnen av siden
         //ENDRE DISSE! VARIABLENE
         val hoyereDagspris:Boolean = true;
@@ -81,92 +80,6 @@ fun InformationScreen() {
 
     }
 }
-
-@Composable
-fun Card_CurrentPrice(){
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-    ){
-        Column(
-            modifier = Modifier
-                .wrapContentHeight()
-                .padding(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy((-10).dp)
-        ){
-            Row(horizontalArrangement = Arrangement.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp)
-            ){
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = "Information icon"
-                )
-                Text(text = "Dagens strømpris")
-            }
-
-            Text(text ="Nå")
-            Text(text ="80", fontSize = 50.sp, fontWeight = FontWeight.Bold)
-            Text(text ="øre/kWh")
-        }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun DefPreview(){
-    ElSparTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ){
-
-                //ALLE COMPOSABLES SOM SKAL VISES PÅ SKJERMEN GÅR HER vv
-                Card_CurrentPrice();
-                ContentRow(
-                    "10min dusj", 1.42f, 0.04f,
-                    "Klesvask", 0.13f, 0.01f
-                        );
-
-                ContentRow(
-                    "Steke pizza", 0.23f, 0.05f,
-                    "Lade bil (30kWh)", 5.27f, -1.23f
-                        );
-
-
-                //ENDRE DISSE!!!!
-                val hoyereDagspris:Boolean = true;
-                val hoyereMaanedspris:Boolean = true;
-                //
-
-                var textString = "Strømprisen nå er xx% " + if(hoyereDagspris) "over" else "under" + "dagens gjennomsnitt."
-                textString += if(!hoyereDagspris){
-                    "Det er ikke en dårlig ide å bruke mye strøm nå."
-                } else{
-                    "Det er lurt å vente med strømintense oppgaver."
-                }
-                Text(text = textString)
-
-                Spacer(modifier = Modifier.size(30.dp))
-
-                Text("Kortene på siden viser pris for aktivitet, og hvor mye dyrere eller billigere det er å gjøre aktiviteten nå i forhold til de siste 24 timene sitt gjennomsnitt")
-
-            }
-        }
-    }
-}
-
 
 @Composable
 fun ContentRow(
