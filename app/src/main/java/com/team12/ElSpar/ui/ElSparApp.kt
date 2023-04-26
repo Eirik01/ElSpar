@@ -12,13 +12,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.navigation.NavHostController
 
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.team12.ElSpar.model.PriceArea
 
 @Composable
 fun NavBar(navController: NavHostController){
@@ -56,14 +54,60 @@ fun ElSparApp(
     elSparViewModel: ElSparViewModel,
     modifier: Modifier = Modifier
 ) {
-    SplashScreen(
-        currentPriceArea = PriceArea.NO1,
-        onChangePriceArea = { elSparViewModel.updatePriceArea(it) }
-    )
-    /*MainScreen(
-        elSparViewModel = elSparViewModel,
-        modifier = Modifier
-    )*/
+    val elSparUiState: ElSparUiState
+            by elSparViewModel.uiState.collectAsState()
+    val navController = rememberNavController()
+
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        topBar = { },
+        bottomBar = {
+            if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController)
+        }
+    ) { padding ->
+        Surface(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            NavHost(navController = navController, startDestination = "ElSparScreen") {
+                composable("InformationScreen") {
+                    InformationScreen()
+                }
+                composable("ElSparScreen") {
+                    when (elSparUiState) {
+                        is ElSparUiState.SelectArea ->
+                            (elSparUiState as ElSparUiState.SelectArea).run {
+                                SelectAreaScreen(
+                                    currentPriceArea = currentPriceArea,
+                                    onChangePriceArea = { elSparViewModel.updatePriceArea(it) }
+                                )
+                            }
+                        is ElSparUiState.Loading -> LoadingScreen(modifier)
+                        is ElSparUiState.Error -> ErrorScreen(modifier)
+                        is ElSparUiState.Success ->
+                            (elSparUiState as ElSparUiState.Success).run {
+                                ElSparScreen(
+                                    priceList = priceList,
+                                    currentPricePeriod = currentPricePeriod,
+                                    currentPriceArea = currentPriceArea,
+                                    currentEndDate = currentEndDate,
+                                    onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
+                                    onChangePriceArea = { elSparViewModel.updatePriceArea(it) },
+                                    onDateForward = { elSparViewModel.dateForward() },
+                                    onDateBack = { elSparViewModel.dateBack() },
+                                    modifier = modifier
+                                )
+                            }
+                    }
+                }
+                composable("SettingsScreen") {
+                    SettingsScreen()
+                }
+            }
+        }
+    }
 }
 
 
@@ -91,71 +135,4 @@ fun ErrorScreen(
     ) {
         Text("ERROR")
     }
-}
-
-@Composable
-fun MainScreen(
-    elSparViewModel: ElSparViewModel,
-    modifier: Modifier = Modifier
-) {
-    val elSparUiState: ElSparUiState
-            by elSparViewModel.uiState.collectAsState()
-    val navController = rememberNavController()
-
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        topBar = { },
-        bottomBar = {
-            //Legger navbar her ettersom den skal på alle skjermene
-            NavBar(navController)
-        }
-    ) { padding ->
-        Surface(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(padding),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            NavHost(navController = navController, startDestination = "ElSparScreen") {
-                composable("InformationScreen") {
-                    InformationScreen()
-                }
-                composable("ElSparScreen") {
-                    when (elSparUiState) {
-                        is ElSparUiState.Loading -> LoadingScreen(modifier)
-                        is ElSparUiState.Error -> ErrorScreen(modifier)
-                        is ElSparUiState.Success ->
-                            (elSparUiState as ElSparUiState.Success).run {
-                                ElSparScreen(
-                                    priceList = priceList,
-                                    currentPricePeriod = currentPricePeriod,
-                                    currentPriceArea = currentPriceArea,
-                                    currentEndDate = currentEndDate,
-                                    onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
-                                    onChangePriceArea = { elSparViewModel.updatePriceArea(it) },
-                                    onDateForward = { elSparViewModel.dateForward() },
-                                    onDateBack = { elSparViewModel.dateBack() },
-                                    modifier = modifier
-                                )
-                            }
-                    }
-                }
-                composable("SettingsScreen") {
-                    SettingsScreen()
-                }
-            }
-            //ShowMainScreen();
-        }
-    }
-}
-
-@Composable
-fun SplashScreen(
-    currentPriceArea: PriceArea,
-    onChangePriceArea: (PriceArea) -> Unit
-) {
-    LandingScreen(
-        currentPriceArea = currentPriceArea,
-        onChangePriceArea = onChangePriceArea,
-    )
 }

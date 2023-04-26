@@ -6,9 +6,10 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.application.Settings
 import com.team12.ElSpar.ElSparApplication
+import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
-import com.team12.ElSpar.model.PriceArea
 import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,8 +21,8 @@ import java.time.LocalDate
 
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
+    private val settingsRepository: SettingsRepository,
     initialPricePeriod: PricePeriod = PricePeriod.DAY,
-    initialPriceArea: PriceArea = PriceArea.NO1,
     initialEndDate: LocalDate = LocalDate.now()
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<ElSparUiState> =
@@ -29,18 +30,32 @@ class ElSparViewModel(
     val uiState: StateFlow<ElSparUiState> = _uiState.asStateFlow()
 
     private var currentPricePeriod = initialPricePeriod
-    private var currentPriceArea = initialPriceArea
     private var currentEndDate = initialEndDate
+    private lateinit var currentPriceArea: Settings.PriceArea
 
     init {
-        getPowerPrice()
-        cache()
+        startup()
     }
 
+    private fun startup() {
+        viewModelScope.launch(Dispatchers.IO) {
+            settingsRepository.settingsFlow.collect { settings ->
+                if (!settings.initialStartupCompleted) {
+                    _uiState.value = ElSparUiState.SelectArea(
+                        currentPriceArea = settings.area
+                    )
+                } else {
+                    currentPriceArea = settings.area
+                    getPowerPrice()
+                    cache()
+                }
+            }
+        }
+    }
 
     fun getPowerPrice(
         pricePeriod: PricePeriod = currentPricePeriod,
-        priceArea: PriceArea = currentPriceArea,
+        priceArea: Settings.PriceArea = currentPriceArea,
         endDate: LocalDate = currentEndDate
     ) {
         viewModelScope.launch(Dispatchers.IO){
@@ -78,10 +93,14 @@ class ElSparViewModel(
         getPowerPrice()
     }
 
-    fun updatePriceArea(priceArea: PriceArea) {
-        currentPriceArea = priceArea
-        getPowerPrice()
-        cache()
+    fun updatePriceArea(priceArea: Settings.PriceArea) {
+        viewModelScope.launch(Dispatchers.IO) {
+            currentPriceArea = priceArea
+            settingsRepository.updatePriceArea(priceArea)
+            settingsRepository.initialStartupCompleted()
+            getPowerPrice()
+            cache()
+        }
     }
 
     fun dateForward() {
@@ -97,11 +116,12 @@ class ElSparViewModel(
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = this[APPLICATION_KEY] as ElSparApplication
-                val getPowerPriceUseCase = application.container.getPowerPriceUseCase
-                ElSparViewModel(
-                    getPowerPriceUseCase = getPowerPriceUseCase,
-                )
+                (this[APPLICATION_KEY] as ElSparApplication).container.run {
+                    ElSparViewModel(
+                        getPowerPriceUseCase = getPowerPriceUseCase,
+                        settingsRepository = settingsRepository
+                    )
+                }
             }
         }
     }

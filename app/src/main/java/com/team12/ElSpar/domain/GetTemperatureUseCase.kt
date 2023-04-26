@@ -1,10 +1,11 @@
 package com.team12.ElSpar.domain
 
 import android.util.Log
+import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.data.WeatherRepository
 
 class GetTemperatureUseCase(
-    private val weatherRepository : WeatherRepository
+    private val weatherRepository : WeatherRepository,
 ) {
     suspend operator fun invoke(
         station: String,

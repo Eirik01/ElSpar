@@ -72,7 +72,7 @@ fun PriceChart(
         Chart(
             chart = lineChart(
                 spacing = 4.dp,
-                axisValuesOverrider = AxisValuesOverrider.adaptiveYValues(1f),
+                //axisValuesOverrider = AxisValuesOverrider.adaptiveYValues(1.2f),
             ),
             model = model(priceList, pricePeriod),
             startAxis = startAxis(

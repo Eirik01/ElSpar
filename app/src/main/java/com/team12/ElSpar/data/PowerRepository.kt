@@ -1,8 +1,8 @@
 package com.team12.ElSpar.data
 
+import com.example.application.Settings.PriceArea
 import com.team12.ElSpar.api.HvaKosterStrommenApiService
 import com.team12.ElSpar.api.PriceNotAvailableException
-import com.team12.ElSpar.model.PriceArea
 import java.time.LocalDate
 import java.time.LocalDateTime
 

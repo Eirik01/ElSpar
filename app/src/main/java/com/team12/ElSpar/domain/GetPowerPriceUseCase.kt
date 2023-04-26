@@ -1,8 +1,8 @@
 package com.team12.ElSpar.domain
 
+import com.example.application.Settings.PriceArea
 import com.team12.ElSpar.api.PriceNotAvailableException
 import com.team12.ElSpar.data.PowerRepository
-import com.team12.ElSpar.model.PriceArea
 import com.team12.ElSpar.model.PricePeriod
 import java.time.LocalDate
 import java.time.LocalDateTime
