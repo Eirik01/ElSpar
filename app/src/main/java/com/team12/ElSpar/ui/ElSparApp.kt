@@ -76,8 +76,8 @@ fun ElSparApp(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel) {
                         InformationScreen(priceList = it.priceList)
-                    }
                 }
+            }
 
                 composable("ElSparScreen") {
                     DataContent(

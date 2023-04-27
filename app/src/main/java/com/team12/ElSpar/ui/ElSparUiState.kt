@@ -11,7 +11,7 @@ sealed interface ElSparUiState {
         val currentPriceArea: PriceArea,
         val currentPricePeriod: PricePeriod,
         val currentEndDate: LocalDate,
-        val priceList: Map<LocalDateTime, Double>
+        val priceList: Map<LocalDateTime, Double>,
     ) : ElSparUiState
     object Loading : ElSparUiState
     object Error : ElSparUiState
