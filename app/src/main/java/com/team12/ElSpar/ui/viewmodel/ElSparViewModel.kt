@@ -1,4 +1,4 @@
-package com.team12.ElSpar.ui.viewmodel
+package com.team12.ElSpar.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

@@ -15,6 +15,7 @@ import com.team12.ElSpar.network.KtorClient
 private const val DATA_STORE_FILE_NAME = "settings.pb"
 
 interface AppContainer {
+    val getTemperatureUseCase: GetTemperatureUseCase
     val getPowerPriceUseCase: GetPowerPriceUseCase
     val settingsRepository: SettingsRepository
 }
@@ -45,7 +46,8 @@ class DefaultAppContainer(
         DefaultWeatherRepository(metApiService)
 
     //DOMAIN LAYER USE CASES
-    private val getTemperatureUseCase: GetTemperatureUseCase =
+
+    override val getTemperatureUseCase: GetTemperatureUseCase =
         GetTemperatureUseCase(
             weatherRepository = weatherRepository
         )

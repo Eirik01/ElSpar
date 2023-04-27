@@ -45,7 +45,7 @@ fun ElSparScreen(
     onChangePriceArea: (PriceArea) -> Unit,
     onDateForward: () -> Unit,
     onDateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
