@@ -152,31 +152,21 @@ fun PriceText(
             .keys
             .first()
             .run {
-                if (pricePeriod == PricePeriod.DAY) "$hour:00"
-                else "$dayOfMonth.$monthValue $hour:00"
-            }
-    }
-
-    val timeOfPlusOne: (Double) -> String = { price ->
-        priceList
-            .filterValues { it == price }
-            .keys
-            .first()
-            .run {
-                "${hour+1}:00"
+                if (pricePeriod == PricePeriod.DAY) "$hour:00 - ${hour+1}:00"
+                else "$dayOfMonth.$monthValue $hour:00 - ${hour+1}:00"
             }
     }
 
     val rowMod:Modifier = Modifier.fillMaxWidth()
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
-        Text("Laveste: ${timeOf(minPrice)} - ${timeOfPlusOne(minPrice)}")
+        Text("Laveste: ${timeOf(minPrice)}")
         Text(roundOffDecimal(minPrice).toString() + " kWh")
     }
 
     Divider(modifier = Modifier.fillMaxWidth(0.9f).width(1.dp))
 
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
-        Text("Høyeste: ${timeOf(maxPrice)} - ${timeOfPlusOne(maxPrice)}")
+        Text("Høyeste: ${timeOf(maxPrice)}")
         Text(roundOffDecimal(maxPrice).toString() + " kWh")
     }
 

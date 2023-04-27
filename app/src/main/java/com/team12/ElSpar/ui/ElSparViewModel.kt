@@ -13,15 +13,10 @@ import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.network.NoConnectionException
-import io.ktor.client.plugins.*
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerializationException
-import java.io.IOException
-import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
 class ElSparViewModel(
