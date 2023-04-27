@@ -96,6 +96,7 @@ fun ElSparApp(
                         mainUiState = mainUiState,
                         mainViewModel = mainViewModel) {
                         MainScreen(
+                            currentPrice = it.currentPrice,
                             priceList = it.priceList,
                             currentPricePeriod = it.currentPricePeriod,
                             currentEndDate = it.currentEndDate,

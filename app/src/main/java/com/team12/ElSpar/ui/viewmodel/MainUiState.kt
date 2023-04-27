@@ -1,4 +1,4 @@
-package com.team12.ElSpar.ui.viewmodel
+package com.team12.ElSpar.ui
 
 
 import com.team12.ElSpar.Settings.PriceArea
@@ -11,7 +11,8 @@ sealed interface MainUiState {
         val currentPriceArea: PriceArea,
         val currentPricePeriod: PricePeriod,
         val currentEndDate: LocalDate,
-        val priceList: Map<LocalDateTime, Double>
+        val priceList: Map<LocalDateTime, Double>,
+        val currentPrice: Map<LocalDateTime, Double>
     ) : MainUiState
     object Loading : MainUiState
     object Error : MainUiState

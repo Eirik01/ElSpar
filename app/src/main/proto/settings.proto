@@ -9,9 +9,9 @@ message Settings {
   enum PriceArea {
     NO1 = 0;
     NO2 = 1;
-    NO3 = 3;
-    NO4 = 4;
-    NO5 = 5;
+    NO3 = 2;
+    NO4 = 3;
+    NO5 = 4;
   };
 
   PriceArea area = 2;

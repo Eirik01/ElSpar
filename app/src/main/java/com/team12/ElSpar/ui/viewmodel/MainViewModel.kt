@@ -66,6 +66,11 @@ class MainViewModel(
                         endDate = endDate,
                         period = pricePeriod,
                         area = priceArea
+                    ),
+                    currentPrice = getPowerPriceUseCase(
+                        endDate = LocalDate.now(),
+                        period = PricePeriod.DAY,
+                        area = priceArea,
                     )
                 )
             } catch (e: NoConnectionException) {
