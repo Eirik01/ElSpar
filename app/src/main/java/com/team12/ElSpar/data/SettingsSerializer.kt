@@ -2,7 +2,7 @@ package com.team12.ElSpar.data
 
 import androidx.datastore.core.CorruptionException
 import androidx.datastore.core.Serializer
-import com.example.application.Settings
+import com.team12.ElSpar.Settings
 import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
