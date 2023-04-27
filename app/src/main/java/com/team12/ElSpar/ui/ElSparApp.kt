@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui
 
+import android.preference.Preference
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -16,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 
 @Composable
 fun NavBar(navController: NavHostController){
@@ -96,8 +98,26 @@ fun ElSparApp(
                 }
 
                 composable("SettingsScreen") {
-                        SettingsScreen()
+                        SettingsScreen(
+                            onChangePreferences = { navController.navigate("PreferenceScreen")},
+                            onChangePrisomraade  = {navController.navigate("SelectAreaScreen")},
+                            onChangeMoms  = {},
+                            onChangeInfo  = {navController.navigate("InfoScreen")},
+                            onChangeAboutUs  = {navController.navigate("AboutUsScreen")},
+                        )
                     }
+                composable("PreferenceScreen"){
+                    PreferenceScreen()
+                }
+                composable("SelectAreaScreen"){
+                    //SelectAreaScreen()
+                }
+                composable("InfoScreen"){
+                    InfoScreen()
+                }
+                composable("AboutUsScreen"){
+                    AboutUsScreen()
+                }
                 }
                 /*ElSparScreen(
                     priceList = priceList,
