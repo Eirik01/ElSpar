@@ -1,6 +1,6 @@
 package com.team12.ElSpar.api
 
-import com.example.application.Settings
+import com.team12.ElSpar.Settings
 import com.team12.ElSpar.model.PriceData
 import com.team12.ElSpar.network.NoConnectionException
 import io.ktor.client.*

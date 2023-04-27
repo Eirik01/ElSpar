@@ -5,6 +5,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -18,9 +20,12 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.TextStyle
+import java.util.*
 
 @Composable
 fun MainScreen(
+    currentPrice: Map<LocalDateTime, Double>,
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
     currentEndDate: LocalDate,
@@ -29,6 +34,7 @@ fun MainScreen(
     onDateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     Column(
         modifier = modifier
             .fillMaxHeight().verticalScroll(rememberScrollState())
@@ -40,11 +46,14 @@ fun MainScreen(
         //SJERM INNHOLD!
 
         //Kort på toppen
-        Card_CurrentPrice(priceList)
+        Card_CurrentPrice(currentPrice)
 
         //Tidsintervall-knapper
         TimeIntervalButtons(currentPricePeriod) { onChangePricePeriod(it) }
+        //Dato-knapper
+        DateSelectionButtons(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
 
+        //Graf
         PriceText(priceList,currentPricePeriod)
 
     }
@@ -53,13 +62,15 @@ fun MainScreen(
 
 @Composable
 fun Card_CurrentPrice(
-    priceList: Map<LocalDateTime, Double>
+    currentPrice: Map<LocalDateTime, Double>
 ){
 
-    val currPrice = priceList
+    val currPrice = currentPrice
         .filterKeys { it.toLocalDate() == LocalDate.now() && it.hour == LocalDateTime.now().hour }
         .values
         .first()
+
+
 
     Card(
         colors = CardDefaults.cardColors(
@@ -136,6 +147,50 @@ fun IntervalButton(
         Text(text = btnPricePeriod.text, color = MaterialTheme.colorScheme.onPrimaryContainer)
     }
 }
+
+@Composable
+fun DateSelectionButtons(
+    currentPricePeriod: PricePeriod,
+    currentEndDate: LocalDate,
+    onDateBack: () -> Unit,
+    onDateForward: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        OutlinedIconButton(
+            onClick = { onDateBack() }
+        ) { Icon(
+            Icons.Filled.ArrowBack,
+            contentDescription = "Back",
+            modifier = Modifier.size(ButtonDefaults.IconSize)
+        ) }
+
+        Text(
+            text = if (currentPricePeriod == PricePeriod.DAY) {
+                "${currentEndDate.dayOfMonth}. ${currentEndDate.month.getDisplayName(TextStyle.FULL, Locale("nb"))}"
+            } else {
+                currentEndDate.minusDays(currentPricePeriod.days-1L).run {
+                    "$dayOfMonth. ${month.getDisplayName(TextStyle.FULL, Locale("nb")).toString().take(3)} - " +
+                            "${currentEndDate.dayOfMonth}. ${currentEndDate.month.getDisplayName(
+                                TextStyle.FULL, Locale("nb")
+                            ).toString().take(3)}"
+                }
+            },
+            fontSize = 24.sp,
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
+        )
+
+        OutlinedIconButton(
+            onClick = { onDateForward() }
+        ) { Icon(
+            Icons.Filled.ArrowForward,
+            contentDescription = "Forward",
+            modifier = Modifier.size(ButtonDefaults.IconSize)
+        ) }
+
+    }
+}
 @Composable
 fun PriceText(
     priceList: Map<LocalDateTime, Double>,
@@ -152,8 +207,8 @@ fun PriceText(
             .keys
             .first()
             .run {
-                if (pricePeriod == PricePeriod.DAY) "$hour:00 - ${hour+1}:00"
-                else "$dayOfMonth.$monthValue $hour:00 - ${hour+1}:00"
+                if (pricePeriod == PricePeriod.DAY) "kl $hour - ${hour+1}"
+                else "$dayOfMonth.$monthValue kl $hour - ${hour+1}"
             }
     }
 

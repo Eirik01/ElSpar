@@ -1,6 +1,5 @@
 package com.team12.ElSpar.data
 
-import android.util.Log
 import com.team12.ElSpar.api.MetApiService
 import com.team12.ElSpar.model.ObservationData
 

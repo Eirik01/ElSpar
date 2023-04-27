@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.team12.ElSpar.ui.theme.ElSparTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -32,8 +28,6 @@ import com.example.application.Settings.PriceArea
 import com.team12.ElSpar.R
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
-import java.math.RoundingMode
-import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.TextStyle
