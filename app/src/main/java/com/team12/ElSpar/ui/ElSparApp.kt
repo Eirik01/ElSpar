@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.team12.ElSpar.R
 import kotlinx.coroutines.delay
+
 
 @Composable
 fun NavBar(navController: NavHostController){
@@ -67,19 +69,29 @@ fun NavBar(navController: NavHostController){
         }
     }
 }
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBar(currScreen: String){
+    CenterAlignedTopAppBar(
+        title = { Text(text = currScreen)},
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    )
+}
 @Composable
 fun ElSparApp(
     elSparViewModel: ElSparViewModel,
     modifier: Modifier = Modifier
 ) {
+    var currentScreen by remember { mutableStateOf("") }
     val elSparUiState: ElSparUiState
     by elSparViewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { },
+        topBar = { TopBar(currentScreen) },
         bottomBar = {
             if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController)
         }
@@ -92,6 +104,7 @@ fun ElSparApp(
         ) {
             NavHost(navController = navController, startDestination = "ElSparScreen") {
                 composable("InformationScreen") {
+                    currentScreen = "Strømkalkulator"
                     DataContent(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel) {
@@ -100,6 +113,8 @@ fun ElSparApp(
                 }
 
                 composable("ElSparScreen") {
+                    currentScreen = "Strømoversikt"
+
                     DataContent(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel) {
@@ -117,7 +132,9 @@ fun ElSparApp(
                 }
 
                 composable("SettingsScreen") {
-                        SettingsScreen()
+                    currentScreen = "Innstillinger"
+
+                    SettingsScreen()
                     }
                 }
                 /*ElSparScreen(

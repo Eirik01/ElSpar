@@ -88,6 +88,8 @@ fun PriceChart(
     */
 
 ) {
+
+
     var colorArray = if (!isSystemInDarkTheme()) arrayOf(
         Color(0xFFB36D6D).copy(0.6f),
         Color.Yellow.copy(0.5f),
@@ -95,12 +97,10 @@ fun PriceChart(
     )
     else
         arrayOf(
-
             Color(0x8c1d18).copy(0.6f),
             Color(0x4a4458).copy(0.6f),
             Color(0x4f378b).copy(0.6f)
-
-            )
+        )
 
 
     ProvideChartStyle(chartStyle) {

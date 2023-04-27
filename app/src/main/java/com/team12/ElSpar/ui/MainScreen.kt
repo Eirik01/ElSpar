@@ -13,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.team12.ElSpar.model.PriceData
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
@@ -49,13 +51,15 @@ fun MainScreen(
         //Kort på toppen
         Card_CurrentPrice(currentPrice)
 
+        Spacer(modifier = Modifier.size(15.dp))
+
         //Tidsintervall-knapper
         TimeIntervalButtons(currentPricePeriod) { onChangePricePeriod(it) }
         //Dato-knapper
         DateSelectionButtons(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
 
         //Graf
-        PriceChart(priceList, currentPricePeriod)
+        PriceChart(priceList, currentPricePeriod, modifier = Modifier.offset(y = (-30).dp)) //Kan kutte neg modifier
 
         Spacer(modifier = Modifier.size(15.dp))
 
