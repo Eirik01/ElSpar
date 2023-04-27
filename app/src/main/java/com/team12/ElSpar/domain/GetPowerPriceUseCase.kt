@@ -5,7 +5,8 @@ import com.team12.ElSpar.api.PriceNotAvailableException
 import com.team12.ElSpar.data.PowerRepository
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.network.NoConnectionException
-import java.nio.channels.UnresolvedAddressException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -18,7 +19,7 @@ class GetPowerPriceUseCase (
         period: PricePeriod = PricePeriod.DAY,
         endDate: LocalDate = LocalDate.now(),
         area: PriceArea = PriceArea.NO1
-    ): Map<LocalDateTime, Double> {
+    ): Map<LocalDateTime, Double> = withContext(Dispatchers.IO) {
         val priceData = mutableMapOf<LocalDateTime, Double>()
         val startDate = endDate.minusDays(period.days-1L)
         for (i in 0 until period.days) {
@@ -35,7 +36,7 @@ class GetPowerPriceUseCase (
                 }
             }
         }
-        return priceData.toMap()
+        priceData.toMap()
     }
 }
 

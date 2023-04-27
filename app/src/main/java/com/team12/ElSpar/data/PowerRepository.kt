@@ -1,6 +1,6 @@
 package com.team12.ElSpar.data
 
-import com.example.application.Settings.PriceArea
+import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.api.HvaKosterStrommenApiService
 import com.team12.ElSpar.api.PriceNotAvailableException
 import com.team12.ElSpar.network.NoConnectionException
@@ -34,6 +34,7 @@ class DefaultPowerRepository(
         } catch (e: PriceNotAvailableException) {
             throw e
         } catch (e: NoConnectionException) {
+            print("NO CONNECTION")
             throw e
         }
         localRepo[key] = priceData
