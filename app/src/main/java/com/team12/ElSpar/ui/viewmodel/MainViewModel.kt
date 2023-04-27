@@ -1,4 +1,4 @@
-package com.team12.ElSpar.ui
+package com.team12.ElSpar.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -19,16 +19,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class ElSparViewModel(
+class MainViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
     private val settingsRepository: SettingsRepository,
     initialPricePeriod: PricePeriod = PricePeriod.DAY,
     initialEndDate: LocalDate = LocalDate.now(),
     //initialCoordinates : Pair<String,String> = "60.79" to "11.08" // parametres in locationforecast2.0 API
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<ElSparUiState> =
-        MutableStateFlow(ElSparUiState.Loading)
-    val uiState: StateFlow<ElSparUiState> = _uiState.asStateFlow()
+    private val _uiState: MutableStateFlow<MainUiState> =
+        MutableStateFlow(MainUiState.Loading)
+    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     private var currentPricePeriod = initialPricePeriod
     private var currentEndDate = initialEndDate
@@ -39,7 +39,7 @@ class ElSparViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.settingsFlow.collect { settings ->
                 if (!settings.initialStartupCompleted) {
-                    _uiState.value = ElSparUiState.SelectArea(
+                    _uiState.value = MainUiState.SelectArea(
                         currentPriceArea = settings.area
                     )
                 } else {
@@ -58,7 +58,7 @@ class ElSparViewModel(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                _uiState.value = ElSparUiState.Success(
+                _uiState.value = MainUiState.Success(
                     currentPriceArea = priceArea,
                     currentPricePeriod = pricePeriod,
                     currentEndDate = endDate,
@@ -69,7 +69,7 @@ class ElSparViewModel(
                     )
                 )
             } catch (e: NoConnectionException) {
-                _uiState.value = ElSparUiState.Error
+                _uiState.value = MainUiState.Error
             }
         }
     }
@@ -126,7 +126,7 @@ class ElSparViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 (this[APPLICATION_KEY] as ElSparApplication).container.run {
-                    ElSparViewModel(
+                    MainViewModel(
                         getPowerPriceUseCase = getPowerPriceUseCase,
                         settingsRepository = settingsRepository
                     )

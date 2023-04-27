@@ -20,7 +20,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 
 @Composable
-fun InformationScreen(
+fun ActivitiesScreen(
     priceList: Map<LocalDateTime, Double>
     ) {
     Column(

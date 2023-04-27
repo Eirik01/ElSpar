@@ -25,6 +25,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.team12.ElSpar.ui.viewmodel.MainUiState
+import com.team12.ElSpar.ui.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 
 @Composable
@@ -60,18 +62,18 @@ fun NavBar(navController: NavHostController){
 
 @Composable
 fun ElSparApp(
-    elSparViewModel: ElSparViewModel,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
-    val elSparUiState: ElSparUiState
-    by elSparViewModel.uiState.collectAsState()
+    val mainUiState: MainUiState
+    by mainViewModel.uiState.collectAsState()
     val navController = rememberNavController()
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { },
         bottomBar = {
-            if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController)
+            if (mainUiState !is MainUiState.SelectArea) NavBar(navController)
         }
     ) { padding ->
         Surface(
@@ -83,23 +85,23 @@ fun ElSparApp(
             NavHost(navController = navController, startDestination = "ElSparScreen") {
                 composable("InformationScreen") {
                     DataContent(
-                        elSparUiState = elSparUiState,
-                        elSparViewModel = elSparViewModel) {
+                        mainUiState = mainUiState,
+                        mainViewModel = mainViewModel) {
                         InformationScreen(priceList = it.priceList)
                     }
                 }
 
                 composable("ElSparScreen") {
                     DataContent(
-                        elSparUiState = elSparUiState,
-                        elSparViewModel = elSparViewModel) {
+                        mainUiState = mainUiState,
+                        mainViewModel = mainViewModel) {
                         MainScreen(
                             priceList = it.priceList,
                             currentPricePeriod = it.currentPricePeriod,
                             currentEndDate = it.currentEndDate,
-                            onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
-                            onDateForward = { elSparViewModel.dateForward() },
-                            onDateBack = { elSparViewModel.dateBack() },
+                            onChangePricePeriod = { mainViewModel.updatePricePeriod(it) },
+                            onDateForward = { mainViewModel.dateForward() },
+                            onDateBack = { mainViewModel.dateBack() },
                             modifier = modifier
                         )
                     }
@@ -126,20 +128,20 @@ fun ElSparApp(
 
 @Composable
 fun DataContent(
-    elSparUiState: ElSparUiState,
-    elSparViewModel: ElSparViewModel,
+    mainUiState: MainUiState,
+    mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
-    onSuccessfulLoadContent: @Composable (ElSparUiState.Success) -> Unit
+    onSuccessfulLoadContent: @Composable (MainUiState.Success) -> Unit
 ) {
-    when (elSparUiState) {
-        is ElSparUiState.SelectArea ->
+    when (mainUiState) {
+        is MainUiState.SelectArea ->
                 SelectAreaScreen(
-                    currentPriceArea = elSparUiState.currentPriceArea,
-                    onChangePriceArea = { elSparViewModel.updatePriceArea(it) }
+                    currentPriceArea = mainUiState.currentPriceArea,
+                    onChangePriceArea = { mainViewModel.updatePriceArea(it) }
                 )
-        is ElSparUiState.Loading -> LoadingScreen(modifier)
-        is ElSparUiState.Error -> ErrorScreen(modifier)
-        is ElSparUiState.Success -> onSuccessfulLoadContent(elSparUiState)
+        is MainUiState.Loading -> LoadingScreen(modifier)
+        is MainUiState.Error -> ErrorScreen(modifier)
+        is MainUiState.Success -> onSuccessfulLoadContent(mainUiState)
     }
 }
 
