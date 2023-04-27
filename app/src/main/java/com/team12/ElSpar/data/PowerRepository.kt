@@ -1,8 +1,9 @@
 package com.team12.ElSpar.data
 
+import com.example.application.Settings.PriceArea
 import com.team12.ElSpar.api.HvaKosterStrommenApiService
 import com.team12.ElSpar.api.PriceNotAvailableException
-import com.team12.ElSpar.model.PriceArea
+import com.team12.ElSpar.network.NoConnectionException
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -31,6 +32,8 @@ class DefaultPowerRepository(
                     priceData[LocalDateTime.parse(it.time_start.dropLast(6))] = it.NOK_per_kWh * 125
                 }
         } catch (e: PriceNotAvailableException) {
+            throw e
+        } catch (e: NoConnectionException) {
             throw e
         }
         localRepo[key] = priceData

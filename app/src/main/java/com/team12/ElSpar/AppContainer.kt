@@ -1,29 +1,43 @@
 package com.team12.ElSpar
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.dataStoreFile
+import com.example.application.Settings
 import com.team12.ElSpar.api.DefaultHvaKosterStrommenApiService
 import com.team12.ElSpar.api.DefaultMetApiService
 import com.team12.ElSpar.api.HvaKosterStrommenApiService
 import com.team12.ElSpar.api.MetApiService
-import com.team12.ElSpar.data.DefaultPowerRepository
-import com.team12.ElSpar.data.DefaultWeatherRepository
-import com.team12.ElSpar.data.PowerRepository
-import com.team12.ElSpar.data.WeatherRepository
-import com.team12.ElSpar.domain.GetPowerPriceUseCase
-import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
-import com.team12.ElSpar.domain.GetTemperatureUseCase
+import com.team12.ElSpar.data.*
+import com.team12.ElSpar.domain.*
 import com.team12.ElSpar.network.KtorClient
+
+private const val DATA_STORE_FILE_NAME = "settings.pb"
 
 interface AppContainer {
     val getPowerPriceUseCase: GetPowerPriceUseCase
-    val getTemperatureUseCase : GetTemperatureUseCase
+    val settingsRepository: SettingsRepository
 }
 
-class DefaultAppContainer : AppContainer {
+class DefaultAppContainer(
+    private val context: Context
+) : AppContainer {
+    private val settingsStore: DataStore<Settings> =
+        DataStoreFactory.create(SettingsSerializer) {
+            context.dataStoreFile(DATA_STORE_FILE_NAME)
+        }
+
+    //API-SERVICES
     private val hvaKosterStrommenApiService: HvaKosterStrommenApiService =
         DefaultHvaKosterStrommenApiService(KtorClient.httpClient)
 
     private val metApiService : MetApiService =
         DefaultMetApiService(KtorClient.httpClient)
+
+    //REPOSITORIES
+    override val settingsRepository: SettingsRepository =
+        DefaultSettingsRepository(settingsStore)
 
     private val powerRepository: PowerRepository =
         DefaultPowerRepository(hvaKosterStrommenApiService)
@@ -31,7 +45,8 @@ class DefaultAppContainer : AppContainer {
     private val weatherRepository: WeatherRepository =
         DefaultWeatherRepository(metApiService)
 
-    override val getTemperatureUseCase: GetTemperatureUseCase =
+    //DOMAIN LAYER USE CASES
+    private val getTemperatureUseCase: GetTemperatureUseCase =
         GetTemperatureUseCase(
             weatherRepository = weatherRepository
         )

@@ -11,12 +11,12 @@ import com.team12.ElSpar.ui.ElSparViewModel
 import com.team12.ElSpar.ui.theme.ElSparTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var viewModel: ElSparViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ElSparTheme {
-                val viewModel: ElSparViewModel =
-                    viewModel(factory = ElSparViewModel.Factory)
+                viewModel = viewModel(factory = ElSparViewModel.Factory)
                 ElSparApp(viewModel)
             }
         }
