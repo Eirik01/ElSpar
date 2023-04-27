@@ -3,6 +3,7 @@ package com.team12.ElSpar.ui.chart
 import android.graphics.drawable.GradientDrawable
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -87,6 +88,21 @@ fun PriceChart(
     */
 
 ) {
+    var colorArray = if (!isSystemInDarkTheme()) arrayOf(
+        Color(0xFFB36D6D).copy(0.6f),
+        Color.Yellow.copy(0.5f),
+        Color(0xFF597d4f).copy(0.4f)
+    )
+    else
+        arrayOf(
+
+            Color(0x8c1d18).copy(0.6f),
+            Color(0x4a4458).copy(0.6f),
+            Color(0x4f378b).copy(0.6f)
+
+            )
+
+
     ProvideChartStyle(chartStyle) {
         Chart(
             chart = lineChart(
@@ -94,11 +110,7 @@ fun PriceChart(
                     lineSpec(
                         lineColor = MaterialTheme.colorScheme.primary,
                         lineBackgroundShader = verticalGradient(
-                            colors = arrayOf(
-                                Color(0xFFB36D6D).copy(0.6f),
-                                Color.Yellow.copy(0.5f),
-                                Color(0xFF597d4f).copy(0.4f)
-                            ),
+                            colors = colorArray,
                             positions = floatArrayOf(0.1f, 0.9f, 1f)
                         )
                     ),

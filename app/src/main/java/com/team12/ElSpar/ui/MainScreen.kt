@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.team12.ElSpar.model.PricePeriod
+import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -54,6 +55,11 @@ fun MainScreen(
         DateSelectionButtons(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
 
         //Graf
+        PriceChart(priceList, currentPricePeriod)
+
+        Spacer(modifier = Modifier.size(15.dp))
+
+        //Pristekst bunn
         PriceText(priceList,currentPricePeriod)
 
     }
