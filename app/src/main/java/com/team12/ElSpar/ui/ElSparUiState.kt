@@ -1,7 +1,7 @@
 package com.team12.ElSpar.ui
 
 
-import com.example.application.Settings.PriceArea
+import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.model.PricePeriod
 import java.time.LocalDate
 import java.time.LocalDateTime
