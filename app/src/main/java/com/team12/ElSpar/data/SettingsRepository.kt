@@ -1,7 +1,7 @@
 package com.team12.ElSpar.data
 
 import androidx.datastore.core.DataStore
-import com.example.application.Settings
+import com.team12.ElSpar.Settings
 import io.ktor.utils.io.errors.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

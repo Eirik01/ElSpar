@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.application.Settings
+import com.team12.ElSpar.Settings
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
@@ -57,19 +57,24 @@ class ElSparViewModel(
         endDate: LocalDate = currentEndDate
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.value = try {
-                ElSparUiState.Success(
-                    currentPriceArea = priceArea,
+            try {
+                _uiState.value = ElSparUiState.Success(
+                    currentPriceArea = priceArea ,
                     currentPricePeriod = pricePeriod,
                     currentEndDate = endDate,
                     priceList = getPowerPriceUseCase(
                         endDate = endDate,
                         period = pricePeriod,
                         area = priceArea
+                    ),
+                    currentPrice = getPowerPriceUseCase(
+                        endDate = LocalDate.now(),
+                        period = PricePeriod.DAY,
+                        area = priceArea,
                     )
                 )
             } catch (e: NoConnectionException) {
-                ElSparUiState.Error
+                _uiState.value = ElSparUiState.Error
             }
         }
     }

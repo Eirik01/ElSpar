@@ -22,19 +22,15 @@ fun SettingsScreen(
     onChangeInfo :  () -> Unit,
     onChangeAboutUs :  () -> Unit,
 ){
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {Text("Innstillinger")},
-                modifier = Modifier
-            )
-        },
-    ){
+    Scaffold(){
             padding ->
-        val settingCardsTitles  = listOf(stringResource(R.string.Preferanser), stringResource(R.string.velg_prisområde),
-            stringResource(R.string.skru_av_moms), stringResource(R.string.informasjon), stringResource(R.string.om_oss))
+        val settingCardsTitles  = listOf(
+            stringResource(R.string.Preferanser),
+            stringResource(R.string.velg_prisområde),
+            stringResource(R.string.skru_av_moms),
+            stringResource(R.string.informasjon),
+            stringResource(R.string.om_oss))
         LazyColumn(
-            modifier = Modifier.padding(top = 60.dp)
         ) {
             items(settingCardsTitles.size) { index ->
                 var onChangeFunction  : () -> Unit = {}

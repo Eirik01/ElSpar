@@ -5,6 +5,15 @@
     <string name="min_price">Minste i dag: %.2f kr\/kWh</string>
     <string name="pick_price_area">Velg prisområde</string>
     <string name="prisomraderPlaceholder">prisomrader placeholder</string>
+    <string name="Preferanser">Preferanser</string>
+    <string name="velg_prisområde">Velg prisområde</string>
+    <string name="skru_av_moms">Skru av moms</string>
+    <string name="informasjon">Informasjon</string>
+    <string name="om_oss">Om oss</string>
+    <string name="dusj">Dusj</string>
+    <string name="klesvask">Klesvask</string>
+    <string name="ovn">Ovn</string>
+    <string name="lade_bil">Lade bil</string>
 
 </resources>
 

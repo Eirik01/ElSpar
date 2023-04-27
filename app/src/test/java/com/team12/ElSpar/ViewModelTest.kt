@@ -2,7 +2,6 @@ package com.team12.ElSpar
 
 import com.team12.ElSpar.data.DefaultPowerRepository
 import com.team12.ElSpar.data.DefaultWeatherRepository
-import com.team12.ElSpar.data.WeatherRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
 import com.team12.ElSpar.fake.*
