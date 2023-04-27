@@ -83,6 +83,7 @@ fun ElSparApp(
                                             priceList = priceList,
                                         )
                                     }
+
                                     composable("ElSparScreen") {
 
                                     MainScreen(

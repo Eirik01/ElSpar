@@ -159,8 +159,8 @@ fun PriceText(
             .keys
             .first()
             .run {
-                if (pricePeriod == PricePeriod.DAY) "$hour:00"
-                else "$dayOfMonth.$monthValue $hour:00"
+                if (pricePeriod == PricePeriod.DAY) "kl. $hour"
+                else "$dayOfMonth.$monthValue kl. $hour"
             }
     }
 
@@ -170,7 +170,7 @@ fun PriceText(
             .keys
             .first()
             .run {
-                "${hour+1}:00"
+                "${hour+1}"
             }
     }
 
