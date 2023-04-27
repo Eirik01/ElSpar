@@ -28,8 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.example.application.Settings.PriceArea
 import com.team12.ElSpar.R
-import com.team12.ElSpar.model.PriceArea
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
@@ -70,7 +70,7 @@ fun ElSparScreen(
                     ) {
                         OutlinedTextField(
                             readOnly = true,
-                            value = currentPriceArea.text,
+                            value = currentPriceArea.name,
                             enabled = false,
                             onValueChange = {},
                             modifier = modifier
@@ -97,7 +97,7 @@ fun ElSparScreen(
                         ) {
                             PriceArea.values().forEach {
                                 DropdownMenuItem(
-                                    text = {Text(text = it.text)},
+                                    text = {Text(text = it.name)},
                                     onClick = {
                                         expanded = false
                                         placeHolderPadding = maxPlaceHolderPadding
