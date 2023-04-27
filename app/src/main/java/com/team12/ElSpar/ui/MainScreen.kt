@@ -25,6 +25,7 @@ import java.util.*
 
 @Composable
 fun MainScreen(
+    currentPrice: Map<LocalDateTime, Double>,
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
     currentEndDate: LocalDate,
@@ -33,6 +34,7 @@ fun MainScreen(
     onDateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     Column(
         modifier = modifier
             .fillMaxHeight().verticalScroll(rememberScrollState())
@@ -44,7 +46,7 @@ fun MainScreen(
         //SJERM INNHOLD!
 
         //Kort på toppen
-        Card_CurrentPrice(priceList)
+        Card_CurrentPrice(currentPrice)
 
         //Tidsintervall-knapper
         TimeIntervalButtons(currentPricePeriod) { onChangePricePeriod(it) }
@@ -52,8 +54,6 @@ fun MainScreen(
         DateSelectionButtons(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
 
         //Graf
-
-
         PriceText(priceList,currentPricePeriod)
 
     }
@@ -62,13 +62,15 @@ fun MainScreen(
 
 @Composable
 fun Card_CurrentPrice(
-    priceList: Map<LocalDateTime, Double>
+    currentPrice: Map<LocalDateTime, Double>
 ){
 
-    val currPrice = priceList
+    val currPrice = currentPrice
         .filterKeys { it.toLocalDate() == LocalDate.now() && it.hour == LocalDateTime.now().hour }
         .values
         .first()
+
+
 
     Card(
         colors = CardDefaults.cardColors(
@@ -166,17 +168,17 @@ fun DateSelectionButtons(
 
         Text(
             text = if (currentPricePeriod == PricePeriod.DAY) {
-                "${currentEndDate.dayOfMonth}.${currentEndDate.month.getDisplayName(TextStyle.FULL, Locale("nb"))}"
+                "${currentEndDate.dayOfMonth}. ${currentEndDate.month.getDisplayName(TextStyle.FULL, Locale("nb"))}"
             } else {
                 currentEndDate.minusDays(currentPricePeriod.days-1L).run {
-                    "$dayOfMonth.${month.getDisplayName(TextStyle.FULL, Locale("nb"))} - " +
-                            "${currentEndDate.dayOfMonth}.${currentEndDate.month.getDisplayName(
+                    "$dayOfMonth. ${month.getDisplayName(TextStyle.FULL, Locale("nb")).toString().take(3)} - " +
+                            "${currentEndDate.dayOfMonth}. ${currentEndDate.month.getDisplayName(
                                 TextStyle.FULL, Locale("nb")
-                            )}"
+                            ).toString().take(3)}"
                 }
             },
             fontSize = 24.sp,
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp)
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
         )
 
         OutlinedIconButton(
