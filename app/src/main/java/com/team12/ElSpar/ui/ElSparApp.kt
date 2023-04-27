@@ -1,18 +1,17 @@
 package com.team12.ElSpar.ui
 
+
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -25,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -35,6 +33,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.application.Settings
 import com.team12.ElSpar.R
 import kotlinx.coroutines.delay
 
@@ -109,8 +108,8 @@ fun ElSparApp(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel) {
                         InformationScreen(priceList = it.priceList)
-                    }
                 }
+            }
 
                 composable("ElSparScreen") {
                     currentScreen = "Strømoversikt"
@@ -132,10 +131,28 @@ fun ElSparApp(
                 }
 
                 composable("SettingsScreen") {
-                    currentScreen = "Innstillinger"
+                    currentScreen = "Instillninger"
+                    SettingsScreen(
+                        onChangePreferences = { navController.navigate("PreferenceScreen")},
+                        onChangePrisomraade  = {navController.navigate("SelectAreaScreen")},
+                        onChangeMoms  = {},
+                        onChangeInfo  = {navController.navigate("InfoScreen")},
+                        onChangeAboutUs  = {navController.navigate("AboutUsScreen")},
+                    )
+                }
+                composable("PreferenceScreen"){
+                    currentScreen = "Preferanser"
+                    PreferenceScreen()
+                }
+                composable("SelectAreaScreen"){
 
-                    SettingsScreen()
-                    }
+                }
+                composable("InfoScreen"){
+                    InfoScreen()
+                }
+                composable("AboutUsScreen"){
+                    AboutUsScreen()
+                }
                 }
                 /*ElSparScreen(
                     priceList = priceList,
@@ -162,7 +179,7 @@ fun DataContent(
     when (elSparUiState) {
         is ElSparUiState.SelectArea ->
                 SelectAreaScreen(
-                    currentPriceArea = elSparUiState.currentPriceArea,
+                    currentPriceArea = elSparUiState.currentPriceArea as com.team12.ElSpar.Settings.PriceArea,
                     onChangePriceArea = { elSparViewModel.updatePriceArea(it) }
                 )
         is ElSparUiState.Loading -> LoadingScreen(modifier)

@@ -59,7 +59,7 @@ class ElSparViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 _uiState.value = ElSparUiState.Success(
-                    currentPriceArea = priceArea,
+                    currentPriceArea = priceArea ,
                     currentPricePeriod = pricePeriod,
                     currentEndDate = endDate,
                     priceList = getPowerPriceUseCase(
