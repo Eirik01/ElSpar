@@ -10,15 +10,14 @@ import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-
 class GetPowerPriceUseCase (
     private val powerRepository: PowerRepository,
     private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase
 ) {
     suspend operator fun invoke(
-        period: PricePeriod = PricePeriod.DAY,
-        endDate: LocalDate = LocalDate.now(),
-        area: PriceArea = PriceArea.NO1
+        period: PricePeriod,
+        endDate: LocalDate,
+        area: PriceArea,
     ): Map<LocalDateTime, Double> = withContext(Dispatchers.IO) {
         val priceData = mutableMapOf<LocalDateTime, Double>()
         val startDate = endDate.minusDays(period.days-1L)

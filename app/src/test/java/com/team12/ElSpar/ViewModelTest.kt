@@ -8,8 +8,8 @@ import com.team12.ElSpar.fake.*
 import com.team12.ElSpar.model.PriceArea
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.rules.TestDispatcherRule
-import com.team12.ElSpar.ui.viewmodel.MainUiState
-import com.team12.ElSpar.ui.viewmodel.MainViewModel
+import com.team12.ElSpar.ui.viewmodel.ElSparUiState
+import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -26,14 +26,14 @@ class ViewModelTest {
     val testDispatcher = TestDispatcherRule()
 
     //Initializing the ViewModel
-    private val mainViewModel: MainViewModel by lazy {
+    private val mainViewModel: ElSparViewModel by lazy {
         //fake API that gets data from fakeDataSourceList
         val fakeHvaKosterStrommenApiService = FakeHvaKosterStrommenApiService()
         //repos
         val powerRepository = DefaultPowerRepository(fakeHvaKosterStrommenApiService)
         val weatherRepository = DefaultWeatherRepository()
 
-        MainViewModel(
+        ElSparViewModel(
             GetPowerPriceUseCase(powerRepository),
             GetProjectedPowerPriceUseCase(powerRepository, weatherRepository)
         )
@@ -48,7 +48,7 @@ class ViewModelTest {
             sleep(3000)
 
             assertEquals(
-                MainUiState.Success(PriceArea.NO1, PricePeriod.DAY, FakePowerDataSource.priceDataMapMVA),
+                ElSparUiState.Success(PriceArea.NO1, PricePeriod.DAY, FakePowerDataSource.priceDataMapMVA),
                 mainViewModel.uiState.value
             )
         }

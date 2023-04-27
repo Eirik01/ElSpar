@@ -6,75 +6,68 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.team12.ElSpar.Settings
+import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.network.NoConnectionException
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class MainViewModel(
+class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
     private val settingsRepository: SettingsRepository,
-    initialPricePeriod: PricePeriod = PricePeriod.DAY,
-    initialEndDate: LocalDate = LocalDate.now(),
-    //initialCoordinates : Pair<String,String> = "60.79" to "11.08" // parametres in locationforecast2.0 API
 ) : ViewModel() {
-    private val _uiState: MutableStateFlow<MainUiState> =
-        MutableStateFlow(MainUiState.Loading)
-    val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
+    private val _uiState: MutableStateFlow<ElSparUiState> = MutableStateFlow(ElSparUiState.Loading)
+    val uiState: StateFlow<ElSparUiState> = _uiState.asStateFlow()
 
-    private var currentPricePeriod = initialPricePeriod
-    private var currentEndDate = initialEndDate
-    private lateinit var currentPriceArea: Settings.PriceArea
-    //private var currentCoordinates = initialCoordinates
+    val settings = settingsRepository.settingsFlow
+
+    private var currentPricePeriod = PricePeriod.DAY
+    private var currentEndDate = LocalDate.now()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            settingsRepository.settingsFlow.collect { settings ->
+            settings.collect { settings ->
                 if (!settings.initialStartupCompleted) {
-                    _uiState.value = MainUiState.SelectArea(
-                        currentPriceArea = settings.area
-                    )
+                    settingsRepository.initializeValues()
+                    _uiState.value = ElSparUiState.SelectArea(currentPriceArea = settings.area)
                 } else {
-                    currentPriceArea = settings.area
-                    getPowerPrice()
-                    cache()
+                    update()
                 }
             }
         }
     }
 
-    fun getPowerPrice(
-        pricePeriod: PricePeriod = currentPricePeriod,
-        priceArea: Settings.PriceArea = currentPriceArea,
-        endDate: LocalDate = currentEndDate
-    ) {
+    private fun update() {
+        getPowerPrice()
+        cache()
+    }
+
+    fun getPowerPrice() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                _uiState.value = MainUiState.Success(
-                    currentPriceArea = priceArea,
-                    currentPricePeriod = pricePeriod,
-                    currentEndDate = endDate,
-                    priceList = getPowerPriceUseCase(
-                        endDate = endDate,
-                        period = pricePeriod,
-                        area = priceArea
-                    ),
-                    currentPrice = getPowerPriceUseCase(
-                        endDate = LocalDate.now(),
-                        period = PricePeriod.DAY,
-                        area = priceArea,
+            settings.collect { settings ->
+                _uiState.value = try {
+                    ElSparUiState.Success(
+                        currentPricePeriod = currentPricePeriod,
+                        currentEndDate = currentEndDate,
+                        priceList = getPowerPriceUseCase(
+                            endDate = currentEndDate,
+                            period = currentPricePeriod,
+                            area = settings.area
+                        ),
+                        currentPrice = getPowerPriceUseCase(
+                            endDate = LocalDate.now(),
+                            period = PricePeriod.DAY,
+                            area = settings.area
+                        )
                     )
-                )
-            } catch (e: NoConnectionException) {
-                _uiState.value = MainUiState.Error
+                } catch (e: NoConnectionException) {
+                    ElSparUiState.Error
+                }
             }
         }
     }
@@ -83,26 +76,26 @@ class MainViewModel(
         buffer: PricePeriod = PricePeriod.MONTH
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            getPowerPriceUseCase(
-                endDate = LocalDate.now(),
-                period = buffer,
-                area = currentPriceArea
-            )
+            settings.collect { settings ->
+                getPowerPriceUseCase(
+                    endDate = LocalDate.now(),
+                    period = buffer,
+                    area = settings.area
+                )
+            }
         }
     }
 
     fun updatePricePeriod(pricePeriod: PricePeriod) {
         currentPricePeriod = pricePeriod
-        getPowerPrice()
+        update()
     }
 
-    fun updatePriceArea(priceArea: Settings.PriceArea) {
+    fun updatePriceArea(priceArea: PriceArea) {
         viewModelScope.launch(Dispatchers.IO) {
-            currentPriceArea = priceArea
             settingsRepository.updatePriceArea(priceArea)
             settingsRepository.initialStartupCompleted()
-            getPowerPrice()
-            cache()
+            update()
         }
     }
 
@@ -119,19 +112,19 @@ class MainViewModel(
 
     fun dateForward() {
         currentEndDate = currentEndDate.plusDays(currentPricePeriod.days.toLong())
-        getPowerPrice()
+        update()
     }
 
     fun dateBack() {
         currentEndDate = currentEndDate.minusDays(currentPricePeriod.days.toLong())
-        getPowerPrice()
+        update()
     }
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 (this[APPLICATION_KEY] as ElSparApplication).container.run {
-                    MainViewModel(
+                    ElSparViewModel(
                         getPowerPriceUseCase = getPowerPriceUseCase,
                         settingsRepository = settingsRepository
                     )

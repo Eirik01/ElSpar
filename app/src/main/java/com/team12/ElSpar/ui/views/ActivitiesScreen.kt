@@ -21,8 +21,9 @@ import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun ActivitiesScreen(
-    priceList: Map<LocalDateTime, Double>
-    ) {
+    currentPrice: Map<LocalDateTime, Double>,
+    showerTime: Int
+) {
     Column(
         modifier = Modifier
             .fillMaxHeight().verticalScroll(rememberScrollState())
@@ -31,9 +32,9 @@ fun ActivitiesScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ){
         //ALLE COMPOSABLES SOM SKAL VISES PÅ SKJERMEN GÅR HER vv
-        Card_CurrentPrice(priceList);
+        Card_CurrentPrice(currentPrice);
         ContentRow(
-            "10min dusj", 1.42f, 0.04f,
+            "$showerTime min dusj", 1.42f, 0.04f,
             "Klesvask", 0.13f, 0.01f
         );
         ContentRow(

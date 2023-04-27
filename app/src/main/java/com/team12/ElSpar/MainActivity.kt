@@ -7,16 +7,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.team12.ElSpar.ui.ElSparApp
-import com.team12.ElSpar.ui.viewmodel.MainViewModel
+import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
 import com.team12.ElSpar.ui.theme.ElSparTheme
 
 class MainActivity : ComponentActivity() {
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: ElSparViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ElSparTheme {
-                viewModel = viewModel(factory = MainViewModel.Factory)
+                viewModel = viewModel(factory = ElSparViewModel.Factory)
                 ElSparApp(viewModel)
             }
         }
