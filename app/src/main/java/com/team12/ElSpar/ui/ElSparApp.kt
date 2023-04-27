@@ -4,11 +4,15 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -17,6 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,6 +34,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.team12.ElSpar.R
 import kotlinx.coroutines.delay
 
 @Composable
@@ -153,23 +163,10 @@ fun LoadingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        //Text("LOADING")
         LoadingAnimation()
     }
 }
 
-@Composable
-fun ErrorScreen(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("ERROR")
-    }
-}
 
 @Composable
 fun LoadingAnimation(
@@ -239,8 +236,93 @@ fun LoadingAnimation(
     }
 }
 
+
+@Composable
+fun ErrorScreen(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        ErrorCard()
+        Spacer(Modifier.size(40.dp)) //FIX
+        ErrorRefreshButton()
+
+    }
+}
+
+
+@Composable
+fun ErrorCard() {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    ){
+        Column(
+            modifier = Modifier
+                .wrapContentHeight()
+                .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy((-10).dp)
+        ){
+            /*Row(horizontalArrangement = Arrangement.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp)
+            ){
+
+                //Text(text = "ERROR! :(")
+            }*/
+            val vector = ImageVector.vectorResource(R.drawable.error_48px)
+            Image(
+                painter =  rememberVectorPainter(image = vector),
+                contentDescription = "errorvector",
+                //modifier = Modifier.fillMaxSize(),
+                colorFilter = ColorFilter.tint(color = Color.Black)
+            )
+            Spacer(Modifier.size(30.dp)) //FIX
+            Text(text = "Something went wrong", color = Color.Black)
+
+
+        }
+    }
+
+}
+
+
+
+@Composable
+fun ErrorRefreshButton() {
+    Button(
+        onClick = { /* ... */ }
+    ) {
+        Column(
+            modifier = Modifier
+                .wrapContentHeight()
+                .padding(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy((-10).dp)
+        ){
+            val vector = ImageVector.vectorResource(R.drawable.refresh_48px)
+            Image(
+                painter =  rememberVectorPainter(image = vector),
+                contentDescription = "refreshvector",
+                //modifier = Modifier.fillMaxSize(),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primaryContainer)
+            )
+
+            Spacer(Modifier.size(30.dp)) //FIX
+            Text("Refresh")
+        }
+
+    }
+}
+
 @Preview
 @Composable
 fun AppPreview() {
-    LoadingAnimation()
+    ErrorScreen()
 }
