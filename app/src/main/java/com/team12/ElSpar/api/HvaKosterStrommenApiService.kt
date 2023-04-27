@@ -2,10 +2,12 @@ package com.team12.ElSpar.api
 
 import com.example.application.Settings
 import com.team12.ElSpar.model.PriceData
+import com.team12.ElSpar.network.NoConnectionException
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.serialization.*
+import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
 interface HvaKosterStrommenApiService {
@@ -28,6 +30,8 @@ class DefaultHvaKosterStrommenApiService(
             ).body()
         } catch (e: JsonConvertException) {
             throw PriceNotAvailableException()
+        } catch (e: UnresolvedAddressException) {
+            throw NoConnectionException()
         }
     }
 }

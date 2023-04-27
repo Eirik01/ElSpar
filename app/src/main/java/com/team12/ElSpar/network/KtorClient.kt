@@ -7,8 +7,6 @@ import io.ktor.serialization.kotlinx.json.*
 
 object KtorClient {
     val httpClient = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            json()
-        }
+        install(ContentNegotiation) { json() }
     }
 }

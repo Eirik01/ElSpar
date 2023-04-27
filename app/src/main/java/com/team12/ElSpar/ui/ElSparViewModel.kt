@@ -12,11 +12,16 @@ import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
+import com.team12.ElSpar.network.NoConnectionException
+import io.ktor.client.plugins.*
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 import java.io.IOException
+import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 
 class ElSparViewModel(
@@ -24,7 +29,7 @@ class ElSparViewModel(
     private val settingsRepository: SettingsRepository,
     initialPricePeriod: PricePeriod = PricePeriod.DAY,
     initialEndDate: LocalDate = LocalDate.now(),
-    initialCoordinates : Pair<String,String> = "60.79" to "11.08" // parametres in locationforecast2.0 API
+    //initialCoordinates : Pair<String,String> = "60.79" to "11.08" // parametres in locationforecast2.0 API
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<ElSparUiState> =
         MutableStateFlow(ElSparUiState.Loading)
@@ -33,13 +38,9 @@ class ElSparViewModel(
     private var currentPricePeriod = initialPricePeriod
     private var currentEndDate = initialEndDate
     private lateinit var currentPriceArea: Settings.PriceArea
-    private var currentCoordinates = initialCoordinates
+    //private var currentCoordinates = initialCoordinates
 
     init {
-        startup()
-    }
-
-    private fun startup() {
         viewModelScope.launch(Dispatchers.IO) {
             settingsRepository.settingsFlow.collect { settings ->
                 if (!settings.initialStartupCompleted) {
@@ -55,13 +56,12 @@ class ElSparViewModel(
         }
     }
 
-
     fun getPowerPrice(
         pricePeriod: PricePeriod = currentPricePeriod,
         priceArea: Settings.PriceArea = currentPriceArea,
         endDate: LocalDate = currentEndDate
     ) {
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = try {
                 ElSparUiState.Success(
                     currentPriceArea = priceArea,
@@ -73,7 +73,7 @@ class ElSparViewModel(
                         area = priceArea
                     )
                 )
-            } catch (e: IOException) {
+            } catch (e: NoConnectionException) {
                 ElSparUiState.Error
             }
         }
@@ -106,7 +106,7 @@ class ElSparViewModel(
         }
     }
 
-    fun updateCoordinatesForPriceArea(priceArea: PriceArea){
+    /*fun updateCoordinatesForPriceArea(priceArea: PriceArea){
         currentCoordinates = when (priceArea){
             PriceArea.NO1 -> "60.79" to "11.08"
             PriceArea.NO2 -> "59.14" to "7.80"
@@ -115,7 +115,7 @@ class ElSparViewModel(
             else -> "60.83" to "7.61"
         }
         //Log.d("priceCoords",currentCoordinates.toString())
-    }
+    }*/
 
     fun dateForward() {
         currentEndDate = currentEndDate.plusDays(currentPricePeriod.days.toLong())

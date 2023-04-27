@@ -10,11 +10,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.team12.ElSpar.model.PriceArea
 import com.team12.ElSpar.model.PricePeriod
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -25,16 +23,14 @@ import java.time.LocalDateTime
 fun MainScreen(
     priceList: Map<LocalDateTime, Double>,
     currentPricePeriod: PricePeriod,
-    currentPriceArea: PriceArea,
     currentEndDate: LocalDate,
     onChangePricePeriod: (PricePeriod) -> Unit,
-    onChangePriceArea: (PriceArea) -> Unit,
     onDateForward: () -> Unit,
     onDateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight().verticalScroll(rememberScrollState())
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -58,7 +54,7 @@ fun MainScreen(
 @Composable
 fun Card_CurrentPrice(
     priceList: Map<LocalDateTime, Double>
-    ){
+){
 
     val currPrice = priceList
         .filterKeys { it.toLocalDate() == LocalDate.now() && it.hour == LocalDateTime.now().hour }
@@ -144,10 +140,7 @@ fun IntervalButton(
 fun PriceText(
     priceList: Map<LocalDateTime, Double>,
     pricePeriod: PricePeriod,
-
-    ) {
-
-
+) {
 
     val avgPrice = priceList.values.average()
     val minPrice = priceList.values.min()
