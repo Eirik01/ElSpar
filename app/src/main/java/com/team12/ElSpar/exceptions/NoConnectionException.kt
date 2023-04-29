@@ -1,4 +1,4 @@
-package com.team12.ElSpar.network
+package com.team12.ElSpar.exceptions
 
 class NoConnectionException : Exception() {
 }

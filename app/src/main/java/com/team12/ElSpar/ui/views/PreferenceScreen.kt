@@ -1,7 +1,5 @@
 package com.team12.ElSpar.ui
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
@@ -15,51 +13,51 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.foundation.lazy.items
+import com.team12.ElSpar.Settings
 
+private data class Activity(
+    val type: Settings.Activity,
+    val preference: Int,
+    val title: String,
+    val unit: String,
+)
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun PreferenceScreen(
-    ) {
-    Scaffold(){
-        padding ->
-        var placeHolderPadding by remember { mutableStateOf(0) }
-        var textFiledSize by remember { mutableStateOf(Size.Zero) }
+    shower: Int,
+    wash: Int,
+    oven: Int,
+    car: Int,
+    onUpdatedPreference: (Settings.Activity, Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Scaffold { padding ->
+        var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-        var showerPreference : String by remember { mutableStateOf("10") } // måste fixas
-        var washPreference : String by  remember { mutableStateOf("60") } // måste fixas
-        var ovenPreference : String by remember { mutableStateOf("15") } // måste fixas
-        var carPreference : String by remember { mutableStateOf("24") } // måste fixas
+        val activities = listOf(
+            Activity(Settings.Activity.SHOWER, shower,"Dusj" ,"minutter"),
+            Activity(Settings.Activity.WASH, wash,"Klesvask" , "minutter" ),
+            Activity(Settings.Activity.OVEN, oven,"Ovn" , "minutter" ),
+            Activity(Settings.Activity.CAR, car,"Lade bil" , "KWh"))
 
-        val settingCardsTitles  : List<Pair<String,String>> = listOf(
-            Pair("Dusj" ,"minutter"),
-            Pair("Klesvask" , "minutter" ),
-            Pair("Ovn" , "minutter" ),
-            Pair("Lade bil" , "KWh"))
-
-        LazyColumn() {
-            items(settingCardsTitles.size) { index ->
-                var shownValue : String = ""
-                when(index){
-                    0 -> shownValue = showerPreference
-                    1 -> shownValue = washPreference
-                    2 -> shownValue = ovenPreference
-                    3 -> shownValue = carPreference
-                }
+        LazyColumn {
+            items(activities) { activity ->
+                var preference by remember { mutableStateOf(activity.preference.toString()) }
                 OutlinedTextField(
                     value = "",
                     enabled = false,
                     onValueChange = {},
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .onGloballyPositioned { coordinates ->
-                            textFiledSize = coordinates.size.toSize()
+                            textFieldSize = coordinates.size.toSize()
                         },
                     label = {Text(
-                        text = settingCardsTitles[index].first+" ("+settingCardsTitles[index].second+")",
-                        modifier = Modifier
-                            .padding(top = placeHolderPadding.dp),
+                        text = "${activity.title}(${activity.unit})",
+                        modifier = modifier
+                            .padding(padding),
                         fontSize = 16.sp,
                         color = Color.Black
                     )},
@@ -72,20 +70,12 @@ fun PreferenceScreen(
                 )
                 TextField(
                     onValueChange = {
-                        when(index){
-                            0 -> showerPreference = it
-                            1 -> washPreference = it
-                            2 -> ovenPreference = it
-                            3 -> carPreference = it
-                        }
-                        //Log.d("it",it) ; Log.d("value",shownValue)
-                        Log.d("showerPreference",showerPreference)
-                        Log.d("washPreference",washPreference)
-                        Log.d("ovenPreference",ovenPreference)
-                        Log.d("carPreference",carPreference)
+                        preference = it
+                        onUpdatedPreference(activity.type, it.toIntOrNull() ?: 0)
                     },
-                    value = shownValue,
+                    value = preference,
                     enabled = true,
+                    singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Decimal
                     ),
