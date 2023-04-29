@@ -5,6 +5,7 @@ option java_multiple_files = true;
 
 message Settings {
   bool initialStartupCompleted = 1;
+
   enum PriceArea {
     NO1 = 0;
     NO2 = 1;
@@ -13,5 +14,16 @@ message Settings {
     NO5 = 4;
   };
   PriceArea area = 2;
-  int32 showerTime = 3;
+
+  enum Activity {
+    SHOWER = 0;
+    WASH = 1;
+    OVEN = 2;
+    CAR = 3;
+  }
+
+  int32 shower = 3;
+  int32 wash = 4;
+  int32 oven = 5;
+  int32 car = 6;
 }

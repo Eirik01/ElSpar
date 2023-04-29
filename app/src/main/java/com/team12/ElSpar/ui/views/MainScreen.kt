@@ -13,10 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.team12.ElSpar.model.PriceData
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
@@ -76,7 +74,7 @@ fun Card_CurrentPrice(
 ){
 
     val currPrice = currentPrice
-        .filterKeys { it.toLocalDate() == LocalDate.now() && it.hour == LocalDateTime.now().hour }
+        .filterKeys { it.hour == LocalDateTime.now().hour }
         .values
         .first()
 

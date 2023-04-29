@@ -1,4 +1,4 @@
-package com.team12.ElSpar.ui
+package com.team12.ElSpar.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -6,13 +6,13 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.team12.ElSpar.Settings.PriceArea
+import com.team12.ElSpar.Settings
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
-import com.team12.ElSpar.network.NoConnectionException
+import com.team12.ElSpar.exceptions.NoConnectionException
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -91,14 +91,6 @@ class ElSparViewModel(
         update()
     }
 
-    fun updatePriceArea(priceArea: PriceArea) {
-        viewModelScope.launch(Dispatchers.IO) {
-            settingsRepository.updatePriceArea(priceArea)
-            settingsRepository.initialStartupCompleted()
-            update()
-        }
-    }
-
     /*fun updateCoordinatesForPriceArea(priceArea: PriceArea){
         currentCoordinates = when (priceArea){
             PriceArea.NO1 -> "60.79" to "11.08"
@@ -118,6 +110,20 @@ class ElSparViewModel(
     fun dateBack() {
         currentEndDate = currentEndDate.minusDays(currentPricePeriod.days.toLong())
         update()
+    }
+
+    fun updatePreference(priceArea: Settings.PriceArea) {
+        viewModelScope.launch(Dispatchers.IO) {
+            settingsRepository.updatePriceArea(priceArea)
+            settingsRepository.initialStartupCompleted()
+            update()
+        }
+    }
+
+    fun updatePreference(activity: Settings.Activity, value: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            settingsRepository.updateActivity(activity, value)
+        }
     }
 
     companion object {

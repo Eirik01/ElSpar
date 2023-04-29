@@ -22,28 +22,32 @@ import androidx.compose.foundation.verticalScroll
 @Composable
 fun ActivitiesScreen(
     currentPrice: Map<LocalDateTime, Double>,
-    showerTime: Int
+    shower: Int,
+    wash: Int,
+    oven: Int,
+    car: Int,
+    modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxHeight().verticalScroll(rememberScrollState())
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ){
         //ALLE COMPOSABLES SOM SKAL VISES PÅ SKJERMEN GÅR HER vv
-        Card_CurrentPrice(currentPrice);
+        Card_CurrentPrice(currentPrice)
         ContentRow(
-            "$showerTime min dusj", 1.42f, 0.04f,
-            "Klesvask", 0.13f, 0.01f
-        );
+            "$shower min dusj", 1.42f, 0.04f,
+            "$wash min klesvask", 0.13f, 0.01f
+        )
         ContentRow(
-            "Ovn (30min)", 0.23f, 0.05f,
-            "Lade bil (30kWh)", 5.27f, -1.23f
-        );
+            "Ovn ($oven min)", 0.23f, 0.05f,
+            "Lade bil ($car kWh)", 5.27f, -1.23f
+        )
         //Tekst på bunnen av siden
         //ENDRE DISSE! VARIABLENE
-        val hoyereDagspris:Boolean = true;
+        val hoyereDagspris = true
 
         var textString = "Strømprisen nå er xx% " + (if(hoyereDagspris) "over" else "under") + " dagens gjennomsnitt. "
         textString += if(!hoyereDagspris){
@@ -55,15 +59,15 @@ fun ActivitiesScreen(
         Text(
             text = textString,
             textAlign = TextAlign.Justify,
-            modifier = Modifier.fillMaxWidth(0.8f)
+            modifier = modifier.fillMaxWidth(0.8f)
         )
 
-        Spacer(modifier = Modifier.size(15.dp))
+        Spacer(modifier = modifier.size(15.dp))
 
         Text(
             "Kortene på siden viser pris for aktivitet, og hvor mye dyrere eller billigere det er å gjøre aktiviteten nå i forhold til de siste 24 timene sitt gjennomsnitt",
             textAlign = TextAlign.Justify,
-            modifier = Modifier.fillMaxWidth(0.8f)
+            modifier = modifier.fillMaxWidth(0.8f)
             )
 
     }
@@ -78,8 +82,8 @@ aktivitet2:String, aktivitetPris2:Float, aktivitetPrisDifferanse2:Float
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ){
-        ContentCard(Modifier.weight(1f), aktivitet1, aktivitetPris1, aktivitetPrisDifferanse1);
-        ContentCard(Modifier.weight(1f), aktivitet2, aktivitetPris2, aktivitetPrisDifferanse2);
+        ContentCard(Modifier.weight(1f), aktivitet1, aktivitetPris1, aktivitetPrisDifferanse1)
+        ContentCard(Modifier.weight(1f), aktivitet2, aktivitetPris2, aktivitetPrisDifferanse2)
     }
 }
 

@@ -1,15 +1,6 @@
 package com.team12.ElSpar.ui
 
-
-
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
@@ -19,35 +10,14 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.team12.ElSpar.Settings
-import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
 import com.team12.ElSpar.ui.viewmodel.ElSparUiState
+import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
 import com.team12.ElSpar.ui.views.LoadingScreen
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar(currScreen: String){
-    CenterAlignedTopAppBar(
-        title = { Text(text = currScreen)},
-        colors = topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        )
-    )
-}
 @Composable
 fun ElSparApp(
     elSparViewModel: ElSparViewModel,
@@ -59,13 +29,12 @@ fun ElSparApp(
     by elSparViewModel.settings.collectAsState(Settings.getDefaultInstance())
 
     val navController = rememberNavController()
+    var currentScreen by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { TopBar(currentScreen) },
-        bottomBar = {
-            if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController)
-        }
+        topBar = { if (elSparUiState !is ElSparUiState.SelectArea) TopBar(currentScreen) },
+        bottomBar = { if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController) }
     ) { padding ->
         Surface(
             modifier = modifier
@@ -74,14 +43,18 @@ fun ElSparApp(
             color = MaterialTheme.colorScheme.background
         ) {
             NavHost(navController = navController, startDestination = "ElSparScreen") {
-                composable("InformationScreen") {
+                composable("ActivitiesScreen") {
                     currentScreen = "Strømkalkulator"
+
                     DataContent(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel) {
                         ActivitiesScreen(
                             currentPrice = it.currentPrice,
-                            showerTime = settings.showerTime
+                            shower = settings.shower,
+                            wash = settings.wash,
+                            oven = settings.oven,
+                            car = settings.car,
                         )
                     }
                 }
@@ -91,7 +64,8 @@ fun ElSparApp(
 
                     DataContent(
                         elSparUiState = elSparUiState,
-                        elSparViewModel = elSparViewModel) {
+                        elSparViewModel = elSparViewModel
+                    ) {
                         MainScreen(
                             currentPrice = it.currentPrice,
                             priceList = it.priceList,
@@ -106,9 +80,10 @@ fun ElSparApp(
                 }
 
                 composable("SettingsScreen") {
-                    currentScreen = "Instillninger"
+                    currentScreen = "Instillinger"
+
                     SettingsScreen(
-                        onChangePreferences = { navController.navigate("PreferenceScreen")},
+                        onChangePreferences = {navController.navigate("PreferenceScreen")},
                         onChangePrisomraade  = {navController.navigate("SelectAreaScreen")},
                         onChangeMoms  = {},
                         onChangeInfo  = {navController.navigate("InfoScreen")},
@@ -117,10 +92,22 @@ fun ElSparApp(
                 }
                 composable("PreferenceScreen"){
                     currentScreen = "Preferanser"
-                    PreferenceScreen()
+
+                    PreferenceScreen(
+                        shower = settings.shower,
+                        wash = settings.wash,
+                        oven = settings.oven,
+                        car = settings.car,
+                        onUpdatedPreference = { activity, value ->
+                            elSparViewModel.updatePreference(activity, value)
+                        }
+                    )
                 }
                 composable("SelectAreaScreen"){
-
+                    SelectAreaScreen(
+                        currentPriceArea = settings.area,
+                        onChangePriceArea = { elSparViewModel.updatePreference(it) }
+                    )
                 }
                 composable("InfoScreen"){
                     InfoScreen()
@@ -128,18 +115,7 @@ fun ElSparApp(
                 composable("AboutUsScreen"){
                     AboutUsScreen()
                 }
-                }
-                /*ElSparScreen(
-                    priceList = priceList,
-                    currentPricePeriod = currentPricePeriod,
-                    currentPriceArea = currentPriceArea,
-                    currentEndDate = currentEndDate,
-                    onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
-                    onChangePriceArea = { elSparViewModel.updatePriceArea(it) },
-                    onDateForward = { elSparViewModel.dateForward() },
-                    onDateBack = { elSparViewModel.dateBack() },
-                    modifier = modifier
-                )*/
+            }
         }
     }
 }
@@ -155,7 +131,7 @@ fun DataContent(
         is ElSparUiState.SelectArea ->
                 SelectAreaScreen(
                     currentPriceArea = elSparUiState.currentPriceArea,
-                    onChangePriceArea = { elSparViewModel.updatePriceArea(it) }
+                    onChangePriceArea = { elSparViewModel.updatePreference(it) }
                 )
         is ElSparUiState.Loading -> LoadingScreen(modifier)
         is ElSparUiState.Error -> ErrorScreen(modifier)
@@ -163,6 +139,16 @@ fun DataContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopBar(currScreen: String){
+    CenterAlignedTopAppBar(
+        title = { Text(text = currScreen)},
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    )
+}
 
 @Composable
 fun NavBar(navController: NavHostController){
@@ -174,7 +160,7 @@ fun NavBar(navController: NavHostController){
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ){
-            IconButton(onClick = { navController.navigate("InformationScreen")}) {
+            IconButton(onClick = { navController.navigate("ActivitiesScreen")}) {
                 Icon(
                     imageVector = Icons.Default.List,
                     contentDescription = "List Icon")

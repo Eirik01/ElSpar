@@ -1,10 +1,10 @@
 package com.team12.ElSpar.domain
 
 import com.team12.ElSpar.Settings.PriceArea
-import com.team12.ElSpar.api.PriceNotAvailableException
+import com.team12.ElSpar.exceptions.PriceNotAvailableException
 import com.team12.ElSpar.data.PowerRepository
 import com.team12.ElSpar.model.PricePeriod
-import com.team12.ElSpar.network.NoConnectionException
+import com.team12.ElSpar.exceptions.NoConnectionException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
