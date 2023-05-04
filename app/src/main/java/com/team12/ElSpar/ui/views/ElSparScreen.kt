@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import com.example.application.Settings.PriceArea
+import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.R
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
