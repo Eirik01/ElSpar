@@ -34,6 +34,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.application.Settings
+import com.patrykandpatrick.vico.core.extension.getFieldValue
 import com.team12.ElSpar.R
 import kotlinx.coroutines.delay
 
@@ -41,7 +42,9 @@ import kotlinx.coroutines.delay
 @Composable
 fun NavBar(navController: NavHostController){
     BottomAppBar(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .height(60.dp)
+            .fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
         Row(
@@ -131,7 +134,7 @@ fun ElSparApp(
                 }
 
                 composable("SettingsScreen") {
-                    currentScreen = "Instillninger"
+                    currentScreen = "Instillinger"
                     SettingsScreen(
                         onChangePreferences = { navController.navigate("PreferenceScreen")},
                         onChangePrisomraade  = {navController.navigate("SelectAreaScreen")},
@@ -148,9 +151,11 @@ fun ElSparApp(
 
                 }
                 composable("InfoScreen"){
+                    currentScreen = "Mer om strøm"
                     InfoScreen()
                 }
                 composable("AboutUsScreen"){
+                    currentScreen = "Om oss"
                     AboutUsScreen()
                 }
                 }

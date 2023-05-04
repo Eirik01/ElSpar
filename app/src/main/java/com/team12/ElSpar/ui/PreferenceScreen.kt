@@ -15,90 +15,67 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.patrykandpatrick.vico.core.extension.ceil
 
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun PreferenceScreen(
+    modifier : Modifier = Modifier
     ) {
-    Scaffold(){
-        padding ->
-        var placeHolderPadding by remember { mutableStateOf(0) }
-        var textFiledSize by remember { mutableStateOf(Size.Zero) }
+    Scaffold() { padding ->
+        var showerPreference: Int by remember { mutableStateOf(10) } // måste fixas
+        var washPreference: Int by remember { mutableStateOf(60) } // måste fixas
+        var ovenPreference: Int by remember { mutableStateOf(15) } // måste fixas
+        var carPreference: Int by remember { mutableStateOf(24) } // måste fixas
 
-        var showerPreference : String by remember { mutableStateOf("10") } // måste fixas
-        var washPreference : String by  remember { mutableStateOf("60") } // måste fixas
-        var ovenPreference : String by remember { mutableStateOf("15") } // måste fixas
-        var carPreference : String by remember { mutableStateOf("24") } // måste fixas
+        val settingCardsTitles: List<Pair<String, String>> = listOf(
+            Pair("Dusj", "minutter"),
+            Pair("Klesvask", "minutter"),
+            Pair("Ovn", "minutter"),
+            Pair("Lade bil", "KWh")
+        )
+        Card(
+            modifier = modifier
+                .padding(10.dp)
+        ){
+            LazyColumn() {
+                items(settingCardsTitles.size) { index ->
+                    var shownValue: Int = 0
+                    when (index) {
+                        0 -> shownValue = showerPreference
+                        1 -> shownValue = washPreference
+                        2 -> shownValue = ovenPreference
+                        3 -> shownValue = carPreference
+                    }
 
-        val settingCardsTitles  : List<Pair<String,String>> = listOf(
-            Pair("Dusj" ,"minutter"),
-            Pair("Klesvask" , "minutter" ),
-            Pair("Ovn" , "minutter" ),
-            Pair("Lade bil" , "KWh"))
 
-        LazyColumn() {
-            items(settingCardsTitles.size) { index ->
-                var shownValue : String = ""
-                when(index){
-                    0 -> shownValue = showerPreference
-                    1 -> shownValue = washPreference
-                    2 -> shownValue = ovenPreference
-                    3 -> shownValue = carPreference
-                }
-                OutlinedTextField(
-                    value = "",
-                    enabled = false,
-                    onValueChange = {},
+                    Text(
+                    text = settingCardsTitles[index].first + " (" + settingCardsTitles[index].second + "):   "+shownValue,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .onGloballyPositioned { coordinates ->
-                            textFiledSize = coordinates.size.toSize()
+                        .padding(top = 15.dp,start = 10.dp),
+                    fontSize = 16.sp,
+                    )
+
+
+                    Slider(
+                        modifier = modifier.padding(start = 20.dp, end = 20.dp),
+                        onValueChange = {
+                            when (index) {
+                            0 -> showerPreference = it.toInt()
+                            1 -> washPreference = it.toInt()
+                            2 -> ovenPreference = it.toInt()
+                            3 -> carPreference = it.toInt()
+                            }
                         },
-                    label = {Text(
-                        text = settingCardsTitles[index].first+" ("+settingCardsTitles[index].second+")",
-                        modifier = Modifier
-                            .padding(top = placeHolderPadding.dp),
-                        fontSize = 16.sp,
-                        color = Color.Black
-                    )},
-                    colors = TextFieldDefaults.outlinedTextFieldColors (
-                        focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledTextColor = Color.Black
+                        steps = 360,
+                        value = shownValue.toFloat(),
+                        valueRange = 1f..360f
                     )
-                )
-                TextField(
-                    onValueChange = {
-                        when(index){
-                            0 -> showerPreference = it
-                            1 -> washPreference = it
-                            2 -> ovenPreference = it
-                            3 -> carPreference = it
-                        }
-                        //Log.d("it",it) ; Log.d("value",shownValue)
-                        Log.d("showerPreference",showerPreference)
-                        Log.d("washPreference",washPreference)
-                        Log.d("ovenPreference",ovenPreference)
-                        Log.d("carPreference",carPreference)
-                    },
-                    value = shownValue,
-                    enabled = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal
-                    ),
-                    modifier = Modifier
-                        .height(49.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors (
-                        focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledTextColor = Color.Black
-                    )
-                )
+                }
             }
         }
     }
 }
+
