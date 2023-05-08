@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.sp
 import com.team12.ElSpar.R
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 fun SettingsScreen(
     onChangePreferences :  () -> Unit,
