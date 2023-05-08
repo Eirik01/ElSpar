@@ -1,8 +1,9 @@
 package com.team12.ElSpar.api
 
 import com.team12.ElSpar.Settings
+import com.team12.ElSpar.exceptions.PriceNotAvailableException
 import com.team12.ElSpar.model.PriceData
-import com.team12.ElSpar.network.NoConnectionException
+import com.team12.ElSpar.exceptions.NoConnectionException
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*

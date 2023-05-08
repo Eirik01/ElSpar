@@ -13,6 +13,17 @@ message Settings {
     NO4 = 3;
     NO5 = 4;
   };
-
   PriceArea area = 2;
+
+  enum Activity {
+    SHOWER = 0;
+    WASH = 1;
+    OVEN = 2;
+    CAR = 3;
+  }
+
+  int32 shower = 3;
+  int32 wash = 4;
+  int32 oven = 5;
+  int32 car = 6;
 }

@@ -8,8 +8,8 @@ import com.team12.ElSpar.fake.*
 import com.team12.ElSpar.model.PriceArea
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.rules.TestDispatcherRule
-import com.team12.ElSpar.ui.ElSparUiState
-import com.team12.ElSpar.ui.ElSparViewModel
+import com.team12.ElSpar.ui.viewmodel.ElSparUiState
+import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -26,7 +26,7 @@ class ViewModelTest {
     val testDispatcher = TestDispatcherRule()
 
     //Initializing the ViewModel
-    private val elSparViewModel: ElSparViewModel by lazy {
+    private val mainViewModel: ElSparViewModel by lazy {
         //fake API that gets data from fakeDataSourceList
         val fakeHvaKosterStrommenApiService = FakeHvaKosterStrommenApiService()
         //repos
@@ -44,12 +44,12 @@ class ViewModelTest {
     @Test
     fun elSparViewModel_getPowerPrice_verifyElSparUiStateSuccess() =
         runTest{
-            elSparViewModel.getPowerPrice()
+            mainViewModel.getPowerPrice()
             sleep(3000)
 
             assertEquals(
                 ElSparUiState.Success(PriceArea.NO1, PricePeriod.DAY, FakePowerDataSource.priceDataMapMVA),
-                elSparViewModel.uiState.value
+                mainViewModel.uiState.value
             )
         }
 
@@ -57,7 +57,7 @@ class ViewModelTest {
     @Test
     fun elSparViewModel_updatePriceArea_verifyElSparViewModelCurrentPriceArea() =
         runTest {
-            elSparViewModel.updatePriceArea(PriceArea.NO2)
+            mainViewModel.updatePriceArea(PriceArea.NO2)
 
             /*30.03 test is not working atm because currentPriceArea is in ViewModel, and not uiState yet
             assertEquals(

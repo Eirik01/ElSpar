@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.team12.ElSpar.Settings
 import com.team12.ElSpar.api.DefaultHvaKosterStrommenApiService
 import com.team12.ElSpar.api.DefaultMetApiService
 import com.team12.ElSpar.api.HvaKosterStrommenApiService

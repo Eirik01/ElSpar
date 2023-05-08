@@ -23,8 +23,7 @@ fun SettingsScreen(
     onChangeAboutUs :  () -> Unit,
     modifier : Modifier = Modifier,
 ){
-    Scaffold(){
-            padding ->
+    Scaffold(){ padding ->
         val settingCardsTitles  = listOf(
             stringResource(R.string.skru_av_moms),
             stringResource(R.string.Preferanser),
