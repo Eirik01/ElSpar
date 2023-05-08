@@ -38,7 +38,10 @@ fun PreferenceScreen(
         )
         Card(
             modifier = modifier
-                .padding(10.dp)
+                .padding(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            ),
         ){
             LazyColumn() {
                 items(settingCardsTitles.size) { index ->

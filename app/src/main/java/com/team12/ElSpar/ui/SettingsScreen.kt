@@ -46,7 +46,7 @@ fun SettingsScreen(
                 Card(
                     shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
-                        .padding(top = 8.dp)
+                        .padding(top = 8.dp, start = 4.dp, end = 4.dp)
                         .height(60.dp)
                         .fillMaxWidth()
                         .clickable(onClick = { onChangeFunction() }
@@ -69,7 +69,7 @@ fun SettingsScreen(
                                 .padding(8.dp)
                         )
                         if(index == 0){
-                            var momsEnabled by remember { mutableStateOf(true)}
+                            var momsEnabled by remember { mutableStateOf(false)}
                             Switch(
                                 modifier = modifier
                                     .padding(start = 175.dp),
