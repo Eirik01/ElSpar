@@ -50,8 +50,6 @@ fun PriceChart(
     modifier: Modifier = Modifier,
     pattern: DecimalFormat = DecimalFormat("#.#")
         .apply { roundingMode = RoundingMode.CEILING },
-    startAxisValueFormatter: AxisValueFormatter<AxisPosition.Vertical.Start> =
-        DecimalFormatAxisValueFormatter(pattern.toPattern(), RoundingMode.CEILING),
     bottomAxisValueFormatter: AxisValueFormatter<AxisPosition.Horizontal.Bottom> =
         AxisValueFormatter { value, chartValues ->
             (chartValues.chartEntryModel.entries.first().getOrNull(value.toInt()) as? PriceEntry)
@@ -121,9 +119,6 @@ fun PriceChart(
                 //axisValuesOverrider = AxisValuesOverrider.adaptiveYValues(1.2f),
             ),
             model = model(priceList, pricePeriod),
-            startAxis = startAxis(
-                valueFormatter = startAxisValueFormatter
-            ),
             bottomAxis = bottomAxis(
                 tickLength = 4.dp,
                 tickPosition = HorizontalAxis.TickPosition.Center(

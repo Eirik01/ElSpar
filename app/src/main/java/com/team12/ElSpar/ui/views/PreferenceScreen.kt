@@ -52,7 +52,7 @@ fun PreferenceScreen(
                 items(activities) { activity ->
                     var preference by remember { mutableStateOf(activity.preference) }
                     Text(
-                        text = "${activity.title}(${activity.unit})",
+                        text = "${activity.title}(${activity.unit})    $preference",
                         modifier = Modifier
                             .padding(top = 15.dp,start = 10.dp),
                         fontSize = 16.sp,

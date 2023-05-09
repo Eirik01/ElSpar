@@ -72,7 +72,7 @@ fun SelectAreaScreen(
                             modifier = Modifier
                                 .width(with(LocalDensity.current){ textFiledSize.width.toDp() })
                         ) {
-                            PriceArea.values().forEach {
+                            PriceArea.values().dropLast(1).forEach {
                                 DropdownMenuItem(
                                     text = {Text(text = it.name)},
                                     onClick = {
