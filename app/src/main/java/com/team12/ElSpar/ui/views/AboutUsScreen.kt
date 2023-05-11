@@ -24,16 +24,16 @@ fun AboutUsScreen(){
             ),
         ){
             Text(
-                text = "ElSpar har blivit utvecklat av en grupp på 6 informatikstudenter på UIO " +
-                        "inom kurset IN2000 - Software Engineering med prosjektarbeid.\n" +
-                        "Vårt mål med denna appen- bortsätt från att det är väldigt relevant träning i " +
-                        "apputveckling, var att upplysa folk på strömpriser. Dessutom tror vi " +
-                        "starkt på att denna appen kan få brukarna " +
-                        "att spara en del pengar, bara utav att ändra på deras redan existerande rutiner. \n" +
-                        "Anledningen varför vi tycker att strømpriser ær viktiga ær før att vi sjælva sliter " +
-                        "ekonomiskt med att betala strømrækningen, vidare tycker vi att det ær viktigt att kæmpa" +
-                        "mot glashuseffekten. Vi tyckte att det inte fanns ett mer relevant sætt att gøra detta på " +
-                        "æn med en strøm-app",
+                text = "ElSpar har blitt utviklet av en gruppe på 6 informatikkstudenter fra UIO " +
+                        "i kurset IN2000 - Software Engineering med prosjektarbeid.\n\n" +
+                        "Målet vårt med denne appen, bortsett fra at vi må lage en app for " +
+                        "å få en god karakter, var å opplyse folk  om strømpriser. Dessuten tror vi " +
+                        "at denne appen kan få brukerene " +
+                        "til å spare en del penger ved å endre rutinene deres. \n\n" +
+                        "Vi mener at strømpriser er viktige ettersom vi selv sliter " +
+                        "med å betale strømrekningen, og har snakket med flere som sliter med det samme problemet. " +
+                        "Vi kom fram til at den beste måten vi kan ha innvirkning på dette er ved å utvikle en app "+
+                        "som hjelper folk med å redusere sine strømutgifter ved å endre sine vaner.",
                 modifier = Modifier.
                 padding(10.dp),
 
