@@ -39,11 +39,15 @@ fun ActivitiesScreen(
         Card_CurrentPrice(currentPrice)
         ContentRow(
             "$shower min dusj", 1.42f, 0.04f,
-            "$wash min klesvask", 0.13f, 0.01f
+            "$wash min klesvask", 0.13f, 0.01f,
+            R.drawable.shower,
+            R.drawable.laundry
         )
         ContentRow(
             "Ovn ($oven min)", 0.23f, 0.05f,
-            "Lade bil ($car kWh)", 5.27f, -1.23f
+            "Lade bil ($car kWh)", 5.27f, -1.23f,
+            R.drawable.oven,
+            R.drawable.charger
         )
         //Tekst på bunnen av siden
         //ENDRE DISSE! VARIABLENE
@@ -76,14 +80,16 @@ fun ActivitiesScreen(
 @Composable
 fun ContentRow(
 aktivitet1:String, aktivitetPris1:Float, aktivitetPrisDifferanse1:Float,
-aktivitet2:String, aktivitetPris2:Float, aktivitetPrisDifferanse2:Float
+aktivitet2:String, aktivitetPris2:Float, aktivitetPrisDifferanse2:Float,
+icon1: Int,
+icon2: Int
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ){
-        ContentCard(Modifier.weight(1f), aktivitet1, aktivitetPris1, aktivitetPrisDifferanse1)
-        ContentCard(Modifier.weight(1f), aktivitet2, aktivitetPris2, aktivitetPrisDifferanse2)
+        ContentCard(Modifier.weight(1f), aktivitet1, aktivitetPris1, aktivitetPrisDifferanse1, icon1)
+        ContentCard(Modifier.weight(1f), aktivitet2, aktivitetPris2, aktivitetPrisDifferanse2, icon2)
     }
 }
 
@@ -92,7 +98,8 @@ fun ContentCard(
     modifier: Modifier,
     aktivitet:String,
     aktivitetPris:Float,
-    aktivitetPrisDifferanse:Float
+    aktivitetPrisDifferanse:Float,
+    icon: Int
 ) {
 
     Card(
@@ -110,7 +117,7 @@ fun ContentCard(
         ){
 
             Image(
-                painter = painterResource(id = R.drawable.noimage),
+                painter = painterResource(id = icon),
                 contentDescription = "My Image"
             )
             Text(text = aktivitet, textAlign = TextAlign.Center)
