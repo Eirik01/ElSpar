@@ -106,7 +106,24 @@ fun SelectAreaScreen(
                     //dropdown-meny
                     var textFiledSize by remember { mutableStateOf(Size.Zero) }
 
-
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier
+                                .width(with(LocalDensity.current){ textFiledSize.width.toDp() })
+                        ) {
+                            PriceArea.values().dropLast(1).forEach {
+                                DropdownMenuItem(
+                                    text = {Text(text = it.name)},
+                                    onClick = {
+                                        expanded = false
+                                        placeHolderPadding = maxPlaceHolderPadding
+                                        onChangePriceArea(it)
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
                 },
                 modifier = modifier,

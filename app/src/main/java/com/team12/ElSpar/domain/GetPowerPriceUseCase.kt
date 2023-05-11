@@ -5,6 +5,7 @@ import com.team12.ElSpar.exceptions.PriceNotAvailableException
 import com.team12.ElSpar.data.PowerRepository
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.exceptions.NoConnectionException
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -12,7 +13,9 @@ import java.time.LocalDateTime
 
 class GetPowerPriceUseCase (
     private val powerRepository: PowerRepository,
-    private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase
+    private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase,
+    private val iODispatcher: CoroutineDispatcher = Dispatchers.IO
+
 ) {
     suspend operator fun invoke(
         period: PricePeriod,
