@@ -33,7 +33,7 @@ fun SelectAreaScreen(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
-
+    var outlinedTextValue by remember { mutableStateOf("") }
     var placeHolderPadding by remember { mutableStateOf(0) }
     val maxPlaceHolderPadding = 7
 
@@ -44,7 +44,7 @@ fun SelectAreaScreen(
         Box(contentAlignment = Alignment.Center){
             OutlinedTextField(
                 readOnly = true,
-                value = currentPriceArea.name,
+                value = outlinedTextValue,
                 enabled = false,
                 onValueChange = {},
                 modifier = modifier.fillMaxWidth(0.9f)
@@ -83,13 +83,14 @@ fun SelectAreaScreen(
                         textFiledSize = coordinates.size.toSize()
                     }*/
             ) {
-                PriceArea.values().forEach {
+                PriceArea.values().dropLast(1).forEach {
                     DropdownMenuItem(
                         text = {Text(text = it.name)},
                         onClick = {
                             expanded = false
                             placeHolderPadding = maxPlaceHolderPadding
                             onChangePriceArea(it)
+                            outlinedTextValue = it.toString()
                         }
                     )
                 }
@@ -106,6 +107,33 @@ fun SelectAreaScreen(
                     //dropdown-meny
                     var textFiledSize by remember { mutableStateOf(Size.Zero) }
 
+<<<<<<< Updated upstream
+=======
+                    Column(
+                        modifier = modifier.padding(20.dp)
+                    ) {
+                        OutlinedTextField(
+                            readOnly = true,
+                            value = outlinedTextValue,
+                            enabled = false,
+                            onValueChange = {},
+                            modifier = modifier
+                                .fillMaxWidth()
+                                .onGloballyPositioned { coordinates ->
+                                    textFiledSize = coordinates.size.toSize()
+                                },
+                            label = {Text(
+                                text = stringResource(R.string.pick_price_area),
+                                modifier = Modifier.padding(top = placeHolderPadding.dp))},
+                            colors = TextFieldDefaults.outlinedTextFieldColors (
+                                focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer, //hide the indicator
+                                unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+                                disabledBorderColor = MaterialTheme.colorScheme.primaryContainer,
+                               // disabledTextColor = Color.Black
+                            )
+                        )
+
+>>>>>>> Stashed changes
                         DropdownMenu(
                             expanded = expanded,
                             onDismissRequest = { expanded = false },
@@ -119,6 +147,7 @@ fun SelectAreaScreen(
                                         expanded = false
                                         placeHolderPadding = maxPlaceHolderPadding
                                         onChangePriceArea(it)
+                                        outlinedTextValue  = currentPriceArea.name
                                     }
                                 )
                             }

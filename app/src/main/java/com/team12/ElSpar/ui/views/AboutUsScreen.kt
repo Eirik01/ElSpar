@@ -24,7 +24,7 @@ fun AboutUsScreen(){
             ),
         ){
             Text(
-                text = "ElSpar har blivit utvecklat av en grupp på 6 informatikstudenter på UIO " +
+                text = "ElSpar har blitt utviklet av en gruppe med 6 informatikkstudenter på UIO " +
                         "inom kurset IN2000 - Software Engineering med prosjektarbeid.\n" +
                         "Vårt mål med denna appen- bortsätt från att det är väldigt relevant träning i " +
                         "apputveckling, var att upplysa folk på strömpriser. Dessutom tror vi " +
