@@ -104,6 +104,7 @@ fun ElSparApp(
                     )
                 }
                 composable("SelectAreaScreen"){
+                    currentScreen = "Velg prisområde"
                     SelectAreaScreen(
                         currentPriceArea = settings.area,
                         onChangePriceArea = { elSparViewModel.updatePreference(it) }

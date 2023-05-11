@@ -1,6 +1,7 @@
 package com.team12.ElSpar.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -35,6 +36,69 @@ fun SelectAreaScreen(
 
     var placeHolderPadding by remember { mutableStateOf(0) }
     val maxPlaceHolderPadding = 7
+
+    Column(
+        modifier = modifier.fillMaxSize().padding(top = 10.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(contentAlignment = Alignment.Center){
+            OutlinedTextField(
+                readOnly = true,
+                value = currentPriceArea.name,
+                enabled = false,
+                onValueChange = {},
+                modifier = modifier.fillMaxWidth(0.9f)
+                    /*
+                    .onGloballyPositioned { coordinates ->
+                        textFiledSize = coordinates.size.toSize()
+                    }*/,
+                label = {Text(
+                    text = stringResource(R.string.pick_price_area),
+                    modifier = modifier.padding(top = placeHolderPadding.dp),
+                    color = MaterialTheme.colorScheme.onBackground
+                    )},
+                colors = TextFieldDefaults.outlinedTextFieldColors (
+                    focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer, //hide the indicator
+                    unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
+                    disabledBorderColor = MaterialTheme.colorScheme.primaryContainer,
+                    disabledTextColor = MaterialTheme.colorScheme.onBackground
+                ),
+                trailingIcon = {
+                    IconButton(onClick = {expanded = !expanded}) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = stringResource(R.string.pick_price_area),
+                        )
+                    }
+                }
+            )
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                modifier = modifier.fillMaxWidth(0.9f)
+                    //.width(with(LocalDensity.current){ textFiledSize.width.toDp() })
+                        /*
+                    .onGloballyPositioned { coordinates ->
+                        textFiledSize = coordinates.size.toSize()
+                    }*/
+            ) {
+                PriceArea.values().forEach {
+                    DropdownMenuItem(
+                        text = {Text(text = it.name)},
+                        onClick = {
+                            expanded = false
+                            placeHolderPadding = maxPlaceHolderPadding
+                            onChangePriceArea(it)
+                        }
+                    )
+                }
+            }
+        }
+
+        image()
+    }
+    /*
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -42,48 +106,7 @@ fun SelectAreaScreen(
                     //dropdown-meny
                     var textFiledSize by remember { mutableStateOf(Size.Zero) }
 
-                    Column(
-                        modifier = modifier.padding(20.dp)
-                    ) {
-                        OutlinedTextField(
-                            readOnly = true,
-                            value = currentPriceArea.name,
-                            enabled = false,
-                            onValueChange = {},
-                            modifier = modifier
-                                .fillMaxWidth()
-                                .onGloballyPositioned { coordinates ->
-                                    textFiledSize = coordinates.size.toSize()
-                                },
-                            label = {Text(
-                                text = stringResource(R.string.pick_price_area),
-                                modifier = Modifier.padding(top = placeHolderPadding.dp))},
-                            colors = TextFieldDefaults.outlinedTextFieldColors (
-                                focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer, //hide the indicator
-                                unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                                disabledBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                                disabledTextColor = Color.Black
-                            )
-                        )
 
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false },
-                            modifier = Modifier
-                                .width(with(LocalDensity.current){ textFiledSize.width.toDp() })
-                        ) {
-                            PriceArea.values().forEach {
-                                DropdownMenuItem(
-                                    text = {Text(text = it.name)},
-                                    onClick = {
-                                        expanded = false
-                                        placeHolderPadding = maxPlaceHolderPadding
-                                        onChangePriceArea(it)
-                                    }
-                                )
-                            }
-                        }
-                    }
                 }
                 },
                 modifier = modifier,
@@ -115,17 +138,22 @@ fun SelectAreaScreen(
         ) {
 
 
-            image()
 
         }
-    }
+    }*/
 }
 
 @Composable
 fun image() {
+    var painter =
+        if (!isSystemInDarkTheme())
+            painterResource(id = R.drawable.prisomrader)
+        else
+            painterResource(id = R.drawable.prisomraderdark)
+
     val imageModifier = Modifier.fillMaxSize()
     Image(
-        painter = painterResource(id = R.drawable.prisomrader),
+        painter = painter,
         contentDescription = stringResource(id = R.string.prisomraderPlaceholder),
         contentScale = ContentScale.Fit,
         modifier = imageModifier
