@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 class GetPowerPriceUseCase (
     private val powerRepository: PowerRepository,
     private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase,
-    private val iODispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val iODispatcher: CoroutineDispatcher = Dispatchers.IO // testing
 
 ) {
     suspend operator fun invoke(

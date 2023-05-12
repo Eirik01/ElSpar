@@ -10,6 +10,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -104,6 +105,7 @@ fun ElSparApp(
                     )
                 }
                 composable("SelectAreaScreen"){
+                    currentScreen = "Velg prisområde"
                     SelectAreaScreen(
                         currentPriceArea = settings.area,
                         onChangePriceArea = { elSparViewModel.updatePreference(it) }
@@ -153,7 +155,9 @@ fun TopBar(currScreen: String){
 @Composable
 fun NavBar(navController: NavHostController){
     BottomAppBar(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .height(60.dp)
+            .fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
         Row(
@@ -180,6 +184,7 @@ fun NavBar(navController: NavHostController){
         }
     }
 }
+
 
 @Composable
 fun ErrorScreen(

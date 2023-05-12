@@ -1,22 +1,17 @@
 package com.team12.ElSpar.ui
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
-import androidx.compose.foundation.lazy.items
 import com.team12.ElSpar.Settings
 
-private data class Activity(
+data class Activity(
     val type: Settings.Activity,
     val preference: Int,
     val title: String,
@@ -24,7 +19,6 @@ private data class Activity(
 )
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun PreferenceScreen(
     shower: Int,
     wash: Int,
@@ -33,62 +27,74 @@ fun PreferenceScreen(
     onUpdatedPreference: (Settings.Activity, Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold { padding ->
-        var textFieldSize by remember { mutableStateOf(Size.Zero) }
-
+    Column(
+        modifier = modifier
+            .fillMaxHeight(1f)
+            .verticalScroll(rememberScrollState())
+    ){
         val activities = listOf(
             Activity(Settings.Activity.SHOWER, shower,"Dusj" ,"minutter"),
             Activity(Settings.Activity.WASH, wash,"Klesvask" , "minutter" ),
             Activity(Settings.Activity.OVEN, oven,"Ovn" , "minutter" ),
             Activity(Settings.Activity.CAR, car,"Lade bil" , "KWh"))
-
-        LazyColumn {
-            items(activities) { activity ->
-                var preference by remember { mutableStateOf(activity.preference.toString()) }
-                OutlinedTextField(
-                    value = "",
-                    enabled = false,
-                    onValueChange = {},
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .onGloballyPositioned { coordinates ->
-                            textFieldSize = coordinates.size.toSize()
-                        },
-                    label = {Text(
-                        text = "${activity.title}(${activity.unit})",
-                        modifier = modifier
-                            .padding(padding),
-                        fontSize = 16.sp,
-                        color = Color.Black
-                    )},
-                    colors = TextFieldDefaults.outlinedTextFieldColors (
-                        focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledTextColor = Color.Black
-                    )
-                )
-                TextField(
-                    onValueChange = {
-                        preference = it
-                        onUpdatedPreference(activity.type, it.toIntOrNull() ?: 0)
-                    },
-                    value = preference,
-                    enabled = true,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Decimal
-                    ),
-                    modifier = Modifier
-                        .height(49.dp),
-                    colors = TextFieldDefaults.outlinedTextFieldColors (
-                        focusedBorderColor =  MaterialTheme.colorScheme.primaryContainer,
-                        unfocusedBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledBorderColor = MaterialTheme.colorScheme.primaryContainer,
-                        disabledTextColor = Color.Black
-                    )
+        Card(
+            modifier = modifier
+                .padding(10.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer)
+        ){
+            activities.forEach{
+                sliderElement(
+                    it,
+                    onUpdatedPreference
                 )
             }
         }
+        Spacer(modifier = modifier.size(15.dp))
+        Text(
+            text = "Her velger du hvor lenge aktivitetene i ´Strømkalkulator´-skjermen varer. For å lade" +
+                    "bil regner vi med en fullading, og derfor velger du istedet kapasiteten til elbilen" +
+                    "din sitt batteri.",
+            textAlign = TextAlign.Justify,
+            modifier = modifier
+                .padding(20.dp)
+        )
+        Text(
+            text = "Antagelser har blitt gjort for de forskjellige aktiviteterna. Vi har antatt at:\n" +
+                    "  - En dusj bruker runt 5kWh\n" +
+                    "  - En klesvask bruker runt 0.4kWh\n" +
+                    "  - En ovn bruker runt 3.5kWh\n",
+            textAlign = TextAlign.Justify,
+            modifier = modifier
+                .padding(20.dp)
+        )
     }
 }
+
+@Composable
+fun sliderElement(
+    activity : Activity,
+   onUpdatedPreference: (Settings.Activity, Int) -> Unit,
+   modifier: Modifier = Modifier
+){
+    var preference by remember { mutableStateOf(activity.preference) }
+    Text(
+        text = "${activity.title}   $preference  ${activity.unit} ",
+        modifier = Modifier
+            .padding(top = 15.dp,start = 10.dp),
+        fontSize = 16.sp,
+    )
+    Slider(
+        modifier = modifier.padding(start = 20.dp, end = 20.dp),
+        onValueChange = {
+            preference = it.toInt()
+            onUpdatedPreference(activity.type, it.toInt())
+        },
+        steps = 360,
+        value = preference.toFloat(),
+        valueRange = 1f..360f
+    )
+}
+
+
+
