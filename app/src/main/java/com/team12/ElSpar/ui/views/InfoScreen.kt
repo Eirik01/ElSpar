@@ -22,7 +22,7 @@ fun InfoScreen(
         val textList : List<Triple<String,String,String>> = listOf(
             Triple("Hva er en 'kWh'?" , "Mange ser kWh bli skrevet men veit ikke helt hva det er", "f"),
             Triple("Aktiviteter" , "Hvilke antagelser er gjort?", "f"),
-            Triple("Strømpriser" , "Hva er greien med strømpriser?", "c"),
+            Triple("Strømpriser" , "Hva er greia med strømpriser?", "c"),
             Triple("Prognos" , "Hva baserer prognosen seg på?", "i"),
             Triple("Spotpris" , "Hva bestemmer spotprisene?", "i"),
 
