@@ -28,6 +28,7 @@ import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis.TickPosition.Edge.spacing
+import com.patrykandpatrick.vico.core.axis.vertical.VerticalAxis
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.component.shape.Shapes
 import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShader
@@ -48,7 +49,7 @@ fun PriceChart(
     priceList: Map<LocalDateTime, Double>,
     pricePeriod: PricePeriod,
     modifier: Modifier = Modifier,
-    pattern: DecimalFormat = DecimalFormat("#.#")
+    pattern: DecimalFormat = DecimalFormat("#")
         .apply { roundingMode = RoundingMode.CEILING },
     startAxisValueFormatter: AxisValueFormatter<AxisPosition.Vertical.Start> =
         DecimalFormatAxisValueFormatter(pattern.toPattern(), RoundingMode.CEILING),
@@ -122,7 +123,8 @@ fun PriceChart(
             ),
             model = model(priceList, pricePeriod),
             startAxis = startAxis(
-                valueFormatter = startAxisValueFormatter
+                valueFormatter = startAxisValueFormatter,
+                horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Inside
             ),
             bottomAxis = bottomAxis(
                 tickLength = 4.dp,

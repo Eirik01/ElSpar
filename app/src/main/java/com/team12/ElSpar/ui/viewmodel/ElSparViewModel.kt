@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.team12.ElSpar.Settings
 import com.team12.ElSpar.ElSparApplication
+import com.team12.ElSpar.data.DefaultSettingsRepository
 import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +56,7 @@ class ElSparViewModel(
         _uiState.value = ElSparUiState.Loading
         viewModelScope.launch() {
                 settings.collect { settings ->
+                    println("settings")
                     _uiState.value = try {
                         ElSparUiState.Success(
                             currentPricePeriod = currentPricePeriod,
