@@ -1,4 +1,5 @@
 package com.team12.ElSpar
+package com.team12.ElSpar
 
 import com.team12.ElSpar.api.DefaultMetApiService
 import com.team12.ElSpar.data.DefaultPowerRepository
@@ -36,21 +37,21 @@ class GetPowerPriceUseCaseTest {
                     )
                 )
             )
-    )
+        )
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun getPowerPriceUseCase_invoke_mapIsNotEmpty() =
         runTest {
-        val result =
-            getPowerPriceUseCase(
-                period = PricePeriod.DAY,
-                endDate = LocalDate.of(2023, 1, 1),
-                area = Settings.PriceArea.NO1
-            )
+            val result =
+                getPowerPriceUseCase(
+                    period = PricePeriod.DAY,
+                    endDate = LocalDate.of(2023, 1, 1),
+                    area = Settings.PriceArea.NO1
+                )
 
-        assertTrue(result.isNotEmpty())
-    }
+            assertTrue(result.isNotEmpty())
+        }
     @Test
     fun getPowerPriceUseCase_invoke_containsDataForWeek() =
         runTest {

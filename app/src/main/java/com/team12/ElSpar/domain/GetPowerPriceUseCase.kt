@@ -21,7 +21,7 @@ class GetPowerPriceUseCase (
         period: PricePeriod,
         endDate: LocalDate,
         area: PriceArea,
-    ): Map<LocalDateTime, Double> = withContext(iODispatcher){
+    ): Map<LocalDateTime, Double> = withContext(iODispatcher) {
         val priceData = mutableMapOf<LocalDateTime, Double>()
         val startDate = endDate.minusDays(period.days-1L)
         for (i in 0 until period.days) {

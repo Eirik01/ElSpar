@@ -77,7 +77,6 @@ dependencies {
 
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("com.google.protobuf:protobuf-javalite:3.18.0")
-    //implementation 'androidx.datastore:datastore-core-android:+'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -88,18 +87,8 @@ dependencies {
 
     //Test of coroutines
     debugImplementation "androidx.compose.ui:ui-tooling"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.0'
-
-    //Mockito
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
-    testImplementation("io.mockk:mockk:1.13.5")
-
-
-    //testing with flow
-    testImplementation 'app.cash.turbine:turbine:0.12.3'
-
-
-
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0'
 
     //Navigasjon
     def nav_version = "2.5.3" //Bør flyttes

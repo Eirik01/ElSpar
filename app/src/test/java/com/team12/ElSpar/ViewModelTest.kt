@@ -54,8 +54,8 @@ class ViewModelTest {
         appContainer = FakeAppContainer(settingsRepository = settingsRepository)
 
         elSparViewModel = ElSparViewModel(
-        appContainer.getPowerPriceUseCase,
-        appContainer.settingsRepository
+            appContainer.getPowerPriceUseCase,
+            appContainer.settingsRepository
         )
     }
 
