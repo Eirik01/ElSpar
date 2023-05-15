@@ -24,7 +24,7 @@ import com.team12.ElSpar.R
 fun InfoScreen(
     modifier : Modifier = Modifier
 ) {
-    val iconList: List<Int> = listOf(
+    val imageList: List<Int> = listOf(
         R.drawable.powerpic,
         R.drawable.showerpic,
         R.drawable.prognosepic,
@@ -60,7 +60,7 @@ fun InfoScreen(
             Column {
                 Box {
                     Image(
-                        painter = painterResource(id = iconList[it]),
+                        painter = painterResource(id = imageList[it]),
                         contentDescription = "My Image",
                         alpha = 0.3f,
                         modifier = Modifier
