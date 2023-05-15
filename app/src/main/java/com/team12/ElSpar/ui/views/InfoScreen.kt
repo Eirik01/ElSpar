@@ -20,11 +20,10 @@ fun InfoScreen(
     modifier : Modifier = Modifier
 ) {
         val textList : List<Triple<String,String,String>> = listOf(
-            Triple("Hva er en 'kWh'?" , "Mange ser kWh bli skrevet men veit ikke helt hva det er", "f"),
-            Triple("Aktiviteter" , "Hvilke antagelser er gjort?", "f"),
-            Triple("Strømpriser" , "Hva er greien med strømpriser?", "c"),
-            Triple("Prognos" , "Hva baserer prognosen seg på?", "i"),
-            Triple("Spotpris" , "Hva bestemmer spotprisene?", "i"),
+            Triple("Hva er en 'kWh'?" , "Mange ser kWh bli skrevet men veit ikke helt hva det er", "En kilowattime er det samme som 1000 wh, eller 1000 watt-timer. Om du har ett apparat som bruker en watt, vil denne på en time bruke en wh, og et apparat som bruker 1000 watt vil på en time bruke en kWh. Et kjøleskap for eksempel bruker vanlig vis rundt 200 watt, og må stå på i 5 timer for å bruke en kwh."),
+            Triple("Aktiviteter" , "Hvilke antagelser er gjort?", "I strøm-kalkulatoren har vi vært nødt til å gjøre noen antagelser for o gjøre den brukervennlig. Vi regner blant annet med at XXXXX"),
+            Triple("Prognose" , "Hva baserer prognosen seg på?", "Denne tar sebbe eller??"),
+            Triple("Spotpris" , "Hva bestemmer spotprisene?", "I nord-europa har vi en kraftbørs som heter Nord Pool. Der møtes strømprodusenter og leverandører for å bestemme en strømpris. Strømprisene blir for det meste basert på etterspørsel og tilbud, altså høy etterspørsel og lavt tilbud gir dyr strøm. Man kan se svingninger i etterspørsel både i året (mye om vinter lite om sommer), og i dagen (lite midt på natten, mye på ettermiddagen). Derfor vil strømprisen du betaler variere med dette, altså høye priser om vinter og ettermiddagen. Produksjonen varierer også, når Norge og de andre landene i nord pool produserer mye strøm vil prisen være lav, og motsatt. I tillegg påvirkes den av andre faktorer som kurs og forskjellige avgifter. Prisen for en gitt dag bestemmes dagen før, rundt klokken 13-14. "),
 
             )
         LazyColumn(
