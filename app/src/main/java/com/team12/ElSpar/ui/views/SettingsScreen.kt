@@ -1,6 +1,7 @@
 package com.team12.ElSpar.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +32,14 @@ fun SettingsScreen(
             stringResource(R.string.velg_prisområde),
             stringResource(R.string.mer_om_strom),
             stringResource(R.string.om_oss))
+
+        val settingCardsIcons: List<Int>  = listOf(
+            R.drawable.tuneicon,
+            R.drawable.mapicon2,
+            R.drawable.infoicon,
+            R.drawable.infoicon
+        )
+
         LazyColumn(
         ) {
             items(settingCardsTitles.size) { index ->
@@ -60,6 +70,12 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
 
                         ) {
+                        if (index > 0) {
+                            Image(
+                                painter = painterResource(id = settingCardsIcons[index-1]),
+                                contentDescription = "My Image"
+                            )
+                        }
                         Text(
                             text = settingCardsTitles[index],
                             fontSize = 20.sp,

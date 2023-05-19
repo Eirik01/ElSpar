@@ -10,11 +10,13 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.team12.ElSpar.R
 import com.team12.ElSpar.Settings
 import com.team12.ElSpar.ui.viewmodel.ElSparUiState
 import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
@@ -166,8 +168,8 @@ fun NavBar(navController: NavHostController){
         ){
             IconButton(onClick = { navController.navigate("ActivitiesScreen")}) {
                 Icon(
-                    imageVector = Icons.Default.List,
-                    contentDescription = "List Icon")
+                    painter = painterResource(id = R.drawable.calculatesmall),
+                    contentDescription = "Calculate Icon")
             }
             IconButton(onClick = { navController.navigate("ElSparScreen")}) {
                 Icon(
@@ -176,8 +178,8 @@ fun NavBar(navController: NavHostController){
             }
             IconButton(onClick = { navController.navigate("SettingsScreen")}) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings Icon"
+                    imageVector = Icons.Default.List,
+                    contentDescription = "List Icon"
                 )
             }
 
