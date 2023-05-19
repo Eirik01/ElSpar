@@ -36,7 +36,7 @@ fun SettingsScreen(
         val settingCardsIcons: List<Int>  = listOf(
             R.drawable.tuneicon,
             R.drawable.mapicon2,
-            R.drawable.infoicon,
+            R.drawable.bolticon,
             R.drawable.infoicon
         )
 
