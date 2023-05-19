@@ -63,7 +63,7 @@ fun InfoScreen(
                         painter = painterResource(id = imageList[it]),
                         contentDescription = "My Image",
                         alpha = 0.3f,
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
                         modifier = Modifier
                             .blur(
                                 radiusX = 10.dp,
@@ -71,10 +71,10 @@ fun InfoScreen(
                                 edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(8.dp))
                             )
                         //modifier = modifier.offset(y = (200).dp).clip(RoundedCornerShape(15.dp))
-=======
-                        modifier = Modifier.clip(shape = RoundedCornerShape(10.dp)),
-                        contentScale = ContentScale.Crop
->>>>>>> Stashed changes
+//=======
+                        //modifier = Modifier.clip(shape = RoundedCornerShape(10.dp)),
+                        //contentScale = ContentScale.Crop
+//>>>>>>> Stashed changes
                     )
                     Column(modifier = Modifier
                         .padding(60.dp)
