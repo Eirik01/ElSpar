@@ -15,9 +15,11 @@ import androidx.compose.ui.unit.sp
 import com.team12.ElSpar.R
 import java.time.LocalDateTime
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
+import androidx.navigation.NavHostController
 import com.team12.ElSpar.ui.chart.AveragePriceEntry
 import java.math.MathContext
 import java.math.RoundingMode
@@ -31,6 +33,7 @@ fun ActivitiesScreen(
     oven: Int,
     car: Int,
     modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     Column(
         modifier = modifier
@@ -60,7 +63,7 @@ fun ActivitiesScreen(
             priceRatioDiff -= 1
         }
         // all composables that are shown below
-        Card_CurrentPrice(currentPrice)
+        Card_CurrentPrice(currentPrice, navController)
         ContentRow(
             priceRatioDiff,
             cheaper,
@@ -73,7 +76,8 @@ fun ActivitiesScreen(
             "$wash min klesvask",
             wash,
             R.drawable.shower,
-            R.drawable.laundry
+            R.drawable.laundry,
+            navController = navController
         )
         ContentRow(
             priceRatioDiff,
@@ -87,7 +91,8 @@ fun ActivitiesScreen(
             "Lade bil ($car kWh)",
             car,
             R.drawable.oven,
-            R.drawable.charger
+            R.drawable.charger,
+            navController = navController
         )
         //Tekst på bunnen av siden
         //ENDRE DISSE! VARIABLENE
@@ -126,6 +131,7 @@ fun ContentRow(
     icon1 : Int,
     icon2 : Int,
     modifier : Modifier = Modifier,
+    navController: NavHostController
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -138,7 +144,8 @@ fun ContentRow(
             leftActivity,
             leftPreference,
             icon1,
-            Modifier.weight(1f)
+            Modifier.weight(1f),
+            navController
         )
         ContentCard(
             currentPrice,
@@ -147,7 +154,8 @@ fun ContentRow(
             rightActivity,
             rightPreference,
             icon2,
-            Modifier.weight(1f)
+            Modifier.weight(1f),
+            navController
         )
     }
 }
@@ -160,13 +168,14 @@ fun ContentCard(
     activity : String,
     activityPreference : Int,
     icon : Int,
-    modifier : Modifier = Modifier
+    modifier : Modifier = Modifier,
+    navController: NavHostController
 ) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        modifier = modifier
+        modifier = modifier.clickable { navController.navigate("PreferenceScreen") }
     ){
         Column(
             modifier = Modifier
@@ -202,7 +211,8 @@ fun ContentCard(
             activityPriceDiff = priceRatioDiff*activityPrice
             Image(
                 painter = painterResource(id = icon),
-                contentDescription = "My Image"
+                contentDescription = "My Image",
+                //Modifier.clickable { navController.navigate("PreferenceScreen") }
             )
             Text(text = activity, textAlign = TextAlign.Center)
             //Bottom text-row. Has activity price and price difference

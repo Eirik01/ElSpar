@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,20 +33,22 @@ fun InfoScreen(
     )
     val textList: List<Triple<String, String, String>> = listOf(
         Triple(
-            "Hva er en 'kWh'?",
-            "Mange ser kWh bli skrevet men veit ikke helt hva det er",
-            "En kilowattime er det samme som 1000 wh, eller 1000 watt-timer. Om du har ett apparat som bruker en watt, vil denne på en time bruke en wh, og et apparat som bruker 1000 watt vil på en time bruke en kWh. Et kjøleskap for eksempel bruker vanlig vis rundt 200 watt, og må stå på i 5 timer for å bruke en kwh."
+            stringResource(R.string.Hva_er_en_KWH),
+            stringResource(R.string.Underoverskrift1),
+            stringResource(R.string.Brodtekst1)
         ),
         Triple(
-            "Aktiviteter",
-            "Hvilke antagelser er gjort?",
-            "I strøm-kalkulatoren har vi vært nødt til å gjøre noen antagelser for å gjøre den funksjonell. Antagelser har derfor blitt gjort for de forskjellige aktiviteterna. Vi har antatt at: En dusj bruker rundt 5kWh, en klesvask bruker runt 0.4kWh og at en ovn bruker runt 3.5kWh. Hvor stor kapasitet el-bilen din har, fører du selv inn."
+            stringResource(R.string.Aktiviteter),
+            stringResource(R.string.Underoverskrift2),
+            stringResource(R.string.Brodtekst2)
         ),
-        Triple("Prognose", "Hva baserer prognosen seg på?", "SEBBERS"),
+        Triple(stringResource(R.string.Prognose),
+            stringResource(R.string.Underoverskrift3),
+            "SEBBERS"),
         Triple(
-            "Spotpris",
-            "Hva bestemmer spotprisene?",
-            "I nord-europa har vi en kraftbørs som heter Nord Pool. Der møtes strømprodusenter og leverandører for å bestemme en strømpris. Strømprisene blir for det meste basert på etterspørsel og tilbud, altså høy etterspørsel og lavt tilbud gir dyr strøm. Man kan se svingninger i etterspørsel både i året (mye om vinter lite om sommer), og i dagen (lite midt på natten, mye på ettermiddagen). Derfor vil strømprisen du betaler variere med dette, altså høye priser om vinter og ettermiddagen. Produksjonen varierer også, når Norge og de andre landene i nord pool produserer mye strøm vil prisen være lav, og motsatt. I tillegg påvirkes den av andre faktorer som kurs og forskjellige avgifter. Prisen for en gitt dag bestemmes dagen før, rundt klokken 13-14. "
+            stringResource(R.string.Spotpris),
+            stringResource(R.string.Underoverskrift4),
+            stringResource(R.string.Brodtekst4)
         )
     )
     LazyColumn(

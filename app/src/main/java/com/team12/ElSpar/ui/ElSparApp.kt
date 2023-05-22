@@ -70,6 +70,7 @@ fun ElSparApp(
                             wash = settings.wash,
                             oven = settings.oven,
                             car = settings.car,
+                            navController = navController
                         )
                     }
                 }
@@ -89,7 +90,8 @@ fun ElSparApp(
                             onChangePricePeriod = { elSparViewModel.updatePricePeriod(it) },
                             onDateForward = { elSparViewModel.dateForward() },
                             onDateBack = { elSparViewModel.dateBack() },
-                            modifier = modifier
+                            modifier = modifier,
+                            navController
                         )
                     }
                 }
