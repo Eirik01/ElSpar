@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
@@ -33,7 +35,8 @@ fun MainScreen(
     onChangePricePeriod: (PricePeriod) -> Unit,
     onDateForward: () -> Unit,
     onDateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
 
     Column(
@@ -47,7 +50,7 @@ fun MainScreen(
         //SJERM INNHOLD!
 
         //Kort på toppen
-        Card_CurrentPrice(currentPrice)
+        Card_CurrentPrice(currentPrice, navController)
 
         Spacer(modifier = Modifier.size(15.dp))
 
@@ -70,7 +73,8 @@ fun MainScreen(
 
 @Composable
 fun Card_CurrentPrice(
-    currentPrice: Map<LocalDateTime, Double>
+    currentPrice: Map<LocalDateTime, Double>,
+    navController: NavHostController
 ){
 
     val currPrice = currentPrice
@@ -81,6 +85,7 @@ fun Card_CurrentPrice(
 
 
     Card(
+        Modifier.clickable { navController.navigate("InfoScreen") },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -99,7 +104,8 @@ fun Card_CurrentPrice(
             ){
                 Icon(
                     imageVector = Icons.Default.Info,
-                    contentDescription = "Information icon"
+                    contentDescription = "Information icon",
+                    //Modifier.clickable { navController.navigate("InfoScreen") }
                 )
                 Text(text = "Strømpris nå")
             }
@@ -142,8 +148,7 @@ fun IntervalButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor =  (
-                    if (currentPricePeriod == btnPricePeriod) selectedColor else unselectedColor
-                    )
+                    if (currentPricePeriod == btnPricePeriod) selectedColor else unselectedColor)
         ),
         shape = RoundedCornerShape(
             topStartPercent = leftRound,
