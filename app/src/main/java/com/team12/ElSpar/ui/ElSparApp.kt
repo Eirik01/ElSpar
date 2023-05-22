@@ -2,6 +2,7 @@ package com.team12.ElSpar.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
@@ -36,7 +37,18 @@ fun ElSparApp(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        topBar = { if (elSparUiState !is ElSparUiState.SelectArea) TopBar(currentScreen) },
+        topBar = {
+
+            if (elSparUiState !is ElSparUiState.SelectArea) {TopBar(currentScreen, false, navController)}
+
+            when (currentScreen) {
+                "Velg prisområde" -> TopBar(currentScreen, true, navController)
+                "Preferanser" -> TopBar(currentScreen, true, navController)
+                "Mer om strøm" -> TopBar(currentScreen, true, navController)
+                "Om oss"-> TopBar(currentScreen, true, navController)
+            }
+
+                 },
         bottomBar = { if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController) }
     ) { padding ->
         Surface(
@@ -110,13 +122,17 @@ fun ElSparApp(
                     currentScreen = "Velg prisområde"
                     SelectAreaScreen(
                         currentPriceArea = settings.area,
-                        onChangePriceArea = { elSparViewModel.updatePreference(it) }
+                        onChangePriceArea = {
+                            elSparViewModel.updatePreference(it)
+                        }
                     )
                 }
                 composable("InfoScreen"){
+                    currentScreen = "Mer om strøm"
                     InfoScreen()
                 }
                 composable("AboutUsScreen"){
+                    currentScreen = "Om oss"
                     AboutUsScreen()
                 }
             }
@@ -135,7 +151,9 @@ fun DataContent(
         is ElSparUiState.SelectArea ->
                 SelectAreaScreen(
                     currentPriceArea = elSparUiState.currentPriceArea,
-                    onChangePriceArea = { elSparViewModel.updatePreference(it) }
+                    onChangePriceArea = {
+                        elSparViewModel.updatePreference(it)
+                    }
                 )
         is ElSparUiState.Loading -> LoadingScreen(modifier)
         is ElSparUiState.Error -> ErrorScreen(modifier)
@@ -145,13 +163,29 @@ fun DataContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(currScreen: String){
-    CenterAlignedTopAppBar(
-        title = { Text(text = currScreen)},
-        colors = topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+fun TopBar(currScreen: String, button: Boolean, navController: NavHostController){
+    if (button) {
+        CenterAlignedTopAppBar(
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate("SettingsScreen")}) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "ArrowBack Icon")
+                }
+            },
+            title = { Text(text = currScreen) },
+            colors = topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
         )
-    )
+    }else {
+        CenterAlignedTopAppBar(
+            title = { Text(text = currScreen) },
+            colors = topAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        )
+    }
 }
 
 @Composable
