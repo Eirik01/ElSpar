@@ -25,8 +25,13 @@ fun ElSparApp(
 ) {
     val elSparUiState: ElSparUiState
     by elSparViewModel.uiState.collectAsState()
-    val settings: Settings
-    by elSparViewModel.settings.collectAsState(Settings.getDefaultInstance())
+    //null check required since settings can be null
+    val settings: Settings? = null
+    if(elSparViewModel.settings != null){
+        val settings: Settings
+        by elSparViewModel.settings.collectAsState(Settings.getDefaultInstance())
+    }
+
 
     val navController = rememberNavController()
     var currentScreen by remember { mutableStateOf("") }
@@ -49,13 +54,15 @@ fun ElSparApp(
                     DataContent(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel) {
-                        ActivitiesScreen(
-                            currentPrice = it.currentPrice,
-                            shower = settings.shower,
-                            wash = settings.wash,
-                            oven = settings.oven,
-                            car = settings.car,
-                        )
+                        if(settings != null){
+                            ActivitiesScreen(
+                                currentPrice = it.currentPrice,
+                                shower = settings.shower,
+                                wash = settings.wash,
+                                oven = settings.oven,
+                                car = settings.car,
+                            )
+                        }
                     }
                 }
 
@@ -92,22 +99,25 @@ fun ElSparApp(
                 }
                 composable("PreferenceScreen"){
                     currentScreen = "Preferanser"
-
-                    PreferenceScreen(
-                        shower = settings.shower,
-                        wash = settings.wash,
-                        oven = settings.oven,
-                        car = settings.car,
-                        onUpdatedPreference = { activity, value ->
-                            elSparViewModel.updatePreference(activity, value)
-                        }
-                    )
+                    if(settings != null){
+                        PreferenceScreen(
+                            shower = settings.shower,
+                            wash = settings.wash,
+                            oven = settings.oven,
+                            car = settings.car,
+                            onUpdatedPreference = { activity, value ->
+                                elSparViewModel.updatePreference(activity, value)
+                            }
+                        )
+                    }
                 }
                 composable("SelectAreaScreen"){
-                    SelectAreaScreen(
-                        currentPriceArea = settings.area,
-                        onChangePriceArea = { elSparViewModel.updatePreference(it) }
-                    )
+                    if (settings != null) {
+                        SelectAreaScreen(
+                            currentPriceArea = settings.area,
+                            onChangePriceArea = { elSparViewModel.updatePreference(it) }
+                        )
+                    }
                 }
                 composable("InfoScreen"){
                     InfoScreen()
