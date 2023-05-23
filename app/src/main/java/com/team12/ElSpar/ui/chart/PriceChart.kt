@@ -25,8 +25,10 @@ import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
+import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis.TickPosition.Edge.spacing
 import com.patrykandpatrick.vico.core.axis.vertical.VerticalAxis
-import com.patrykandpatrick.vico.core.component.shape.ShapeComponent
+import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
+
 import com.patrykandpatrick.vico.core.component.shape.Shapes
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
@@ -121,6 +123,7 @@ fun PriceChart(
             model = model(priceList, pricePeriod),
             startAxis = startAxis(
                 valueFormatter = startAxisValueFormatter,
+
                 label = axisLabelComponent(
                     background = ShapeComponent(
                         shape = Shapes.roundedCornerShape(30,30,30,30,),
