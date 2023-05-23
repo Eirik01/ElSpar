@@ -40,6 +40,19 @@ fun ActivitiesScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
+    // here is the price right now instantiatied
+    val priceNow by remember {
+        mutableStateOf(            currentPrice
+            .filterKeys { it.hour == LocalDateTime.now().hour }
+            .values
+            .first())
+    }
+    // Here is the ratio betwwen the average price of today and price right now calculated
+    var cheaper : Boolean = (currentPrice.values.average() - priceNow) > 1
+
+
+    val priceRatio = priceNow/currentPrice.values.average()
+
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -48,29 +61,16 @@ fun ActivitiesScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ){
-        // here is the price right now instantiatied
-        val priceNow by remember {
-            mutableStateOf(            currentPrice
-                .filterKeys { it.hour == LocalDateTime.now().hour }
-                .values
-                .first())
-        }
-        // Here is the ratio betwwen the average price of today and price right now calculated
-        val priceRatio = priceNow/currentPrice.values.average()
-        var priceRatioDiff = 0.0
-        var cheaper : Boolean = false
-        if(priceRatio < 1){
-            //cheaper than average
-            priceRatioDiff = 1-priceRatio
-            cheaper = true
-        }else{
-            //pricier than average
-            priceRatioDiff -= 1
-        }
+
         // all composables that are shown below
+
+        //This is the card on top of the screen. It is the same as the one on main screen.
         Card_CurrentPrice(currentPrice, navController)
+
+        //Two "content rows", each with 2 cards.
+
         ContentRow(
-            priceRatioDiff,
+            priceRatio,
             cheaper,
             currentPrice
                 .filterKeys { it.hour == LocalDateTime.now().hour }
@@ -85,7 +85,7 @@ fun ActivitiesScreen(
             navController = navController
         )
         ContentRow(
-            priceRatioDiff,
+            priceRatio,
             cheaper,
             currentPrice
                 .filterKeys { it.hour == LocalDateTime.now().hour }
@@ -99,10 +99,11 @@ fun ActivitiesScreen(
             R.drawable.charger,
             navController = navController
         )
-        //Tekst på bunnen av siden
-        //ENDRE DISSE! VARIABLENE
-        val formattedPriceRatioDiff = (priceRatioDiff*100).toBigDecimal().setScale(1, RoundingMode.CEILING)
-        var textString = "Strømprisen nå er $formattedPriceRatioDiff% " + (if(!cheaper) "over" else "under") + " dagens gjennomsnitt. "
+
+        //Text on the bottom of the side.
+
+        val formattedPriceRatioDiff = (priceRatio).toBigDecimal().setScale(1, RoundingMode.CEILING)
+        var textString = "Strømprisen nå er $formattedPriceRatioDiff ganger dagens gjennomsnitt. "
         textString += if(cheaper){
             "Det er ikke en dårlig ide å bruke mye strøm nå."
         } else{
@@ -111,7 +112,7 @@ fun ActivitiesScreen(
 
         Spacer(modifier = modifier.size(15.dp))
 
-
+        //Header
         Text(
             text = "Prisen nå",
             textAlign = TextAlign.Center,
@@ -137,21 +138,10 @@ fun ActivitiesScreen(
                 )
             }
         }
-
-
-
-
-
-
-        /*   //// Fjerner teksten
-        Text(
-            "Kortene på siden viser pris for aktivitet, og hvor mye dyrere eller billigere det er å gjøre aktiviteten nå i forhold til de siste 24 timene sitt gjennomsnitt",
-            textAlign = TextAlign.Justify,
-            modifier = modifier.fillMaxWidth(0.8f)
-        )
-        */
     }
 }
+
+/*Row with 2 cards*/
 @Composable
 fun ContentRow(
     activityRatio : Double,
@@ -167,7 +157,7 @@ fun ContentRow(
     navController: NavHostController
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ){
         ContentCard(
@@ -193,11 +183,12 @@ fun ContentRow(
     }
 }
 
+/*Card with an activity. Has a column for */
 @Composable
 fun ContentCard(
     currentPrice: Double,
     cheaper : Boolean,
-    priceRatio : Double,
+    activityRatio : Double,
     activity : String,
     activityPreference : Int,
     icon : Int,
@@ -239,9 +230,9 @@ fun ContentCard(
                 activityPrice = currentPrice*activityKwhCost*activityPreference/100
             }
             // Divided by 6000 becuase the the price should be shown in kr not in øre, also because preferences are in minutes so (60*100)
-            var priceRatioDiff = priceRatio
 
-            activityPriceDiff = priceRatioDiff*activityPrice
+            activityPriceDiff = activityRatio*activityPrice
+
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = "My Image",
@@ -251,9 +242,12 @@ fun ContentCard(
             //Bottom text-row. Has activity price and price difference
             Text(
                 buildAnnotatedString {
+                    //This string is the price
                     withStyle(style = SpanStyle(fontWeight = Bold, fontSize = 20.sp)) {
                         append(activityPrice.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr ")
                     }
+                    
+                    //This string shows the difference
                     withStyle(style = SpanStyle()) {
                         if(cheaper){
                             append("(" +"-"+ activityPriceDiff.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr)")
