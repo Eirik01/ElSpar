@@ -18,7 +18,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.navigation.NavHostController
 import com.team12.ElSpar.ui.chart.AveragePriceEntry
 import java.math.MathContext
@@ -104,19 +109,47 @@ fun ActivitiesScreen(
             "Det er lurt å vente med strømintense oppgaver."
         }
 
-        Text(
-            text = textString,
-            textAlign = TextAlign.Justify,
-            modifier = modifier.fillMaxWidth(0.8f)
-        )
-
         Spacer(modifier = modifier.size(15.dp))
 
+
+        Text(
+            text = "Prisen nå",
+            textAlign = TextAlign.Center,
+            modifier = modifier.fillMaxWidth(0.8f),
+            fontWeight = Bold
+        )
+
+        Row {
+            Text(
+                text = textString,
+                textAlign = TextAlign.Center,
+                modifier = modifier.fillMaxWidth(0.8f)
+            )
+            if (cheaper) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Check icon",
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Warning icon",
+                )
+            }
+        }
+
+
+
+
+
+
+        /*   //// Fjerner teksten
         Text(
             "Kortene på siden viser pris for aktivitet, og hvor mye dyrere eller billigere det er å gjøre aktiviteten nå i forhold til de siste 24 timene sitt gjennomsnitt",
             textAlign = TextAlign.Justify,
             modifier = modifier.fillMaxWidth(0.8f)
         )
+        */
     }
 }
 @Composable
@@ -218,7 +251,7 @@ fun ContentCard(
             //Bottom text-row. Has activity price and price difference
             Text(
                 buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)) {
+                    withStyle(style = SpanStyle(fontWeight = Bold, fontSize = 20.sp)) {
                         append(activityPrice.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr ")
                     }
                     withStyle(style = SpanStyle()) {

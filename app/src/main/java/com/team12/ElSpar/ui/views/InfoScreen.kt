@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,24 +33,10 @@ fun InfoScreen(
         R.drawable.paymentpic
     )
     val textList: List<Triple<String, String, String>> = listOf(
-        Triple(
-            stringResource(R.string.Hva_er_en_KWH),
-            stringResource(R.string.Underoverskrift1),
-            stringResource(R.string.Brodtekst1)
-        ),
-        Triple(
-            stringResource(R.string.Aktiviteter),
-            stringResource(R.string.Underoverskrift2),
-            stringResource(R.string.Brodtekst2)
-        ),
-        Triple(stringResource(R.string.Prognose),
-            stringResource(R.string.Underoverskrift3),
-            "SEBBERS"),
-        Triple(
-            stringResource(R.string.Spotpris),
-            stringResource(R.string.Underoverskrift4),
-            stringResource(R.string.Brodtekst4)
-        )
+        Triple(stringResource(R.string.Hva_er_en_KWH), stringResource(R.string.Underoverskrift1), stringResource(R.string.Brodtekst1)),
+        Triple(stringResource(R.string.Aktiviteter), stringResource(R.string.Underoverskrift2), stringResource(R.string.Brodtekst2)),
+        Triple(stringResource(R.string.Prognose), stringResource(R.string.Underoverskrift3), "SEBBERS"),
+        Triple(stringResource(R.string.Spotpris), stringResource(R.string.Underoverskrift4), stringResource(R.string.Brodtekst4))
     )
     LazyColumn(
         modifier = modifier
@@ -65,19 +52,10 @@ fun InfoScreen(
                     Image(
                         painter = painterResource(id = imageList[it]),
                         contentDescription = "My Image",
-                        alpha = 0.3f,
-//<<<<<<< Updated upstream
-                        modifier = Modifier
-                            .blur(
-                                radiusX = 10.dp,
-                                radiusY = 10.dp,
-                                edgeTreatment = BlurredEdgeTreatment(RoundedCornerShape(8.dp))
-                            )
-                        //modifier = modifier.offset(y = (200).dp).clip(RoundedCornerShape(15.dp))
-//=======
-                        //modifier = Modifier.clip(shape = RoundedCornerShape(10.dp)),
-                        //contentScale = ContentScale.Crop
-//>>>>>>> Stashed changes
+                        alpha = 0.5f,
+                        modifier = modifier
+                            .offset(y = (30).dp).clip(RoundedCornerShape(15.dp))
+                            .clip(shape = RoundedCornerShape(10.dp))
                     )
                     Column(modifier = Modifier
                         .padding(60.dp)
