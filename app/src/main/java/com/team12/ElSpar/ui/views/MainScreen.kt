@@ -141,15 +141,17 @@ fun IntervalButton(
     btnPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit)
 {
-    val unselectedColor = MaterialTheme.colorScheme.background
-    val selectedColor = MaterialTheme.colorScheme.primaryContainer
+    //Setter valgt knapp til primaryContainer-farge, ellers bakgrunn.
+    var buttonColor =   if (currentPricePeriod == btnPricePeriod) MaterialTheme.colorScheme.primaryContainer
+                        else MaterialTheme.colorScheme.background
+    //Setter teksten på knappen til onPrimary om den er valgt, onBackground om den ikke er valgt
+    var textColor =     if (currentPricePeriod == btnPricePeriod)MaterialTheme.colorScheme.onPrimaryContainer
+                        else MaterialTheme.colorScheme.onBackground
+
     OutlinedButton(
         onClick = {onSelectPricePeriod(btnPricePeriod)},
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
-            containerColor =  (
-                    if (currentPricePeriod == btnPricePeriod) selectedColor else unselectedColor)
-        ),
+        colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
         shape = RoundedCornerShape(
             topStartPercent = leftRound,
             topEndPercent = rightRound,
@@ -157,7 +159,7 @@ fun IntervalButton(
             bottomStartPercent = leftRound
         )
     ) {
-        Text(text = btnPricePeriod.text, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text(text = btnPricePeriod.text, color = textColor)
     }
 }
 

@@ -103,7 +103,9 @@ fun PriceChart(
             chart = lineChart(
                 lines = listOf(
                     lineSpec(
-                        lineColor = MaterialTheme.colorScheme.primary,
+                        //lineColor = MaterialTheme.colorScheme.primary,
+                        lineColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        lineThickness = 1.5.dp,
                         lineBackgroundShader = verticalGradient(
                             colors = colorArray,
                             positions = floatArrayOf(0.1f, 0.9f, 1f)
@@ -122,8 +124,10 @@ fun PriceChart(
                 label = axisLabelComponent(
                     background = ShapeComponent(
                         shape = Shapes.roundedCornerShape(30,30,30,30,),
-                        color = PurpleGrey80.copy(0.8f).toArgb())
-                ),
+                        //color = PurpleGrey80.copy(0.8f).toArgb())
+                        color = Color.Black.copy(alpha = 0.0f).toArgb())
+
+            ),
                 horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Inside
             ),
             bottomAxis = bottomAxis(

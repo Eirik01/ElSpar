@@ -11,6 +11,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -166,28 +167,25 @@ fun DataContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(currScreen: String, button: Boolean, navController: NavHostController){
-    if (button) {
-        CenterAlignedTopAppBar(
-            navigationIcon = {
-                IconButton(onClick = { navController.navigate("SettingsScreen")}) {
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "ArrowBack Icon")
-                }
-            },
-            title = { Text(text = currScreen) },
-            colors = topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+    CenterAlignedTopAppBar(
+        navigationIcon = {
+            IconButton(
+                onClick = { navController.navigate("SettingsScreen")},
+                enabled = button,
+                colors = IconButtonDefaults.iconButtonColors(
+                    disabledContentColor = Color.Black.copy(alpha = 0.0f))
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ArrowBack,
+                    contentDescription = "ArrowBack Icon"
+                )
+            }
+        },
+        title = { Text(text = currScreen, color = MaterialTheme.colorScheme.onPrimaryContainer) },
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
         )
-    }else {
-        CenterAlignedTopAppBar(
-            title = { Text(text = currScreen) },
-            colors = topAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
-        )
-    }
+    )
 }
 
 @Composable
