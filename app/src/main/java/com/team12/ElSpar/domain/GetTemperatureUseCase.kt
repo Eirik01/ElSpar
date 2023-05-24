@@ -18,7 +18,6 @@ class GetTemperatureUseCase(
             for(observation in data.timeseries){
                 temperatureMap[observation.time] = observation.air_temperature
             }
-            //Log.d("temperatureList",temperatureMap.toString())
             return temperatureMap
         }
         return temperatureMap

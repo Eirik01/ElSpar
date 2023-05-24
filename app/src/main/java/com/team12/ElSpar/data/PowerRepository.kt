@@ -18,6 +18,7 @@ class DefaultPowerRepository(
     private val hvaKosterStrommenApiService: HvaKosterStrommenApiService
 ) : PowerRepository {
     private val localRepo = mutableMapOf<Pair<LocalDate, PriceArea>, Map<LocalDateTime, Double>>()
+    //Map with price by date
     override suspend fun getPowerPricesByDate(
         date: LocalDate,
         area: PriceArea
