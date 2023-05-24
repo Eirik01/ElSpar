@@ -30,6 +30,7 @@ import java.math.MathContext
 import java.math.RoundingMode
 import kotlin.math.ceil
 
+//Composable that shows the different activities and their prices
 @Composable
 fun ActivitiesScreen(
     currentPrice: Map<LocalDateTime, Double>,
@@ -40,17 +41,15 @@ fun ActivitiesScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
-    // here is the price right now instantiatied
+    // "price right now" instantiatied
     val priceNow by remember {
         mutableStateOf(            currentPrice
             .filterKeys { it.hour == LocalDateTime.now().hour }
             .values
             .first())
     }
-    // Here is the ratio betwwen the average price of today and price right now calculated
+    // Ratio betwwen the average price of today and price right now calculated
     var cheaper : Boolean = (currentPrice.values.average() - priceNow) > 1
-
-
     val priceRatio = priceNow/currentPrice.values.average()
 
     Column(
@@ -68,7 +67,6 @@ fun ActivitiesScreen(
         Card_CurrentPrice(currentPrice, navController)
 
         //Two "content rows", each with 2 cards.
-
         ContentRow(
             priceRatio,
             cheaper,
@@ -101,7 +99,6 @@ fun ActivitiesScreen(
         )
 
         //Text on the bottom of the side.
-
         val formattedPriceRatioDiff = (priceRatio).toBigDecimal().setScale(1, RoundingMode.CEILING)
         var textString = "Strømprisen nå er $formattedPriceRatioDiff ganger dagens gjennomsnitt. "
         textString += if(cheaper){
@@ -126,6 +123,8 @@ fun ActivitiesScreen(
                 textAlign = TextAlign.Center,
                 modifier = modifier.fillMaxWidth(0.8f)
             )
+
+            //Icon that shows check when the price is low, and warning when the price is high
             if (cheaper) {
                 Icon(
                     imageVector = Icons.Default.Check,

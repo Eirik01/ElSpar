@@ -46,7 +46,6 @@ class DefaultAppContainer(
         DefaultWeatherRepository(metApiService)
 
     //DOMAIN LAYER USE CASES
-
     override val getTemperatureUseCase: GetTemperatureUseCase =
         GetTemperatureUseCase(
             weatherRepository = weatherRepository
