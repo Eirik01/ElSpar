@@ -29,10 +29,6 @@ class ElSparViewModel(
     private var currentPricePeriod = PricePeriod.DAY
     private var currentEndDate = LocalDate.now()
 
-    /*dosent define Dispatcher.IO in viewModelScope
-      since getPowerPriceUseCase switches to correct
-      Dispatcher within its class
-      */
     init {
         viewModelScope.launch() {
             settings.collect { settings ->
@@ -96,17 +92,6 @@ class ElSparViewModel(
         update()
     }
 
-    /*fun updateCoordinatesForPriceArea(priceArea: PriceArea){
-        currentCoordinates = when (priceArea){
-            PriceArea.NO1 -> "60.79" to "11.08"
-            PriceArea.NO2 -> "59.14" to "7.80"
-            PriceArea.NO3 -> "63.03" to "9.65"
-            PriceArea.NO4 -> "68.29" to "17.53"
-            else -> "60.83" to "7.61"
-        }
-        //Log.d("priceCoords",currentCoordinates.toString())
-    }*/
-
     fun dateForward() {
         currentEndDate = currentEndDate.plusDays(currentPricePeriod.days.toLong())
         update()
@@ -118,9 +103,10 @@ class ElSparViewModel(
     }
 
     fun updatePreference(priceArea: Settings.PriceArea) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             settingsRepository.updatePriceArea(priceArea)
             settingsRepository.initialStartupCompleted()
+            currentEndDate = LocalDate.now()
             update()
         }
     }

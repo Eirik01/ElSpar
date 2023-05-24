@@ -7,7 +7,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.internal.NopCollector.emit
 import kotlinx.coroutines.withContext
 
 //DEFAULT VALUES
@@ -17,7 +16,7 @@ private const val OVEN = 15
 private const val CAR = 24
 
 interface SettingsRepository {
-    val settingsFlow: Flow<Settings>,
+    val settingsFlow: Flow<Settings>
     val iODispatcher: CoroutineDispatcher
     suspend fun initialStartupCompleted()
     suspend fun updatePriceArea(area: Settings.PriceArea)
