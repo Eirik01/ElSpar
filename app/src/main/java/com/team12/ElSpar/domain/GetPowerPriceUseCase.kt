@@ -46,7 +46,7 @@ class GetPowerPriceUseCase (
                 }
             }
         }
-        priceData.toMap()
+        priceData
     }
 }
 

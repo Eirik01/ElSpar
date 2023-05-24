@@ -6,10 +6,13 @@ import com.team12.ElSpar.model.PriceData
 import com.team12.ElSpar.exceptions.NoConnectionException
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.serialization.*
 import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
+
+private const val TIMEOUT = 10000L
 
 interface HvaKosterStrommenApiService {
     suspend fun getPowerPricesByDate(date: LocalDate, area: Settings.PriceArea)
@@ -28,7 +31,11 @@ class DefaultHvaKosterStrommenApiService(
                         "/" + date.monthValue.toString().padStart(2, '0') +
                         "-" + date.dayOfMonth.toString().padStart(2, '0') +
                         "_" + area.name + ".json"
-            ).body()
+            ) {
+                timeout {
+                    requestTimeoutMillis = TIMEOUT
+                }
+            }.body()
         } catch (e: JsonConvertException) {
             throw PriceNotAvailableException()
         } catch (e: UnresolvedAddressException) {
