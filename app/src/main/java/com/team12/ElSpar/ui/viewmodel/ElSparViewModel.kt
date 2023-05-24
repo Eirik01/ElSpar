@@ -20,14 +20,16 @@ import java.time.LocalDate
 
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
-    private val settingsRepository: SettingsRepository?,
+    private val settingsRepository: SettingsRepository,
+    //this variable is only set as true when creating the viewModel for tests
+    private val isATest: Boolean = false
 ) : ViewModel() {
     private val _uiState: MutableStateFlow<ElSparUiState> = MutableStateFlow(ElSparUiState.Loading)
     val uiState: StateFlow<ElSparUiState> = _uiState.asStateFlow()
 
-    val settings: Flow<Settings>? = settingsRepository?.settingsFlow
-    //only used if settings and settingsrepo is null
-    private var viewModelPriceAre: Settings.PriceArea = Settings.PriceArea.NO1
+    val settings: Flow<Settings> = settingsRepository.settingsFlow
+    //variable only used under testing
+    private var viewModelPriceArea: Settings.PriceArea = Settings.PriceArea.NO1
 
     private var currentPricePeriod = PricePeriod.DAY
     private var currentEndDate = LocalDate.now()
@@ -38,7 +40,7 @@ class ElSparViewModel(
       */
     init {
         viewModelScope.launch() {
-            if(settingsRepository != null && settings != null){
+            if(!isATest){
                 settings.collect { settings ->
                     if (!settings.initialStartupCompleted) {
                         settingsRepository.initializeValues()
@@ -63,7 +65,7 @@ class ElSparViewModel(
     fun getPowerPrice() {
         _uiState.value = ElSparUiState.Loading
         viewModelScope.launch() {
-            if(settingsRepository != null && settings != null) {
+            if(!isATest) {
                 settings.collect { settings ->
                     _uiState.value = try {
                         ElSparUiState.Success(
@@ -92,17 +94,18 @@ class ElSparViewModel(
                         priceList = getPowerPriceUseCase(
                             endDate = currentEndDate,
                             period = currentPricePeriod,
-                            area = viewModelPriceAre
+                            area = viewModelPriceArea
                         ),
                         currentPrice = getPowerPriceUseCase(
                             endDate = LocalDate.now(),
                             period = PricePeriod.DAY,
-                            area = viewModelPriceAre
+                            area = viewModelPriceArea
                         )
                     )
                 } catch (e: NoConnectionException) {
                     ElSparUiState.Error
                 }
+
             }
         }
     }
@@ -111,7 +114,7 @@ class ElSparViewModel(
         buffer: PricePeriod = PricePeriod.MONTH
     ) {
         viewModelScope.launch() {
-            if(settingsRepository != null && settings != null){
+            if(!isATest){
                 settings.collect { settings ->
                     getPowerPriceUseCase(
                         endDate = LocalDate.now(),
@@ -124,7 +127,7 @@ class ElSparViewModel(
                 getPowerPriceUseCase(
                     endDate = LocalDate.now(),
                     period = buffer,
-                    area = viewModelPriceAre
+                    area = viewModelPriceArea
                 )
             }
         }
@@ -158,11 +161,11 @@ class ElSparViewModel(
 
     fun updatePreference(priceArea: Settings.PriceArea) {
         viewModelScope.launch() {
-            if(settingsRepository != null){
+            if(!isATest){
                 settingsRepository.updatePriceArea(priceArea)
                 settingsRepository.initialStartupCompleted()
             }else{
-                viewModelPriceAre = priceArea
+                viewModelPriceArea = priceArea
             }
             update()
         }
@@ -170,7 +173,7 @@ class ElSparViewModel(
 
     fun updatePreference(activity: Settings.Activity, value: Int) {
         viewModelScope.launch() {
-            settingsRepository?.updateActivity(activity, value)
+            settingsRepository.updateActivity(activity, value)
         }
     }
 

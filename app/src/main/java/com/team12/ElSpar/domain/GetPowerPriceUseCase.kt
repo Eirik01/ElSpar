@@ -33,7 +33,6 @@ class GetPowerPriceUseCase (
                 //  date is set to exactly tomorrow and clock has passed 13:00 today:
                 priceData += if (date > LocalDate.now().plusDays(1)
                     || (date == LocalDate.now().plusDays(1) && LocalDateTime.now().hour < 13)) {
-
                     //true: call the projected powerprice usecase
                     getProjectedPowerPriceUseCase(date, area)
                 } else try {

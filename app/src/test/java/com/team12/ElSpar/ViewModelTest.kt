@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
+import com.team12.ElSpar.data.DefaultSettingsRepository
 import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.data.SettingsSerializer
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.fake.*
 import com.team12.ElSpar.model.PricePeriod
-import com.team12.ElSpar.rules.TestDispatcherRule
 import com.team12.ElSpar.ui.viewmodel.ElSparUiState
 import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
 import io.mockk.*
@@ -39,11 +39,16 @@ class ViewModelTest {
         Dispatchers.setMain(
             StandardTestDispatcher()
         )
-        appContainer = FakeAppContainer(settingsRepository = null)
+        val settingsStore: DataStore<Settings> = DataStoreFactory.create(SettingsSerializer) {
+            File("fake_test_file")
+        }
+        val settingsRepository = DefaultSettingsRepository(settingsStore)
+        appContainer = FakeAppContainer(settingsRepository = settingsRepository)
 
         elSparViewModel = ElSparViewModel(
             appContainer.getPowerPriceUseCase,
-            appContainer.settingsRepository
+            appContainer.settingsRepository,
+            isATest = true
         )
     }
 
@@ -59,14 +64,8 @@ class ViewModelTest {
     @Test
     fun elSparViewModel_getPowerPrice_verifyElSparUiStateSuccess() =
         runTest{
-            val expectedUiState = ElSparUiState.Success(
-                currentPricePeriod = PricePeriod.DAY,
-                currentEndDate = LocalDate.now(),
-                priceList = FakePowerDataSource.priceDataMapMVA,
-                currentPrice = FakePowerDataSource.priceDataMapMVA
-            )
-            elSparViewModel.getPowerPrice()
 
+            elSparViewModel.getPowerPrice()
             advanceUntilIdle()
             assertEquals(
                 ElSparUiState.Success(
@@ -112,6 +111,22 @@ class ViewModelTest {
                 elSparViewModel.uiState.value
             )
     }
+
+    @Test
+    fun elSparViewModel_dateBack_verifyDate() =
+        runTest{
+            elSparViewModel.dateBack()
+            advanceUntilIdle()
+            assertEquals(
+                ElSparUiState.Success(
+                    PricePeriod.DAY,
+                    LocalDate.now().minusDays(1),
+                    FakePowerDataSource.priceDataMapMVA,
+                    FakePowerDataSource.priceDataMapMVA
+                ),
+                elSparViewModel.uiState.value
+            )
+        }
 }
 
 
