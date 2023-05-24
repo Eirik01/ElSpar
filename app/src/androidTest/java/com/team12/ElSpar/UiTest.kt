@@ -25,19 +25,19 @@ class UiTest {
         }
 
         //Finn knappene
-        var btn = rule.onNodeWithText(PricePeriod.DAY.text);
-        var btn2 = rule.onNodeWithText(PricePeriod.WEEK.text);
-        var btn3 = rule.onNodeWithText(PricePeriod.MONTH.text);
+        var btn = rule.onNodeWithText(PricePeriod.DAY.text)
+        var btn2 = rule.onNodeWithText(PricePeriod.WEEK.text)
+        var btn3 = rule.onNodeWithText(PricePeriod.MONTH.text)
 
         //Sjekk om de finnes
-        btn.assertExists("Button does not exist");
-        btn2.assertExists("Button does not exist");
-        btn3.assertExists("Button does not exist");
+        btn.assertExists("Button does not exist")
+        btn2.assertExists("Button does not exist")
+        btn3.assertExists("Button does not exist")
 
         //Sjekk om noe skjer når man trykker på dem
-        btn.assertHasClickAction();
-        btn2.assertHasClickAction();
-        btn3.assertHasClickAction();
+        btn.assertHasClickAction()
+        btn2.assertHasClickAction()
+        btn3.assertHasClickAction()
     }
 
     //Test data
