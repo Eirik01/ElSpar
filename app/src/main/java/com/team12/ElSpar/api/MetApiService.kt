@@ -55,7 +55,7 @@ class DefaultMetApiService(
         json : Json,
         responseString : String
     ): ObservationData?{
-        val root : JsonObject = json.decodeFromString<JsonObject>(responseString)
+        val root : JsonObject = json.decodeFromString(responseString)
         val properties = root.jsonObject["properties"]
         val timeseriesArray: JsonArray? = properties?.jsonObject?.get("timeseries")?.jsonArray
         val observationList : MutableList<Observation> = mutableListOf()
