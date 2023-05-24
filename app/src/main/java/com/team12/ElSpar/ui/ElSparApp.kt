@@ -37,11 +37,13 @@ fun ElSparApp(
     val navController = rememberNavController()
     var currentScreen by remember { mutableStateOf("") }
 
+    // Scaffold that goes "Outside" the whole app
+    // The different screens are just functions that is displyed inside this scaffold
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
+            //Sets topbar, adn controls when the back-button is visible
             if (elSparUiState !is ElSparUiState.SelectArea) {TopBar(currentScreen, false, navController)}
-
             when (currentScreen) {
                 "Velg prisområde" -> TopBar(currentScreen, true, navController)
                 "Preferanser" -> TopBar(currentScreen, true, navController)
@@ -49,7 +51,11 @@ fun ElSparApp(
                 "Om oss"-> TopBar(currentScreen, true, navController)
             }
         },
-        bottomBar = { if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController) }
+        bottomBar = {
+            //Sets bottombar when we want it available.
+            //It does not appear when user first is promted to select price area
+            if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController)
+        }
     ) { padding ->
         Surface(
             modifier = modifier
@@ -57,6 +63,7 @@ fun ElSparApp(
                 .padding(padding),
             color = MaterialTheme.colorScheme.background
         ) {
+            //Navbar that starts on our main screen, and contains all our different screens
             NavHost(navController = navController, startDestination = "ElSparScreen") {
                 composable("ActivitiesScreen") {
                     currentScreen = "Strømkalkulator"
@@ -77,7 +84,6 @@ fun ElSparApp(
 
                 composable("ElSparScreen") {
                     currentScreen = "Strømoversikt"
-
                     DataContent(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel
@@ -138,12 +144,14 @@ fun ElSparApp(
 }
 
 @Composable
+//Function for composables that need data loaded in by a blocking function
 fun DataContent(
     elSparUiState: ElSparUiState,
     elSparViewModel: ElSparViewModel,
     modifier: Modifier = Modifier,
     onSuccessfulLoadContent: @Composable (ElSparUiState.Success) -> Unit
 ) {
+    //Sets screen based on the state
     when (elSparUiState) {
         is ElSparUiState.SelectArea ->
                 SelectAreaScreen(
@@ -160,13 +168,16 @@ fun DataContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+//The topbar displayed in the scaffold
 fun TopBar(currScreen: String, button: Boolean, navController: NavHostController){
     CenterAlignedTopAppBar(
         navigationIcon = {
             IconButton(
                 onClick = { navController.navigate("SettingsScreen")},
+                //Disable the back button based on the bool
                 enabled = button,
                 colors = IconButtonDefaults.iconButtonColors(
+                    //Set disabled color to transparent
                     disabledContentColor = Color.Black.copy(alpha = 0.0f))
             ) {
                 Icon(
@@ -183,6 +194,7 @@ fun TopBar(currScreen: String, button: Boolean, navController: NavHostController
 }
 
 @Composable
+//Navbar displayed in scaffold
 fun NavBar(navController: NavHostController){
     BottomAppBar(
         modifier = Modifier
@@ -190,6 +202,7 @@ fun NavBar(navController: NavHostController){
             .fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
+        //Row with navigation icon-buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
@@ -197,12 +210,14 @@ fun NavBar(navController: NavHostController){
             IconButton(onClick = { navController.navigate("ActivitiesScreen")}) {
                 Icon(
                     painter = painterResource(id = R.drawable.calculatesmall),
-                    contentDescription = "Calculate Icon")
+                    contentDescription = "Calculate Icon"
+                )
             }
             IconButton(onClick = { navController.navigate("ElSparScreen")}) {
                 Icon(
                     imageVector = Icons.Default.Home,
-                    contentDescription = "Home Icon")
+                    contentDescription = "Home Icon"
+                )
             }
             IconButton(onClick = { navController.navigate("SettingsScreen")}) {
                 Icon(
@@ -210,7 +225,6 @@ fun NavBar(navController: NavHostController){
                     contentDescription = "List Icon"
                 )
             }
-
         }
     }
 }

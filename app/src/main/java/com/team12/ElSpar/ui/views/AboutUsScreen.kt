@@ -13,13 +13,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
 
-/*This composable function shows some cards with information about us, our goal and motivations.*/
+//About us composable.
 @Composable
 fun AboutUsScreen(modifier:Modifier = Modifier){
-
     Column(
         modifier = modifier.verticalScroll(rememberScrollState())
     ){
+        //Card that holds all the text on this page
         Card(
             modifier = Modifier.padding(5.dp),
             colors = CardDefaults.cardColors(
@@ -61,7 +61,7 @@ fun AboutUsScreen(modifier:Modifier = Modifier){
                         "Vi kom fram til at den beste måten vi kan ha innvirkning på dette er ved å utvikle en app "+
                         "som hjelper folk med å redusere sine strømutgifter ved å endre sine vaner.",
                 modifier = Modifier.padding(5.dp)
-                )
+            )
         }
     }
 }
