@@ -9,7 +9,6 @@ import com.team12.ElSpar.api.MetApiService
 import com.team12.ElSpar.data.*
 import com.team12.ElSpar.domain.*
 import android.content.Context
-import com.team12.ElSpar.rules.TestDispatcherRule
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -22,7 +21,7 @@ import java.io.File
 
 class FakeAppContainer(
     val iODispatcher: TestDispatcher = StandardTestDispatcher(),
-    val settingsRepository: SettingsRepository?
+    val settingsRepository: SettingsRepository
 ) {
     //fake API that gets data from fake datasource
     private val hvaKosterStrommenApiService: HvaKosterStrommenApiService =

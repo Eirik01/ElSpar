@@ -20,14 +20,12 @@ import com.team12.ElSpar.R
 fun SettingsScreen(
     onChangePreferences :  () -> Unit,
     onChangePrisomraade :  () -> Unit,
-    onChangeMoms :  () -> Unit,
     onChangeInfo :  () -> Unit,
     onChangeAboutUs :  () -> Unit,
     modifier : Modifier = Modifier,
 ){
     Scaffold(){ padding ->
         val settingCardsTitles  = listOf(
-            stringResource(R.string.skru_av_moms),
             stringResource(R.string.Preferanser),
             stringResource(R.string.velg_prisområde),
             stringResource(R.string.mer_om_strom),
@@ -45,7 +43,6 @@ fun SettingsScreen(
             items(settingCardsTitles.size) { index ->
                 var onChangeFunction  : () -> Unit = {}
                 when (settingCardsTitles[index]){
-                    "Skru av moms" -> onChangeFunction = onChangeMoms
                     "Preferanser" -> onChangeFunction = onChangePreferences
                     "Velg prisområde" -> onChangeFunction = onChangePrisomraade
                     "Mer om strøm" -> onChangeFunction = onChangeInfo
@@ -70,29 +67,16 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically,
 
                         ) {
-                        if (index > 0) {
-                            Image(
-                                painter = painterResource(id = settingCardsIcons[index-1]),
-                                contentDescription = "My Image"
-                            )
-                        }
+                        Image(
+                            painter = painterResource(id = settingCardsIcons[index]),
+                            contentDescription = "My Image"
+                        )
                         Text(
                             text = settingCardsTitles[index],
                             fontSize = 20.sp,
                             modifier = Modifier
                                 .padding(8.dp)
                         )
-                        if(index == 0){
-                            var momsEnabled by remember { mutableStateOf(false)}
-                            Switch(
-                                modifier = modifier
-                                    .padding(start = 175.dp),
-                                checked = momsEnabled ,
-                                onCheckedChange = {
-                                    momsEnabled = it
-                                }
-                            )
-                        }
                     }
                 }
             }

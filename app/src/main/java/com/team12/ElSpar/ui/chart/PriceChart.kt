@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui.chart
 
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.patrykandpatrick.vico.compose.axis.axisLabelComponent
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
@@ -18,6 +20,9 @@ import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.chart.line.lineSpec
 import com.patrykandpatrick.vico.compose.component.shape.shader.verticalGradient
+import com.patrykandpatrick.vico.compose.component.shapeComponent
+import com.patrykandpatrick.vico.compose.component.textComponent
+import com.patrykandpatrick.vico.compose.dimensions.dimensionsOf
 import com.patrykandpatrick.vico.compose.m3.style.m3ChartStyle
 import com.patrykandpatrick.vico.compose.style.ChartStyle
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
@@ -28,6 +33,7 @@ import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis.TickPosition.Edge.spacing
 import com.patrykandpatrick.vico.core.axis.vertical.VerticalAxis
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
+import com.patrykandpatrick.vico.core.component.shape.ShapeComponent
 
 import com.patrykandpatrick.vico.core.component.shape.Shapes
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
@@ -130,14 +136,23 @@ fun PriceChart(
                         //color = PurpleGrey80.copy(0.8f).toArgb())
                         color = Color.Black.copy(alpha = 0.0f).toArgb())
 
-            ),
-                horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Inside
+                ),
+                horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Inside,
+                titleComponent = textComponent(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    background = shapeComponent(Shapes.pillShape, MaterialTheme.colorScheme.primaryContainer),
+                    padding = dimensionsOf(20.dp, 1.dp),
+                    margins = dimensionsOf(1.dp),
+                    typeface = Typeface.DEFAULT,
+                    textSize = 15.sp,
+                ),
+                title = "øre/kWh",
             ),
             bottomAxis = bottomAxis(
                 tickLength = 4.dp,
                 tickPosition = HorizontalAxis.TickPosition.Center(
                     offset = 0,
-                    spacing = if (pricePeriod == PricePeriod.WEEK) 1 else 2
+                    spacing = if (pricePeriod == PricePeriod.WEEK) 1 else 3
                 ),
                 valueFormatter = bottomAxisValueFormatter
             ),
