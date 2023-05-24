@@ -33,7 +33,7 @@ class ElSparViewModel(
     private var currentEndDate = LocalDate.now()
 
     init {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if(!isATest){
                 settings.collect { settings ->
                     if (!settings.initialStartupCompleted) {
@@ -58,7 +58,7 @@ class ElSparViewModel(
 
     fun getPowerPrice() {
         _uiState.value = ElSparUiState.Loading
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if(!isATest) {
                 settings.collect { settings ->
                     _uiState.value = try {
@@ -107,7 +107,7 @@ class ElSparViewModel(
     private fun cache(
         buffer: PricePeriod = PricePeriod.MONTH
     ) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if(!isATest){
                 settings.collect { settings ->
                     getPowerPriceUseCase(
@@ -143,20 +143,20 @@ class ElSparViewModel(
     }
 
     fun updatePreference(priceArea: Settings.PriceArea) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if(!isATest){
+                currentEndDate = LocalDate.now()
                 settingsRepository.updatePriceArea(priceArea)
                 settingsRepository.initialStartupCompleted()
             }else{
                 viewModelPriceArea = priceArea
             }
-            currentEndDate = LocalDate.now()
             update()
         }
     }
 
     fun updatePreference(activity: Settings.Activity, value: Int) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             settingsRepository.updateActivity(activity, value)
         }
     }

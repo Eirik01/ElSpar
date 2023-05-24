@@ -61,8 +61,9 @@ class GetProjectedPowerPriceUseCase(
         val projectionTime = List(PROJECTION) { date.atStartOfDay().plusHours(it.toLong()) }
         val time = (warmupTime + projectionTime).toSortedSet().toList()
 
-        if (price.keys.containsAll(projectionTime) && area == currentAreaInRepo) {
-            return price.filterKeys { it.toLocalDate() == date }
+        if (price.keys.containsAll(projectionTime)) {
+            if (area == currentAreaInRepo) return price.filterKeys { it.toLocalDate() == date }
+            else price.clear()
         }
 
         val weather = weatherRepository.getWeatherDataFromDate(time.first().toLocalDate(), area)
@@ -134,7 +135,6 @@ class GetProjectedPowerPriceUseCase(
 
             this.price[targetTime] = denormalizePrice(projectedPrice)*125
             data["price"]?.set(targetTime, projectedPrice)
-            Log.i("PRICE MAP", data["price"].toString())
         }
 
         return this.price.filterKeys { it.toLocalDate() == date }
