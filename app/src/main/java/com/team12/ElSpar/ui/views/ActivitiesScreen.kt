@@ -2,7 +2,6 @@ package com.team12.ElSpar.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -16,9 +15,22 @@ import androidx.compose.ui.unit.sp
 import com.team12.ElSpar.R
 import java.time.LocalDateTime
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
+import androidx.navigation.NavHostController
+import com.team12.ElSpar.ui.chart.AveragePriceEntry
+import java.math.MathContext
+import java.math.RoundingMode
+import kotlin.math.ceil
 
+//Composable that shows the different activities and their prices
 @Composable
 fun ActivitiesScreen(
     currentPrice: Map<LocalDateTime, Double>,
@@ -27,79 +39,166 @@ fun ActivitiesScreen(
     oven: Int,
     car: Int,
     modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
+    // "price right now" instantiatied
+    val priceNow by remember {
+        mutableStateOf(            currentPrice
+            .filterKeys { it.hour == LocalDateTime.now().hour }
+            .values
+            .first())
+    }
+    // Ratio betwwen the average price of today and price right now calculated
+    var cheaper : Boolean = (currentPrice.values.average() - priceNow) > 1
+    val priceRatio = priceNow/currentPrice.values.average()
+
     Column(
         modifier = modifier
-            .fillMaxHeight().verticalScroll(rememberScrollState())
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ){
-        //ALLE COMPOSABLES SOM SKAL VISES PÅ SKJERMEN GÅR HER vv
-        Card_CurrentPrice(currentPrice)
-        ContentRow(
-            "$shower min dusj", 1.42f, 0.04f,
-            "$wash min klesvask", 0.13f, 0.01f
-        )
-        ContentRow(
-            "Ovn ($oven min)", 0.23f, 0.05f,
-            "Lade bil ($car kWh)", 5.27f, -1.23f
-        )
-        //Tekst på bunnen av siden
-        //ENDRE DISSE! VARIABLENE
-        val hoyereDagspris = true
 
-        var textString = "Strømprisen nå er xx% " + (if(hoyereDagspris) "over" else "under") + " dagens gjennomsnitt. "
-        textString += if(!hoyereDagspris){
+        // all composables that are shown below
+
+        //This is the card on top of the screen. It is the same as the one on main screen.
+        Card_CurrentPrice(currentPrice, navController)
+
+        //Two "content rows", each with 2 cards.
+        ContentRow(
+            priceRatio,
+            cheaper,
+            currentPrice
+                .filterKeys { it.hour == LocalDateTime.now().hour }
+                .values
+                .first(),
+            "$shower min dusj",
+            shower,
+            "$wash min klesvask",
+            wash,
+            R.drawable.shower,
+            R.drawable.laundry,
+            navController = navController
+        )
+        ContentRow(
+            priceRatio,
+            cheaper,
+            currentPrice
+                .filterKeys { it.hour == LocalDateTime.now().hour }
+                .values
+                .first(),
+            "Ovn ($oven min)",
+            oven,
+            "Lade bil ($car kWh)",
+            car,
+            R.drawable.oven,
+            R.drawable.charger,
+            navController = navController
+        )
+
+        //Text on the bottom of the side.
+        val formattedPriceRatioDiff = (priceRatio).toBigDecimal().setScale(1, RoundingMode.CEILING)
+        var textString = "Strømprisen nå er $formattedPriceRatioDiff ganger dagens gjennomsnitt. "
+        textString += if(cheaper){
             "Det er ikke en dårlig ide å bruke mye strøm nå."
         } else{
             "Det er lurt å vente med strømintense oppgaver."
         }
 
-        Text(
-            text = textString,
-            textAlign = TextAlign.Justify,
-            modifier = modifier.fillMaxWidth(0.8f)
-        )
-
         Spacer(modifier = modifier.size(15.dp))
 
+        //Header
         Text(
-            "Kortene på siden viser pris for aktivitet, og hvor mye dyrere eller billigere det er å gjøre aktiviteten nå i forhold til de siste 24 timene sitt gjennomsnitt",
-            textAlign = TextAlign.Justify,
-            modifier = modifier.fillMaxWidth(0.8f)
+            text = "Prisen nå",
+            textAlign = TextAlign.Center,
+            modifier = modifier.fillMaxWidth(0.8f),
+            fontWeight = Bold
+        )
+
+        Row {
+            Text(
+                text = textString,
+                textAlign = TextAlign.Center,
+                modifier = modifier.fillMaxWidth(0.8f)
             )
 
+            //Icon that shows check when the price is low, and warning when the price is high
+            if (cheaper) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "Check icon",
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Warning icon",
+                )
+            }
+        }
     }
 }
 
+/*Row with 2 cards*/
 @Composable
 fun ContentRow(
-aktivitet1:String, aktivitetPris1:Float, aktivitetPrisDifferanse1:Float,
-aktivitet2:String, aktivitetPris2:Float, aktivitetPrisDifferanse2:Float
+    activityRatio : Double,
+    cheaper : Boolean,
+    currentPrice : Double,
+    leftActivity : String,
+    leftPreference : Int,
+    rightActivity : String,
+    rightPreference : Int,
+    icon1 : Int,
+    icon2 : Int,
+    modifier : Modifier = Modifier,
+    navController: NavHostController
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ){
-        ContentCard(Modifier.weight(1f), aktivitet1, aktivitetPris1, aktivitetPrisDifferanse1)
-        ContentCard(Modifier.weight(1f), aktivitet2, aktivitetPris2, aktivitetPrisDifferanse2)
+        ContentCard(
+            currentPrice,
+            cheaper,
+            activityRatio,
+            leftActivity,
+            leftPreference,
+            icon1,
+            Modifier.weight(1f),
+            navController
+        )
+        ContentCard(
+            currentPrice,
+            cheaper,
+            activityRatio,
+            rightActivity,
+            rightPreference,
+            icon2,
+            Modifier.weight(1f),
+            navController
+        )
     }
 }
 
+/*Card with an activity. Has a column for */
 @Composable
 fun ContentCard(
-    modifier: Modifier,
-    aktivitet:String,
-    aktivitetPris:Float,
-    aktivitetPrisDifferanse:Float
+    currentPrice: Double,
+    cheaper : Boolean,
+    activityRatio : Double,
+    activity : String,
+    activityPreference : Int,
+    icon : Int,
+    modifier : Modifier = Modifier,
+    navController: NavHostController
 ) {
-
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        modifier = modifier
+        modifier = modifier.clickable { navController.navigate("PreferenceScreen") }
     ){
         Column(
             modifier = Modifier
@@ -108,21 +207,52 @@ fun ContentCard(
                 .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
+            var activityKwhCost by remember{ mutableStateOf(0.0) }
+            var activityPrice by remember { mutableStateOf(0.0) }
+            var activityPriceDiff by remember { mutableStateOf(0.0)}
+            if(activity.contains("dusj")){
+                activityKwhCost = 5.0
+            }
+            else if(activity.contains("klesvask")){
+                activityKwhCost = 0.4
+            }
+            else if(activity.contains("Ovn")){
+                activityKwhCost = 3.5
+            }
+            else if(activity.contains("Lade")){
+                activityKwhCost = 1.0
+            }
+
+            if(activityKwhCost != 1.0){
+                activityPrice = currentPrice*activityKwhCost*activityPreference/6000
+            }else{
+                activityPrice = currentPrice*activityKwhCost*activityPreference/100
+            }
+            // Divided by 6000 becuase the the price should be shown in kr not in øre, also because preferences are in minutes so (60*100)
+
+            activityPriceDiff = activityRatio*activityPrice
 
             Image(
-                painter = painterResource(id = R.drawable.noimage),
-                contentDescription = "My Image"
+                painter = painterResource(id = icon),
+                contentDescription = "My Image",
+                //Modifier.clickable { navController.navigate("PreferenceScreen") }
             )
-            Text(text = aktivitet, textAlign = TextAlign.Center)
-
-            //Nederste tekst-rad. Har pris på aktivitet og prisforskjell
+            Text(text = activity, textAlign = TextAlign.Center)
+            //Bottom text-row. Has activity price and price difference
             Text(
                 buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold, fontSize = 20.sp)) {
-                        append(aktivitetPris.toString() + "kr ")
+                    //This string is the price
+                    withStyle(style = SpanStyle(fontWeight = Bold, fontSize = 20.sp)) {
+                        append(activityPrice.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr ")
                     }
+                    
+                    //This string shows the difference
                     withStyle(style = SpanStyle()) {
-                        append("(" + aktivitetPrisDifferanse.toString() + "kr)")
+                        if(cheaper){
+                            append("(" +"-"+ activityPriceDiff.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr)")
+                        }else{
+                            append("(" +"+"+activityPriceDiff.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr)")
+                        }
                     }
                 },
                 textAlign = TextAlign.Center

@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.ui.chart.PriceChart
 import java.math.RoundingMode
@@ -33,7 +35,8 @@ fun MainScreen(
     onChangePricePeriod: (PricePeriod) -> Unit,
     onDateForward: () -> Unit,
     onDateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
 
     Column(
@@ -44,24 +47,24 @@ fun MainScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ){
 
-        //SJERM INNHOLD!
+        //Screen content
 
-        //Kort på toppen
-        Card_CurrentPrice(currentPrice)
+        //Card with "Current price" on top
+        Card_CurrentPrice(currentPrice, navController)
 
         Spacer(modifier = Modifier.size(15.dp))
 
-        //Tidsintervall-knapper
+        //Time interval buttons
         TimeIntervalButtons(currentPricePeriod) { onChangePricePeriod(it) }
-        //Dato-knapper
+        //Date selection buttons
         DateSelectionButtons(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
 
-        //Graf
-        PriceChart(priceList, currentPricePeriod, modifier = Modifier.offset(y = (-30).dp)) //Kan kutte neg modifier
+        //Graph
+        PriceChart(priceList, currentPricePeriod, modifier = Modifier.offset(y = (-30).dp))
 
         Spacer(modifier = Modifier.size(15.dp))
 
-        //Pristekst bunn
+        //Pricetext bottom
         PriceText(priceList,currentPricePeriod)
 
     }
@@ -70,7 +73,8 @@ fun MainScreen(
 
 @Composable
 fun Card_CurrentPrice(
-    currentPrice: Map<LocalDateTime, Double>
+    currentPrice: Map<LocalDateTime, Double>,
+    navController: NavHostController
 ){
 
     val currPrice = currentPrice
@@ -81,6 +85,7 @@ fun Card_CurrentPrice(
 
 
     Card(
+        Modifier.clickable { navController.navigate("InfoScreen") },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -99,7 +104,8 @@ fun Card_CurrentPrice(
             ){
                 Icon(
                     imageVector = Icons.Default.Info,
-                    contentDescription = "Information icon"
+                    contentDescription = "Information icon",
+                    //Modifier.clickable { navController.navigate("InfoScreen") }
                 )
                 Text(text = "Strømpris nå")
             }
@@ -115,8 +121,6 @@ fun TimeIntervalButtons(
     currentPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit
 ){
-
-    //Gi weight på samme måte som boksene i infoscreen
     Row(modifier = Modifier
         .height(40.dp)
         .fillMaxWidth()
@@ -135,16 +139,17 @@ fun IntervalButton(
     btnPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit)
 {
-    val unselectedColor = MaterialTheme.colorScheme.background
-    val selectedColor = MaterialTheme.colorScheme.primaryContainer
+    //Selected button gets primary container color, the other gets BG color
+    var buttonColor =   if (currentPricePeriod == btnPricePeriod) MaterialTheme.colorScheme.primaryContainer
+                        else MaterialTheme.colorScheme.background
+    //Setting textcolor to onPrimaryContainer or onBG
+    var textColor =     if (currentPricePeriod == btnPricePeriod)MaterialTheme.colorScheme.onPrimaryContainer
+                        else MaterialTheme.colorScheme.onBackground
+
     OutlinedButton(
         onClick = {onSelectPricePeriod(btnPricePeriod)},
         modifier = modifier,
-        colors = ButtonDefaults.buttonColors(
-            containerColor =  (
-                    if (currentPricePeriod == btnPricePeriod) selectedColor else unselectedColor
-                    )
-        ),
+        colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
         shape = RoundedCornerShape(
             topStartPercent = leftRound,
             topEndPercent = rightRound,
@@ -152,7 +157,7 @@ fun IntervalButton(
             bottomStartPercent = leftRound
         )
     ) {
-        Text(text = btnPricePeriod.text, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Text(text = btnPricePeriod.text, color = textColor)
     }
 }
 
@@ -223,21 +228,21 @@ fun PriceText(
     val rowMod:Modifier = Modifier.fillMaxWidth()
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Laveste: ${timeOf(minPrice)}")
-        Text(roundOffDecimal(minPrice).toString() + " kWh")
+        Text(roundOffDecimal(minPrice).toString() + " øre/kWh")
     }
 
     Divider(modifier = Modifier.fillMaxWidth(0.9f).width(1.dp))
 
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Høyeste: ${timeOf(maxPrice)}")
-        Text(roundOffDecimal(maxPrice).toString() + " kWh")
+        Text(roundOffDecimal(maxPrice).toString() + " øre/kWh")
     }
 
     Divider(modifier = Modifier.fillMaxWidth(0.9f).width(1.dp))
 
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Gjennomsnittlig pris:")
-        Text(roundOffDecimal(avgPrice).toString() + " kWh")
+        Text(roundOffDecimal(avgPrice).toString() + " øre/kWh")
     }
 }
 

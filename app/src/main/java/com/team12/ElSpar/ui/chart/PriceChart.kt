@@ -1,37 +1,41 @@
 package com.team12.ElSpar.ui.chart
 
-import android.graphics.drawable.GradientDrawable
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.patrykandpatrick.vico.compose.axis.axisLabelComponent
 import com.patrykandpatrick.vico.compose.axis.horizontal.bottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.startAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
 import com.patrykandpatrick.vico.compose.chart.line.lineSpec
-import com.patrykandpatrick.vico.compose.component.shape.shader.fromComponent
 import com.patrykandpatrick.vico.compose.component.shape.shader.verticalGradient
 import com.patrykandpatrick.vico.compose.component.shapeComponent
+import com.patrykandpatrick.vico.compose.component.textComponent
+import com.patrykandpatrick.vico.compose.dimensions.dimensionsOf
 import com.patrykandpatrick.vico.compose.m3.style.m3ChartStyle
 import com.patrykandpatrick.vico.compose.style.ChartStyle
 import com.patrykandpatrick.vico.compose.style.ProvideChartStyle
-import com.patrykandpatrick.vico.core.DefaultColors.Dark.axisGuidelineColor
 import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis.TickPosition.Edge.spacing
+import com.patrykandpatrick.vico.core.axis.vertical.VerticalAxis
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
+import com.patrykandpatrick.vico.core.component.shape.ShapeComponent
+
 import com.patrykandpatrick.vico.core.component.shape.Shapes
-import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShader
-import com.patrykandpatrick.vico.core.component.shape.shader.DynamicShaders
 import com.patrykandpatrick.vico.core.entry.ChartEntryModel
 import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import com.patrykandpatrick.vico.core.extension.appendCompat
@@ -39,6 +43,7 @@ import com.patrykandpatrick.vico.core.extension.sumOf
 import com.patrykandpatrick.vico.core.extension.transformToSpannable
 import com.patrykandpatrick.vico.core.marker.Marker
 import com.team12.ElSpar.model.PricePeriod
+import com.team12.ElSpar.ui.theme.PurpleGrey80
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDateTime
@@ -48,10 +53,10 @@ fun PriceChart(
     priceList: Map<LocalDateTime, Double>,
     pricePeriod: PricePeriod,
     modifier: Modifier = Modifier,
-    pattern: DecimalFormat = DecimalFormat("#.#")
+    pattern: DecimalFormat = DecimalFormat("#")
         .apply { roundingMode = RoundingMode.CEILING },
     startAxisValueFormatter: AxisValueFormatter<AxisPosition.Vertical.Start> =
-        DecimalFormatAxisValueFormatter(pattern.toPattern(), RoundingMode.CEILING),
+        DecimalFormatAxisValueFormatter(pattern.toPattern(), RoundingMode.UP),
     bottomAxisValueFormatter: AxisValueFormatter<AxisPosition.Horizontal.Bottom> =
         AxisValueFormatter { value, chartValues ->
             (chartValues.chartEntryModel.entries.first().getOrNull(value.toInt()) as? PriceEntry)
@@ -101,14 +106,14 @@ fun PriceChart(
             Color(0x4a4458).copy(0.6f),
             Color(0x4f378b).copy(0.6f)
         )
-
-
     ProvideChartStyle(chartStyle) {
         Chart(
             chart = lineChart(
                 lines = listOf(
                     lineSpec(
-                        lineColor = MaterialTheme.colorScheme.primary,
+                        //lineColor = MaterialTheme.colorScheme.primary,
+                        lineColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
+                        lineThickness = 1.5.dp,
                         lineBackgroundShader = verticalGradient(
                             colors = colorArray,
                             positions = floatArrayOf(0.1f, 0.9f, 1f)
@@ -117,23 +122,41 @@ fun PriceChart(
                 ).apply {
                     first().pointConnector = PriceChartPointConnector()
                 },
-                spacing = 4.dp,
+                spacing = 0.dp,
                 //axisValuesOverrider = AxisValuesOverrider.adaptiveYValues(1.2f),
             ),
+            modifier = modifier,
             model = model(priceList, pricePeriod),
             startAxis = startAxis(
-                valueFormatter = startAxisValueFormatter
+                valueFormatter = startAxisValueFormatter,
+
+                label = axisLabelComponent(
+                    background = ShapeComponent(
+                        shape = Shapes.roundedCornerShape(30,30,30,30,),
+                        //color = PurpleGrey80.copy(0.8f).toArgb())
+                        color = Color.Black.copy(alpha = 0.0f).toArgb())
+
+                ),
+                horizontalLabelPosition = VerticalAxis.HorizontalLabelPosition.Inside,
+                titleComponent = textComponent(
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    background = shapeComponent(Shapes.pillShape, MaterialTheme.colorScheme.primaryContainer),
+                    padding = dimensionsOf(20.dp, 1.dp),
+                    margins = dimensionsOf(1.dp),
+                    typeface = Typeface.DEFAULT,
+                    textSize = 15.sp,
+                ),
+                title = "øre/kWh",
             ),
             bottomAxis = bottomAxis(
                 tickLength = 4.dp,
                 tickPosition = HorizontalAxis.TickPosition.Center(
                     offset = 0,
-                    spacing = if (pricePeriod == PricePeriod.WEEK) 1 else 2
+                    spacing = if (pricePeriod == PricePeriod.WEEK) 1 else 3
                 ),
                 valueFormatter = bottomAxisValueFormatter
             ),
             marker = marker,
-            modifier = modifier
         )
         chartStyle.lineChart.lines.first().pointConnector = PriceChartPointConnector()
     }

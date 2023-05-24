@@ -29,7 +29,8 @@ class DefaultPowerRepository(
             hvaKosterStrommenApiService
                 .getPowerPricesByDate(date, area)
                 .forEach {
-                    priceData[LocalDateTime.parse(it.time_start.dropLast(6))] = it.NOK_per_kWh * 125
+                    //If not NO4 multiply with added value tax
+                    priceData[LocalDateTime.parse(it.time_start.dropLast(6))] = it.NOK_per_kWh * (if(area != PriceArea.NO4) 125 else 100)
                 }
         } catch (e: PriceNotAvailableException) {
             throw e
