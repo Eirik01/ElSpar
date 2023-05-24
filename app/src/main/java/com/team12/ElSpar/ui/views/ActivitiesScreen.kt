@@ -78,7 +78,7 @@ fun ActivitiesScreen(
             shower,
             "$wash min klesvask",
             wash,
-            R.drawable.shower,
+            R.drawable.showericon,
             R.drawable.laundry,
             navController = navController
         )
@@ -140,7 +140,7 @@ fun ActivitiesScreen(
     }
 }
 
-/*Row with 2 cards*/
+/*Row with 2 content-cards*/
 @Composable
 fun ContentRow(
     activityRatio : Double,
@@ -182,7 +182,7 @@ fun ContentRow(
     }
 }
 
-/*Card with an activity. Has a column for */
+/*Card with an activity. */
 @Composable
 fun ContentCard(
     currentPrice: Double,
@@ -210,6 +210,8 @@ fun ContentCard(
             var activityKwhCost by remember{ mutableStateOf(0.0) }
             var activityPrice by remember { mutableStateOf(0.0) }
             var activityPriceDiff by remember { mutableStateOf(0.0)}
+
+            //Should do this with a parameter instead
             if(activity.contains("dusj")){
                 activityKwhCost = 5.0
             }
@@ -223,21 +225,21 @@ fun ContentCard(
                 activityKwhCost = 1.0
             }
 
+            // Divided by 6000 becuase the the price should be shown in kr not in øre, also because preferences are in minutes so (60*100)
             if(activityKwhCost != 1.0){
                 activityPrice = currentPrice*activityKwhCost*activityPreference/6000
             }else{
                 activityPrice = currentPrice*activityKwhCost*activityPreference/100
             }
-            // Divided by 6000 becuase the the price should be shown in kr not in øre, also because preferences are in minutes so (60*100)
 
             activityPriceDiff = activityRatio*activityPrice
 
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = "My Image",
-                //Modifier.clickable { navController.navigate("PreferenceScreen") }
             )
             Text(text = activity, textAlign = TextAlign.Center)
+
             //Bottom text-row. Has activity price and price difference
             Text(
                 buildAnnotatedString {
