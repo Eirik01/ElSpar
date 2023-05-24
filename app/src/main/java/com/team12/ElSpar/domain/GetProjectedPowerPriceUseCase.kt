@@ -1,6 +1,5 @@
 package com.team12.ElSpar.domain
 
-import android.util.Log
 import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.data.PowerRepository
 import com.team12.ElSpar.data.StatisticsRepository

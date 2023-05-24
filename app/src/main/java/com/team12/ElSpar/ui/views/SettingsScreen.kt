@@ -51,7 +51,7 @@ fun SettingsScreen(
             }
             Card(
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
+                modifier = modifier
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
                     .height(60.dp)
                     .fillMaxWidth()
@@ -62,7 +62,7 @@ fun SettingsScreen(
                 ),
             ) {
                 Row(
-                    modifier = Modifier
+                    modifier = modifier
                         .padding(8.dp)
                         .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,

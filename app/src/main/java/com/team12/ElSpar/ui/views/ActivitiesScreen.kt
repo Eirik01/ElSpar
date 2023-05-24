@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -20,15 +19,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.navigation.NavHostController
-import com.team12.ElSpar.ui.chart.AveragePriceEntry
-import java.math.MathContext
 import java.math.RoundingMode
-import kotlin.math.ceil
 
 //Composable that shows the different activities and their prices
 @Composable
@@ -49,7 +44,7 @@ fun ActivitiesScreen(
             .first())
     }
     // Ratio betwwen the average price of today and price right now calculated
-    var cheaper : Boolean = (currentPrice.values.average() - priceNow) > 1
+    val cheaper : Boolean = (currentPrice.values.average() - priceNow) > 1
     val priceRatio = priceNow/currentPrice.values.average()
 
     Column(
