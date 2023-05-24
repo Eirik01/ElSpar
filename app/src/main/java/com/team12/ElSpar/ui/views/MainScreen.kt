@@ -70,26 +70,27 @@ fun MainScreen(
     }
 }
 
-
+//Card for current price. Is reused in activity-screen
 @Composable
 fun Card_CurrentPrice(
     currentPrice: Map<LocalDateTime, Double>,
     navController: NavHostController
 ){
-
+    //Current price
     val currPrice = currentPrice
         .filterKeys { it.hour == LocalDateTime.now().hour }
         .values
         .first()
 
-
-
+    //Making card clickable
     Card(
         Modifier.clickable { navController.navigate("InfoScreen") },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
     ){
+
+        //Column with the card-elements
         Column(
             modifier = Modifier
                 .wrapContentHeight()
@@ -105,22 +106,23 @@ fun Card_CurrentPrice(
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = "Information icon",
-                    //Modifier.clickable { navController.navigate("InfoScreen") }
                 )
                 Text(text = "Strømpris nå")
             }
 
-            Text(text =roundOffDecimal(currPrice).toString(), fontSize = 50.sp, fontWeight = FontWeight.Bold)
-            Text(text ="øre/kWh")
+            Text(text = roundOffDecimal(currPrice).toString(), fontSize = 50.sp, fontWeight = FontWeight.Bold)
+            Text(text = "øre/kWh")
         }
     }
 }
 
+//Custom made segmented button
 @Composable
 fun TimeIntervalButtons(
     currentPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit
 ){
+    //Row with 3 interval buttons
     Row(modifier = Modifier
         .height(40.dp)
         .fillMaxWidth()
@@ -130,6 +132,8 @@ fun TimeIntervalButtons(
         IntervalButton(Modifier.weight(1f),0, 40, currentPricePeriod, PricePeriod.MONTH) { onSelectPricePeriod(it) }
     }
 }
+
+
 @Composable
 fun IntervalButton(
     modifier: Modifier,
@@ -161,6 +165,7 @@ fun IntervalButton(
     }
 }
 
+//Simple buttons and text for changing day/week/month
 @Composable
 fun DateSelectionButtons(
     currentPricePeriod: PricePeriod,
@@ -171,6 +176,8 @@ fun DateSelectionButtons(
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
+
+        //Back button
         OutlinedIconButton(
             onClick = { onDateBack() }
         ) { Icon(
@@ -179,6 +186,7 @@ fun DateSelectionButtons(
             modifier = Modifier.size(ButtonDefaults.IconSize)
         ) }
 
+        //Date
         Text(
             text = if (currentPricePeriod == PricePeriod.DAY) {
                 "${currentEndDate.dayOfMonth}. ${currentEndDate.month.getDisplayName(TextStyle.FULL, Locale("nb"))}"
@@ -194,6 +202,7 @@ fun DateSelectionButtons(
             modifier = Modifier.padding(start = 10.dp, end = 10.dp)
         )
 
+        //Forward button
         OutlinedIconButton(
             onClick = { onDateForward() }
         ) { Icon(
@@ -204,6 +213,8 @@ fun DateSelectionButtons(
 
     }
 }
+
+//Avg, max and min powerprice
 @Composable
 fun PriceText(
     priceList: Map<LocalDateTime, Double>,
@@ -214,7 +225,8 @@ fun PriceText(
     val minPrice = priceList.values.min()
     val maxPrice = priceList.values.max()
 
-    val timeOf: (Double) -> String = { price ->
+    val timeOf: (Double) -> String =
+    { price ->
         priceList
             .filterValues { it == price }
             .keys
@@ -225,6 +237,7 @@ fun PriceText(
             }
     }
 
+    //Min price
     val rowMod:Modifier = Modifier.fillMaxWidth()
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Laveste: ${timeOf(minPrice)}")
@@ -232,20 +245,21 @@ fun PriceText(
     }
 
     Divider(modifier = Modifier.fillMaxWidth(0.9f).width(1.dp))
-
+    //Max price
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Høyeste: ${timeOf(maxPrice)}")
         Text(roundOffDecimal(maxPrice).toString() + " øre/kWh")
     }
 
     Divider(modifier = Modifier.fillMaxWidth(0.9f).width(1.dp))
-
+    //Acg price
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Gjennomsnittlig pris:")
         Text(roundOffDecimal(avgPrice).toString() + " øre/kWh")
     }
 }
 
+//Function to round number
 fun roundOffDecimal(number: Double): Double {
     val df = DecimalFormat("#.#")
     df.roundingMode = RoundingMode.CEILING

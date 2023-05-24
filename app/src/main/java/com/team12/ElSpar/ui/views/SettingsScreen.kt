@@ -17,6 +17,7 @@ import com.team12.ElSpar.R
 
 @Composable
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+//Composable for showing settings
 fun SettingsScreen(
     onChangePreferences :  () -> Unit,
     onChangePrisomraade :  () -> Unit,
@@ -24,60 +25,61 @@ fun SettingsScreen(
     onChangeAboutUs :  () -> Unit,
     modifier : Modifier = Modifier,
 ){
-    Scaffold(){ padding ->
-        val settingCardsTitles  = listOf(
-            stringResource(R.string.Preferanser),
-            stringResource(R.string.velg_prisområde),
-            stringResource(R.string.mer_om_strom),
-            stringResource(R.string.om_oss))
+    val settingCardsTitles  = listOf(
+        stringResource(R.string.Preferanser),
+        stringResource(R.string.velg_prisområde),
+        stringResource(R.string.mer_om_strom),
+        stringResource(R.string.om_oss))
 
-        val settingCardsIcons: List<Int>  = listOf(
-            R.drawable.tuneicon,
-            R.drawable.mapicon2,
-            R.drawable.bolticon,
-            R.drawable.infoicon
-        )
+    val settingCardsIcons: List<Int>  = listOf(
+        R.drawable.tuneicon,
+        R.drawable.mapicon2,
+        R.drawable.bolticon,
+        R.drawable.infoicon
+    )
 
-        LazyColumn(
-        ) {
-            items(settingCardsTitles.size) { index ->
-                var onChangeFunction  : () -> Unit = {}
-                when (settingCardsTitles[index]){
-                    "Preferanser" -> onChangeFunction = onChangePreferences
-                    "Velg prisområde" -> onChangeFunction = onChangePrisomraade
-                    "Mer om strøm" -> onChangeFunction = onChangeInfo
-                    "Om oss" -> onChangeFunction = onChangeAboutUs
-                }
-                Card(
-                    shape = MaterialTheme.shapes.medium,
-                    modifier = Modifier
-                        .padding(top = 8.dp, start = 4.dp, end = 4.dp)
-                        .height(60.dp)
-                        .fillMaxWidth()
-                        .clickable(onClick = { onChangeFunction() }
-                        ),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
+    //LazyColumn with the different settings-buttons
+    LazyColumn(
+    ) {
+        items(settingCardsTitles.size) { index ->
+            var onChangeFunction  : () -> Unit = {}
+            when (settingCardsTitles[index]){
+                "Preferanser" -> onChangeFunction = onChangePreferences
+                "Velg prisområde" -> onChangeFunction = onChangePrisomraade
+                "Mer om strøm" -> onChangeFunction = onChangeInfo
+                "Om oss" -> onChangeFunction = onChangeAboutUs
+            }
+            Card(
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier
+                    .padding(top = 8.dp, start = 4.dp, end = 4.dp)
+                    .height(60.dp)
+                    .fillMaxWidth()
+                    .clickable(onClick = { onChangeFunction() }
                     ),
-                ) {
-                    Row(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                ),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+
+                    ) {
+
+                    //Settings icon
+                    Image(
+                        painter = painterResource(id = settingCardsIcons[index]),
+                        contentDescription = "My Image"
+                    )
+                    Text(
+                        text = settingCardsTitles[index],
+                        fontSize = 20.sp,
                         modifier = Modifier
                             .padding(8.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-
-                        ) {
-                        Image(
-                            painter = painterResource(id = settingCardsIcons[index]),
-                            contentDescription = "My Image"
-                        )
-                        Text(
-                            text = settingCardsTitles[index],
-                            fontSize = 20.sp,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    }
+                    )
                 }
             }
         }
