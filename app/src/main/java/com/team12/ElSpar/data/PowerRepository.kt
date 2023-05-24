@@ -36,10 +36,9 @@ class DefaultPowerRepository(
         } catch (e: PriceNotAvailableException) {
             throw e
         } catch (e: NoConnectionException) {
-            print("NO CONNECTION")
             throw e
         }
         localRepo[key] = priceData
-        return priceData.toMap()
+        return priceData
     }
 }
