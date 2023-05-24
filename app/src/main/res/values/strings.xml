@@ -14,6 +14,17 @@
     <string name="klesvask">Klesvask</string>
     <string name="ovn">Ovn</string>
     <string name="lade_bil">Lade bil</string>
+    <string name="Hva_er_en_KWH">Hva er en \'kWh\'?</string>
+    <string name="Underoverskrift1">Mange ser kWh bli skrevet men veit ikke helt hva det er</string>
+    <string name="Brodtekst1">En kilowattime er det samme som 1000 wh, eller 1000 watt-timer. Om du har ett apparat som bruker en watt, vil denne på en time bruke en wh, og et apparat som bruker 1000 watt vil på en time bruke en kWh. Et kjøleskap for eksempel bruker vanlig vis rundt 200 watt, og må stå på i 5 timer for å bruke en kwh.</string>
+    <string name="Aktiviteter">Aktiviteter</string>
+    <string name="Underoverskrift2">Hvilke antagelser er gjort?</string>
+    <string name="Brodtekst2">I strøm-kalkulatoren har vi vært nødt til å gjøre noen antagelser for å gjøre den funksjonell. Antagelser har derfor blitt gjort for de forskjellige aktiviteterna. Vi har antatt at: En dusj bruker rundt 5kWh, en klesvask bruker runt 0.4kWh og at en ovn bruker runt 3.5kWh. Hvor stor kapasitet el-bilen din har, fører du selv inn.</string>
+    <string name="Prognose">Prognose</string>
+    <string name="Underoverskrift3">Hva baserer prognosen seg på?</string>
+    <string name="Spotpris">Spotpris</string>
+    <string name="Underoverskrift4">Hva bestemmer spotprisene?</string>
+    <string name="Brodtekst4">\"I nord-europa har vi en kraftbørs som heter Nord Pool. Der møtes strømprodusenter og leverandører for å bestemme en strømpris. Strømprisene blir for det meste basert på etterspørsel og tilbud, altså høy etterspørsel og lavt tilbud gir dyr strøm. Man kan se svingninger i etterspørsel både i året (mye om vinter lite om sommer), og i dagen (lite midt på natten, mye på ettermiddagen). Derfor vil strømprisen du betaler variere med dette, altså høye priser om vinter og ettermiddagen. Produksjonen varierer også, når Norge og de andre landene i nord pool produserer mye strøm vil prisen være lav, og motsatt. I tillegg påvirkes den av andre faktorer som kurs og forskjellige avgifter. Prisen for en gitt dag bestemmes dagen før, rundt klokken 13-14. \"</string>
 
 </resources>
 

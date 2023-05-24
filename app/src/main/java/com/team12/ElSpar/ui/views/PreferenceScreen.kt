@@ -6,6 +6,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,24 +51,36 @@ fun PreferenceScreen(
                 )
             }
         }
-        Spacer(modifier = modifier.size(15.dp))
-        Text(
-            text = "Her velger du hvor lenge aktivitetene i ´Strømkalkulator´-skjermen varer. For å lade" +
-                    "bil regner vi med en fullading, og derfor velger du istedet kapasiteten til elbilen" +
-                    "din sitt batteri.",
-            textAlign = TextAlign.Justify,
-            modifier = modifier
-                .padding(20.dp)
-        )
-        Text(
-            text = "Antagelser har blitt gjort for de forskjellige aktiviteterna. Vi har antatt at:\n" +
-                    "  - En dusj bruker runt 5kWh\n" +
-                    "  - En klesvask bruker runt 0.4kWh\n" +
-                    "  - En ovn bruker runt 3.5kWh\n",
-            textAlign = TextAlign.Justify,
-            modifier = modifier
-                .padding(20.dp)
-        )
+        Column {
+            Text(
+                text = "Preferanser",
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Bold,
+                modifier = modifier.padding(10.dp)
+            )
+            Text(
+                text = "Her velger du hvor lenge aktivitetene i ´Strømkalkulator´-skjermen varer. For å lade" +
+                        "bil regner vi med en fullading, og derfor velger du istedet kapasiteten til elbilen" +
+                        "din sitt batteri.",
+                textAlign = TextAlign.Left,
+                modifier = modifier.padding(10.dp)
+            )
+
+            Text(
+                text = "Antagelser",
+                textAlign = TextAlign.Left,
+                fontWeight = FontWeight.Bold,
+                modifier = modifier.padding(10.dp)
+            )
+            Text(
+                text = "Antagelser har blitt gjort for de forskjellige aktiviteterna. Vi har antatt at:\n" +
+                        "  - En dusj bruker runt 5kWh\n" +
+                        "  - En klesvask bruker runt 0.4kWh\n" +
+                        "  - En ovn bruker runt 3.5kWh\n",
+                textAlign = TextAlign.Left,
+                modifier = modifier.padding(10.dp)
+            )
+        }
     }
 }
 

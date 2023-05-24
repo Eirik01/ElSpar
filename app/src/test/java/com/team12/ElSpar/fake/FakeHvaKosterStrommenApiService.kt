@@ -6,7 +6,6 @@ import com.team12.ElSpar.exceptions.PriceNotAvailableException
 import com.team12.ElSpar.model.PriceData
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.Month
 
 class FakeHvaKosterStrommenApiService: HvaKosterStrommenApiService {
     override suspend fun getPowerPricesByDate(date: LocalDate, area: Settings.PriceArea): List<PriceData> {
@@ -20,7 +19,7 @@ class FakeHvaKosterStrommenApiService: HvaKosterStrommenApiService {
         FakePowerDataSource.priceDataList.forEach { priceData ->
             val priceDateTime = LocalDateTime.parse(priceData.time_start.dropLast(6))
             if (priceDateTime.toLocalDate() == date
-                //&& area == Settings.PriceArea.NO1
+            //&& area == Settings.PriceArea.NO1
             ) {
                 priceDataList.add(priceData)
             }
@@ -34,5 +33,5 @@ class FakeHvaKosterStrommenApiService: HvaKosterStrommenApiService {
         return priceDataList
     }
 
-        //return FakePowerDataSource.priceDataByDateMapMVA[date]
+    //return FakePowerDataSource.priceDataByDateMapMVA[date]
 }
