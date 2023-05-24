@@ -60,7 +60,7 @@ fun MainScreen(
         DateSelectionButtons(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
 
         //Graph
-        PriceChart(priceList, currentPricePeriod, modifier = Modifier.offset(y = (-30).dp))
+        PriceChart(priceList, currentPricePeriod)
 
         Spacer(modifier = Modifier.size(15.dp))
 
@@ -144,10 +144,10 @@ fun IntervalButton(
     onSelectPricePeriod: (PricePeriod) -> Unit)
 {
     //Selected button gets primary container color, the other gets BG color
-    var buttonColor =   if (currentPricePeriod == btnPricePeriod) MaterialTheme.colorScheme.primaryContainer
+    val buttonColor =   if (currentPricePeriod == btnPricePeriod) MaterialTheme.colorScheme.primaryContainer
                         else MaterialTheme.colorScheme.background
     //Setting textcolor to onPrimaryContainer or onBG
-    var textColor =     if (currentPricePeriod == btnPricePeriod)MaterialTheme.colorScheme.onPrimaryContainer
+    val textColor =     if (currentPricePeriod == btnPricePeriod)MaterialTheme.colorScheme.onPrimaryContainer
                         else MaterialTheme.colorScheme.onBackground
 
     OutlinedButton(

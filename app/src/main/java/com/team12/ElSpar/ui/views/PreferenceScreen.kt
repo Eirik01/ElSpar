@@ -47,7 +47,7 @@ fun PreferenceScreen(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ){
             activities.forEach{
-                sliderElement(
+                SliderElement(
                     it,
                     onUpdatedPreference
                 )
@@ -91,7 +91,7 @@ fun PreferenceScreen(
 
 //Sliderelement with text and a slider
 @Composable
-fun sliderElement(
+fun SliderElement(
     activity : Activity,
     onUpdatedPreference: (Settings.Activity, Int) -> Unit,
     modifier: Modifier = Modifier

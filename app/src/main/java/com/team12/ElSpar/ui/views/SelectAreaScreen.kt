@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.R
@@ -112,14 +111,3 @@ fun ImageOfAreas(modifier: Modifier) {
         modifier = modifier
     )
 }
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreviewLandingScreen() {
-    fun updatePriceArea(v: PriceArea) {}
-    SelectAreaScreen(
-        currentPriceArea = PriceArea.NO1,
-        onChangePriceArea = {updatePriceArea(it)},
-    )
-}
-
