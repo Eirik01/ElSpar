@@ -40,7 +40,6 @@ fun ElSparApp(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
-
             if (elSparUiState !is ElSparUiState.SelectArea) {TopBar(currentScreen, false, navController)}
 
             when (currentScreen) {
@@ -49,8 +48,7 @@ fun ElSparApp(
                 "Mer om strøm" -> TopBar(currentScreen, true, navController)
                 "Om oss"-> TopBar(currentScreen, true, navController)
             }
-
-                 },
+        },
         bottomBar = { if (elSparUiState !is ElSparUiState.SelectArea) NavBar(navController) }
     ) { padding ->
         Surface(
@@ -62,18 +60,18 @@ fun ElSparApp(
             NavHost(navController = navController, startDestination = "ElSparScreen") {
                 composable("ActivitiesScreen") {
                     currentScreen = "Strømkalkulator"
-
                     DataContent(
                         elSparUiState = elSparUiState,
-                        elSparViewModel = elSparViewModel) {
-                            ActivitiesScreen(
-                                currentPrice = it.currentPrice,
-                                shower = settings.shower,
-                                wash = settings.wash,
-                                oven = settings.oven,
-                                car = settings.car,
-                                navController = navController
-                            )
+                        elSparViewModel = elSparViewModel
+                    ) {
+                        ActivitiesScreen(
+                            currentPrice = it.currentPrice,
+                            shower = settings.shower,
+                            wash = settings.wash,
+                            oven = settings.oven,
+                            car = settings.car,
+                            navController = navController
+                        )
                     }
                 }
 
@@ -100,7 +98,6 @@ fun ElSparApp(
 
                 composable("SettingsScreen") {
                     currentScreen = "Instillinger"
-
                     SettingsScreen(
                         onChangePreferences = {navController.navigate("PreferenceScreen")},
                         onChangePrisomraade  = {navController.navigate("SelectAreaScreen")},
@@ -110,22 +107,22 @@ fun ElSparApp(
                 }
                 composable("PreferenceScreen"){
                     currentScreen = "Preferanser"
-                        PreferenceScreen(
-                            shower = settings.shower,
-                            wash = settings.wash,
-                            oven = settings.oven,
-                            car = settings.car,
-                            onUpdatedPreference = { activity, value ->
-                                elSparViewModel.updatePreference(activity, value)
-                            }
-                        )
+                    PreferenceScreen(
+                        shower = settings.shower,
+                        wash = settings.wash,
+                        oven = settings.oven,
+                        car = settings.car,
+                        onUpdatedPreference = { activity, value ->
+                            elSparViewModel.updatePreference(activity, value)
+                        }
+                    )
                 }
                 composable("SelectAreaScreen"){
                     currentScreen = "Velg prisområde"
-                        SelectAreaScreen(
-                            currentPriceArea = settings.area,
-                            onChangePriceArea = { elSparViewModel.updatePreference(it) }
-                        )
+                    SelectAreaScreen(
+                        currentPriceArea = settings.area,
+                        onChangePriceArea = { elSparViewModel.updatePreference(it) }
+                    )
                 }
                 composable("InfoScreen"){
                     currentScreen = "Mer om strøm"

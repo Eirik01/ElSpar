@@ -47,24 +47,24 @@ fun MainScreen(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ){
 
-        //SJERM INNHOLD!
+        //Screen content
 
-        //Kort på toppen
+        //Card with "Current price" on top
         Card_CurrentPrice(currentPrice, navController)
 
         Spacer(modifier = Modifier.size(15.dp))
 
-        //Tidsintervall-knapper
+        //Time interval buttons
         TimeIntervalButtons(currentPricePeriod) { onChangePricePeriod(it) }
-        //Dato-knapper
+        //Date selection buttons
         DateSelectionButtons(currentPricePeriod, currentEndDate, onDateBack, onDateForward)
 
-        //Graf
-        PriceChart(priceList, currentPricePeriod, modifier = Modifier.offset(y = (-30).dp)) //Kan kutte neg modifier
+        //Graph
+        PriceChart(priceList, currentPricePeriod, modifier = Modifier.offset(y = (-30).dp))
 
         Spacer(modifier = Modifier.size(15.dp))
 
-        //Pristekst bunn
+        //Pricetext bottom
         PriceText(priceList,currentPricePeriod)
 
     }
@@ -121,8 +121,6 @@ fun TimeIntervalButtons(
     currentPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit
 ){
-
-    //Gi weight på samme måte som boksene i infoscreen
     Row(modifier = Modifier
         .height(40.dp)
         .fillMaxWidth()
@@ -141,10 +139,10 @@ fun IntervalButton(
     btnPricePeriod: PricePeriod,
     onSelectPricePeriod: (PricePeriod) -> Unit)
 {
-    //Setter valgt knapp til primaryContainer-farge, ellers bakgrunn.
+    //Selected button gets primary container color, the other gets BG color
     var buttonColor =   if (currentPricePeriod == btnPricePeriod) MaterialTheme.colorScheme.primaryContainer
                         else MaterialTheme.colorScheme.background
-    //Setter teksten på knappen til onPrimary om den er valgt, onBackground om den ikke er valgt
+    //Setting textcolor to onPrimaryContainer or onBG
     var textColor =     if (currentPricePeriod == btnPricePeriod)MaterialTheme.colorScheme.onPrimaryContainer
                         else MaterialTheme.colorScheme.onBackground
 
@@ -230,21 +228,21 @@ fun PriceText(
     val rowMod:Modifier = Modifier.fillMaxWidth()
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Laveste: ${timeOf(minPrice)}")
-        Text(roundOffDecimal(minPrice).toString() + " kWh")
+        Text(roundOffDecimal(minPrice).toString() + " øre/kWh")
     }
 
     Divider(modifier = Modifier.fillMaxWidth(0.9f).width(1.dp))
 
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Høyeste: ${timeOf(maxPrice)}")
-        Text(roundOffDecimal(maxPrice).toString() + " kWh")
+        Text(roundOffDecimal(maxPrice).toString() + " øre/kWh")
     }
 
     Divider(modifier = Modifier.fillMaxWidth(0.9f).width(1.dp))
 
     Row(rowMod, horizontalArrangement = Arrangement.SpaceBetween){
         Text("Gjennomsnittlig pris:")
-        Text(roundOffDecimal(avgPrice).toString() + " kWh")
+        Text(roundOffDecimal(avgPrice).toString() + " øre/kWh")
     }
 }
 
