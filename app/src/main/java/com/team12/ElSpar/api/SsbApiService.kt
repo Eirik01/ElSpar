@@ -3,6 +3,8 @@ package com.team12.ElSpar.api
 import android.util.Log
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.network.sockets.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.serialization.Serializable
@@ -11,6 +13,7 @@ import java.time.LocalDate
 
 //Henter konsumprisindeksen(KPI-JA) for energivarer fra Statistisk Sentralbyrå
 
+private const val TIMEOUT = 8000L
 private const val DEFAULT_CPI = 100.0
 private const val ENERGIVARER = "JA_B112"
 
@@ -28,43 +31,56 @@ class DefaultSsbApiService(
     ): Double {
         val year = date.year.toString()
         val month = (date.monthValue-2).toString().padStart(2, '0')
-        val response: JsonObject = client.post(url) {
-            contentType(ContentType.Application.Json)
-            setBody(QueryObject(
-                listOf(
-                    Query(
-                        code = "Leveringssektor",
-                        selection = Selection(
-                            values = listOf(ENERGIVARER)
-                        )
-                    ),
-                    Query(
-                        code = "ContentsCode",
-                        selection = Selection(
-                            values = listOf("KPIJustIndMnd")
-                        )
-                    ),
-                    Query(
-                        code = "Tid",
-                        selection = Selection(
-                            values = listOf(
-                                "${year}M${month}"
+        try {
+            val response: JsonObject = client.post(url) {
+                timeout {
+                    requestTimeoutMillis = TIMEOUT
+                }
+                contentType(ContentType.Application.Json)
+                setBody(
+                    QueryObject(
+                        listOf(
+                            Query(
+                                code = "Leveringssektor",
+                                selection = Selection(
+                                    values = listOf(ENERGIVARER)
+                                )
+                            ),
+                            Query(
+                                code = "ContentsCode",
+                                selection = Selection(
+                                    values = listOf("KPIJustIndMnd")
+                                )
+                            ),
+                            Query(
+                                code = "Tid",
+                                selection = Selection(
+                                    values = listOf(
+                                        "${year}M${month}"
+                                    )
+                                )
                             )
                         )
                     )
                 )
-            ))
-        }.apply {
-            Log.i("SSB", url)
-            if (status.value !in 200..299) return DEFAULT_CPI
-        }.body()
+            }.apply {
+                Log.i("SSB", url)
+                if (status.value !in 200..299) return DEFAULT_CPI
+            }.body()
 
-        return response["value"]
-            ?.jsonArray
-            ?.first()
-            ?.jsonPrimitive
-            ?.doubleOrNull
-            ?: DEFAULT_CPI
+            return response["value"]
+                ?.jsonArray
+                ?.first()
+                ?.jsonPrimitive
+                ?.doubleOrNull
+                ?: DEFAULT_CPI
+        } catch (e: HttpRequestTimeoutException) {
+            return DEFAULT_CPI
+        } catch (e: ConnectTimeoutException) {
+            return DEFAULT_CPI
+        } catch (e: SocketTimeoutException) {
+            return DEFAULT_CPI
+        }
     }
 }
 

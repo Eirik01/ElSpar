@@ -4,6 +4,7 @@ import com.team12.ElSpar.data.WeatherElement
 import com.team12.ElSpar.data.WeatherLocation
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.serialization.json.*
@@ -12,6 +13,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 private const val API_KEY = "48380fc6-bed9-4253-a039-488eb2431968"
+private const val TIMEOUT = 15000L
 
 abstract class MetApiService(
     protected val result: MutableMap<LocalDateTime, Double> = mutableMapOf(),
@@ -96,6 +98,9 @@ class FrostApiService(
     ): HttpResponse {
         return client.get(baseUrl + endpoint) {
             headers { append("X-Gravitee-API-Key", API_KEY) }
+            timeout {
+                requestTimeoutMillis = TIMEOUT
+            }
             url {
                 parameters.append("levels", "default")
                 parameters.append("timeresolutions", "PT1H")
@@ -119,6 +124,9 @@ class LocationForecastApiService(
     ): Map<LocalDateTime, Double> {
         val response: JsonObject = client.get(baseUrl + endpoint) {
             headers { append("X-Gravitee-API-Key", API_KEY) }
+            timeout {
+                requestTimeoutMillis = TIMEOUT
+            }
             url {
                 parameters.append("lat", "${location.lat}")
                 parameters.append("lon", "${location.lon}")

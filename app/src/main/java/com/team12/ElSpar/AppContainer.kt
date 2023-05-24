@@ -13,6 +13,7 @@ import com.team12.ElSpar.network.KtorClient
 private const val DATA_STORE_FILE_NAME = "settings.pb"
 
 interface AppContainer {
+    val model: Model
     val getPowerPriceUseCase: GetPowerPriceUseCase
     val settingsRepository: SettingsRepository
 }
@@ -20,7 +21,7 @@ interface AppContainer {
 class DefaultAppContainer(
     private val context: Context
 ) : AppContainer {
-    val model = Model.newInstance(context)
+    override val model = Model.newInstance(context)
 
     private val settingsStore: DataStore<Settings> =
         DataStoreFactory.create(SettingsSerializer) {

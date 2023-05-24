@@ -13,5 +13,6 @@ class ElSparApplication : Application() {
 
     override fun onTerminate() {
         super.onTerminate()
+        container.model.close()
     }
 }
