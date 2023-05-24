@@ -27,16 +27,17 @@ fun InfoScreen(
     modifier : Modifier = Modifier
 ) {
     val imageList: List<Int> = listOf(
-        R.drawable.powerpic,
-        R.drawable.showerpic,
-        R.drawable.prognosepic,
-        R.drawable.paymentpic
-    )
+        R.drawable.power,
+        R.drawable.pay,
+        R.drawable.shower,
+        R.drawable.prognosepic
+
+        )
     val textList: List<Triple<String, String, String>> = listOf(
         Triple(stringResource(R.string.Hva_er_en_KWH), stringResource(R.string.Underoverskrift1), stringResource(R.string.Brodtekst1)),
+        Triple(stringResource(R.string.Spotpris), stringResource(R.string.Underoverskrift4), stringResource(R.string.Brodtekst4)),
         Triple(stringResource(R.string.Aktiviteter), stringResource(R.string.Underoverskrift2), stringResource(R.string.Brodtekst2)),
-        Triple(stringResource(R.string.Prognose), stringResource(R.string.Underoverskrift3), "SEBBERS"),
-        Triple(stringResource(R.string.Spotpris), stringResource(R.string.Underoverskrift4), stringResource(R.string.Brodtekst4))
+        Triple(stringResource(R.string.Prognose), stringResource(R.string.Underoverskrift3), "SEBBERS")
     )
     LazyColumn(
         modifier = modifier
