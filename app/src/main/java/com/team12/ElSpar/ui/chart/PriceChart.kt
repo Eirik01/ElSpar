@@ -81,12 +81,6 @@ fun PriceChart(
     },
 
     chartStyle: ChartStyle = m3ChartStyle()
-        /*
-        .apply {
-        lineChart.lines.first().pointConnector = PriceChartPointConnector()
-    }
-    */
-
 ) {
 
 

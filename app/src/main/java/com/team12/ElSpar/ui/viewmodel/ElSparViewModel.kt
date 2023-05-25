@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+private const val MAX_DAYS_AHEAD = 3L
+private const val EARLIEST_DATE = "2021-12-01"
+
 class ElSparViewModel(
     private val getPowerPriceUseCase: GetPowerPriceUseCase,
     private val settingsRepository: SettingsRepository,
@@ -99,7 +102,6 @@ class ElSparViewModel(
                 } catch (e: NoConnectionException) {
                     ElSparUiState.Error
                 }
-
             }
         }
     }
@@ -133,13 +135,19 @@ class ElSparViewModel(
     }
 
     fun dateForward() {
-        currentEndDate = currentEndDate.plusDays(currentPricePeriod.days.toLong())
-        update()
+        val targetDate = currentEndDate.plusDays(currentPricePeriod.days.toLong())
+        if (targetDate < LocalDate.now().plusDays(MAX_DAYS_AHEAD)) {
+            currentEndDate = targetDate
+            update()
+        }
     }
 
     fun dateBack() {
-        currentEndDate = currentEndDate.minusDays(currentPricePeriod.days.toLong())
-        update()
+        if (currentEndDate.minusDays(2*currentPricePeriod.days.toLong())
+            > LocalDate.parse(EARLIEST_DATE)) {
+            currentEndDate = currentEndDate.minusDays(currentPricePeriod.days.toLong())
+            update()
+        }
     }
 
     fun updatePreference(priceArea: Settings.PriceArea) {
