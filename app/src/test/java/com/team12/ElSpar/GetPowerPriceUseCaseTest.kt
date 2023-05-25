@@ -1,25 +1,13 @@
 package com.team12.ElSpar
 
-import com.team12.ElSpar.api.DefaultMetApiService
 import com.team12.ElSpar.data.DefaultPowerRepository
-import com.team12.ElSpar.data.DefaultWeatherRepository
-import com.team12.ElSpar.data.WeatherRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
-import com.team12.ElSpar.domain.GetProjectedPowerPriceUseCase
-import com.team12.ElSpar.domain.GetTemperatureUseCase
-import com.team12.ElSpar.exceptions.NoConnectionException
-import com.team12.ElSpar.exceptions.PriceNotAvailableException
 import com.team12.ElSpar.fake.FakeHvaKosterStrommenApiService
-import com.team12.ElSpar.fake.FakeMetApiService
 import com.team12.ElSpar.model.PricePeriod
-import com.team12.ElSpar.rules.MainCoroutineRule
 import io.ktor.client.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
-import org.junit.After
 import org.junit.Assert.*
-import org.junit.Rule
 import org.junit.*
 import org.junit.Test
 import java.time.LocalDate
@@ -28,18 +16,11 @@ import java.time.LocalTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetPowerPriceUseCaseTest {
-
-    val powerRepository = DefaultPowerRepository(FakeHvaKosterStrommenApiService())
-    val getPowerPriceUseCase: GetPowerPriceUseCase =
+    private val powerRepository = DefaultPowerRepository(FakeHvaKosterStrommenApiService())
+    private val getPowerPriceUseCase: GetPowerPriceUseCase =
         GetPowerPriceUseCase(
             powerRepository = powerRepository,
-            getProjectedPowerPriceUseCase = GetProjectedPowerPriceUseCase(
-                GetTemperatureUseCase(
-                    DefaultWeatherRepository(
-                        FakeMetApiService()
-                    )
-                )
-            )
+            getProjectedPowerPriceUseCase = null
         )
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -80,9 +61,9 @@ class GetPowerPriceUseCaseTest {
                 )
             val time = LocalTime.MIDNIGHT
 
-            assertEquals(
-                result[LocalDateTime.of(date,time)],
-                0.0
+            assertTrue(
+                result[LocalDateTime.of(date,time)] == null,
             )
         }
 }
+

@@ -21,6 +21,7 @@ import com.team12.ElSpar.R
 import com.team12.ElSpar.Settings
 import com.team12.ElSpar.ui.viewmodel.ElSparUiState
 import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
+import com.team12.ElSpar.ui.views.ErrorScreen
 import com.team12.ElSpar.ui.views.LoadingScreen
 @Composable
 fun ElSparApp(
@@ -152,15 +153,15 @@ fun DataContent(
 ) {
     //Sets screen based on the state
     when (elSparUiState) {
-        is ElSparUiState.SelectArea ->
-                SelectAreaScreen(
-                    currentPriceArea = elSparUiState.currentPriceArea,
-                    onChangePriceArea = {
-                        elSparViewModel.updatePreference(it)
-                    }
-                )
+        is ElSparUiState.SelectArea -> SelectAreaScreen(
+            currentPriceArea = elSparUiState.currentPriceArea,
+            onChangePriceArea = { elSparViewModel.updatePreference(it) }
+        )
         is ElSparUiState.Loading -> LoadingScreen(modifier)
-        is ElSparUiState.Error -> ErrorScreen(modifier)
+        is ElSparUiState.Error -> ErrorScreen(
+            error = elSparUiState.error,
+            retryAction = { elSparViewModel.getPowerPrice() }
+        )
         is ElSparUiState.Success -> onSuccessfulLoadContent(elSparUiState)
     }
 }
@@ -225,19 +226,5 @@ fun NavBar(navController: NavHostController){
                 )
             }
         }
-    }
-}
-
-
-@Composable
-fun ErrorScreen(
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("ERROR")
     }
 }

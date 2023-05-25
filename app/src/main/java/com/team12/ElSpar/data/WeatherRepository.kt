@@ -2,6 +2,7 @@ package com.team12.ElSpar.data
 
 import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.api.MetApiService
+import com.team12.ElSpar.exceptions.NoConnectionException
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -26,10 +27,8 @@ class DefaultWeatherRepository(
         if (localRepo.isNotEmpty()) return localRepo
 
         for (element in WeatherElement.values()) {
-            localRepo[element] =
-                (locationForecastApiService
-                    .getWeatherData(priceAreaToWeatherLocation(area), element) +
-                frostApiService
+            localRepo[element] = (locationForecastApiService
+                    .getWeatherData(priceAreaToWeatherLocation(area), element) + frostApiService
                     .getWeatherData(priceAreaToWeatherLocation(area), element, date))
                     .toSortedMap()
         }

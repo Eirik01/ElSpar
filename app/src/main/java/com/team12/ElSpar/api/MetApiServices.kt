@@ -2,12 +2,14 @@ package com.team12.ElSpar.api
 
 import com.team12.ElSpar.data.WeatherElement
 import com.team12.ElSpar.data.WeatherLocation
+import com.team12.ElSpar.exceptions.NoConnectionException
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import kotlinx.serialization.json.*
+import java.nio.channels.UnresolvedAddressException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -35,20 +37,24 @@ class FrostApiService(
         element: WeatherElement,
         date: LocalDate,
     ): Map<LocalDateTime, Double> {
-        val response: JsonObject = request(
-            client = client,
-            location = location,
-            element = element,
-            referenceTime =
+        val response: JsonObject = try {
+            request(
+                client = client,
+                location = location,
+                element = element,
+                referenceTime =
                 DateTimeFormatter
                     .ofPattern("yyyy-MM-dd'T'0/")
                     .format(date) +
-                latest(
-                    client = client,
-                    location = location,
-                    element = element
-            )
-        ).apply { if (status.value !in 200..299) return result }.body()
+                        latest(
+                            client = client,
+                            location = location,
+                            element = element
+                        )
+            ).apply { if (status.value !in 200..299) return result }.body()
+        } catch (e: UnresolvedAddressException) {
+            throw NoConnectionException()
+        }
 
         response["data"]?.jsonArray
             ?.forEach {
@@ -122,17 +128,20 @@ class LocationForecastApiService(
         element: WeatherElement,
         date: LocalDate,
     ): Map<LocalDateTime, Double> {
-        val response: JsonObject = client.get(baseUrl + endpoint) {
-            headers { append("X-Gravitee-API-Key", API_KEY) }
-            timeout {
-                requestTimeoutMillis = TIMEOUT
-            }
-            url {
-                parameters.append("lat", "${location.lat}")
-                parameters.append("lon", "${location.lon}")
-            }
-        }.apply { if (status.value !in 200..299) return result }
-            .body()
+        val response: JsonObject = try {
+            client.get(baseUrl + endpoint) {
+                headers { append("X-Gravitee-API-Key", API_KEY) }
+                timeout {
+                    requestTimeoutMillis = TIMEOUT
+                }
+                url {
+                    parameters.append("lat", "${location.lat}")
+                    parameters.append("lon", "${location.lon}")
+                }
+            }.apply { if (status.value !in 200..299) return result }.body()
+        } catch (e: UnresolvedAddressException) {
+            throw NoConnectionException()
+        }
 
         response["properties"]?.jsonObject
             ?.get("timeseries")?.jsonArray
