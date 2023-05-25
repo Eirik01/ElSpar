@@ -5,6 +5,7 @@ import com.team12.ElSpar.data.PowerRepository
 import com.team12.ElSpar.data.StatisticsRepository
 import com.team12.ElSpar.data.WeatherElement
 import com.team12.ElSpar.data.WeatherRepository
+import com.team12.ElSpar.exceptions.NoConnectionException
 import com.team12.ElSpar.ml.Model
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer

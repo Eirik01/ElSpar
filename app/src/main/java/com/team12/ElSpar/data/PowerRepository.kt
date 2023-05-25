@@ -1,5 +1,6 @@
 package com.team12.ElSpar.data
 
+import android.util.Log
 import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.api.HvaKosterStrommenApiService
 import com.team12.ElSpar.exceptions.PriceNotAvailableException
@@ -26,18 +27,12 @@ class DefaultPowerRepository(
         val priceData = mutableMapOf<LocalDateTime, Double>()
         val key = Pair(date, area)
         if (localRepo[key] != null) return localRepo[key]!!
-        try {
-            hvaKosterStrommenApiService
-                .getPowerPricesByDate(date, area)
-                .forEach {
-                    //If not NO4 multiply with added value tax
-                    priceData[LocalDateTime.parse(it.time_start.dropLast(6))] = it.NOK_per_kWh * (if(area != PriceArea.NO4) 125 else 100)
-                }
-        } catch (e: PriceNotAvailableException) {
-            throw e
-        } catch (e: NoConnectionException) {
-            throw e
-        }
+        hvaKosterStrommenApiService
+            .getPowerPricesByDate(date, area)
+            .forEach {
+                //If not NO4 multiply with added value tax
+                priceData[LocalDateTime.parse(it.time_start.dropLast(6))] = it.NOK_per_kWh * (if(area != PriceArea.NO4) 125 else 100)
+            }
         localRepo[key] = priceData
         return priceData
     }

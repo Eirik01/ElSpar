@@ -4,7 +4,6 @@ import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.exceptions.PriceNotAvailableException
 import com.team12.ElSpar.data.PowerRepository
 import com.team12.ElSpar.model.PricePeriod
-import com.team12.ElSpar.exceptions.NoConnectionException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,21 +27,20 @@ class GetPowerPriceUseCase (
 
             //for each date from start date:
             startDate.plusDays(i.toLong()).let { date ->
-                var powerPrice = try {
+                val powerPrice = try {
                     /*check if its a future date after tomorrows date OR
                     date is set to exactly tomorrow and clock has passed not 13:00 today.*/
-                    if (getProjectedPowerPriceUseCase != null && (date > LocalDate.now().plusDays(1) || (date == LocalDate.now().plusDays(1) && LocalDateTime.now().hour < 13))) {
-                        //true: call the projected powerprice usecase
-                        getProjectedPowerPriceUseCase?.let { it(date, area) }
+                    if (getProjectedPowerPriceUseCase != null &&
+                        (date > LocalDate.now().plusDays(1)
+                                || (date == LocalDate.now().plusDays(1)
+                                && LocalDateTime.now().hour < 13))) {
+                        getProjectedPowerPriceUseCase.let { it(date, area) }
                     } else {
-                        //false: call the powerPricesByDate usecase
                         powerRepository.getPowerPricesByDate(date, area)
                     }
                 } catch (e: PriceNotAvailableException) {
-                    //exception if price is not available, call projected price usecase to atleast get an estimate
+                    //exception if price is not available, invoke projected price use case to get an estimate
                     getProjectedPowerPriceUseCase?.let { it( date, area)}
-                } catch (e: NoConnectionException) {
-                    throw e
                 }
 
                 if (powerPrice != null) {
@@ -53,37 +51,5 @@ class GetPowerPriceUseCase (
         priceData
     }
 }
-
-/* version 1
-        val priceData = mutableMapOf<LocalDateTime, Double>()
-        val startDate = endDate.minusDays(period.days-1L)
-        for (i in 0 until period.days) {
-
-            //for each date from start date:
-            startDate.plusDays(i.toLong()).let { date ->
-
-                //check if its a future date after tomorrows date OR
-                //  date is set to exactly tomorrow and clock has passed not 13:00 today:
-                priceData +=
-                if (date > LocalDate.now().plusDays(1)
-                    || (date == LocalDate.now().plusDays(1) && LocalDateTime.now().hour < 13)) {
-                    //true: call the projected powerprice usecase
-                    getProjectedPowerPriceUseCase(date, area)
-                } else try {
-                    //false: call the powerPricesByDate usecase
-                    powerRepository.getPowerPricesByDate(date, area)
-                } catch (e: PriceNotAvailableException) {
-                    //exception if price is not available, and call projected price use case
-                    getProjectedPowerPriceUseCase(date, area)
-                } catch (e: NoConnectionException) {
-                    throw e
-                }
-            }
-        }
-        priceData
-    }
-}
- */
-
 
 
