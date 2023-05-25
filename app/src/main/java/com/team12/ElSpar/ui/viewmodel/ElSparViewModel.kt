@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -12,6 +13,7 @@ import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.exceptions.NoConnectionException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -43,20 +45,15 @@ class ElSparViewModel(
                         settingsRepository.initializeValues()
                         _uiState.value = ElSparUiState.SelectArea(currentPriceArea = settings.area)
                     } else {
-                        update()
+                        getPowerPrice()
                     }
                 }
             }
             else{
-                update()
+                getPowerPrice()
             }
 
         }
-    }
-
-    private fun update() {
-        getPowerPrice()
-        cache()
     }
 
     fun getPowerPrice() {
@@ -65,7 +62,7 @@ class ElSparViewModel(
             if(!isATest) {
                 settings.collect { settings ->
                     _uiState.value = try {
-                        ElSparUiState.Success(
+                         ElSparUiState.Success(
                             currentPricePeriod = currentPricePeriod,
                             currentEndDate = currentEndDate,
                             priceList = getPowerPriceUseCase(
@@ -78,9 +75,10 @@ class ElSparViewModel(
                                 period = PricePeriod.DAY,
                                 area = settings.area
                             )
-                        )
+                        ).also { cache() }
                     } catch (e: NoConnectionException) {
-                        ElSparUiState.Error
+                        ElSparUiState.Error("Kunne ikke laste inn data.\n" +
+                                "Vennligst sjekk nettverksforbindelsen din.")
                     }
                 }
             }else{
@@ -100,11 +98,13 @@ class ElSparViewModel(
                         )
                     )
                 } catch (e: NoConnectionException) {
-                    ElSparUiState.Error
+                    ElSparUiState.Error("Kunne ikke laste inn data.\n" +
+                            "Vennligst sjekk nettverksforbindelsen din.")
                 }
             }
         }
     }
+
 
     private fun cache(
         buffer: PricePeriod = PricePeriod.MONTH
@@ -131,14 +131,14 @@ class ElSparViewModel(
 
     fun updatePricePeriod(pricePeriod: PricePeriod) {
         currentPricePeriod = pricePeriod
-        update()
+        getPowerPrice()
     }
 
     fun dateForward() {
         val targetDate = currentEndDate.plusDays(currentPricePeriod.days.toLong())
         if (targetDate < LocalDate.now().plusDays(MAX_DAYS_AHEAD)) {
             currentEndDate = targetDate
-            update()
+            getPowerPrice()
         }
     }
 
@@ -146,7 +146,7 @@ class ElSparViewModel(
         if (currentEndDate.minusDays(2*currentPricePeriod.days.toLong())
             > LocalDate.parse(EARLIEST_DATE)) {
             currentEndDate = currentEndDate.minusDays(currentPricePeriod.days.toLong())
-            update()
+            getPowerPrice()
         }
     }
 
@@ -159,7 +159,7 @@ class ElSparViewModel(
             }else{
                 viewModelPriceArea = priceArea
             }
-            update()
+            getPowerPrice()
         }
     }
 

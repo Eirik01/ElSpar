@@ -1,6 +1,7 @@
 package com.team12.ElSpar.data
 
 import com.team12.ElSpar.api.SsbApiService
+import com.team12.ElSpar.exceptions.NoConnectionException
 import java.time.LocalDate
 
 interface StatisticsRepository {

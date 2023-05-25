@@ -1,5 +1,6 @@
 package com.team12.ElSpar.domain
 
+import android.util.Log
 import com.team12.ElSpar.Settings.PriceArea
 import com.team12.ElSpar.exceptions.PriceNotAvailableException
 import com.team12.ElSpar.data.PowerRepository
@@ -32,18 +33,16 @@ class GetPowerPriceUseCase (
                 //check if its a future date after tomorrows date OR
                 //  date is set to exactly tomorrow and clock has passed 13:00 today:
                 priceData += if (date > LocalDate.now().plusDays(1)
-                    || (date == LocalDate.now().plusDays(1) && LocalDateTime.now().hour < 13)) {
-                    //true: call the projected powerprice usecase
-                    getProjectedPowerPriceUseCase(date, area)
-                } else try {
-                    //false: call the powerPricesByDate usecase
-                    powerRepository.getPowerPricesByDate(date, area)
-                } catch (e: PriceNotAvailableException) {
-                    //exception if price is not available, and call projected price use case
-                    getProjectedPowerPriceUseCase(date, area)
-                } catch (e: NoConnectionException) {
-                    throw e
-                }
+                        || (date == LocalDate.now().plusDays(1)
+                        && LocalDateTime.now().hour < 13)
+                    ) {
+                        getProjectedPowerPriceUseCase(date, area)
+                    } else try {
+                        powerRepository.getPowerPricesByDate(date, area)
+                    } catch (e: PriceNotAvailableException) {
+                        //exception if price is not available, and call projected price use case
+                        getProjectedPowerPriceUseCase(date, area)
+                    }
             }
         }
         priceData
