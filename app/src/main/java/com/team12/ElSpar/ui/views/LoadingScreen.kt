@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 
 @Composable
+//Composable that runs animation
 fun LoadingScreen(
     modifier: Modifier = Modifier
 ) {
@@ -69,11 +70,12 @@ fun LoadingAnimation(
             )
         }
     }
+
     // container for circles
     Row(
         modifier = Modifier
-        //.border(width = 2.dp, color = Color.Magenta)
     ) {
+
         // adding each circle
         circles.forEachIndexed { index, animatable ->
             // gap between the circles

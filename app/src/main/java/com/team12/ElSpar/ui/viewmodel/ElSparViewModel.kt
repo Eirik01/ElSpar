@@ -10,11 +10,9 @@ import com.team12.ElSpar.Settings
 import com.team12.ElSpar.ElSparApplication
 import com.team12.ElSpar.data.SettingsRepository
 import com.team12.ElSpar.domain.GetPowerPriceUseCase
-import kotlinx.coroutines.Dispatchers
 import com.team12.ElSpar.model.PricePeriod
 import com.team12.ElSpar.exceptions.NoConnectionException
 import kotlinx.coroutines.flow.*
-//import kotlinx.coroutines.internal.ClassValueCtorCache.cache
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -34,12 +32,8 @@ class ElSparViewModel(
     private var currentPricePeriod = PricePeriod.DAY
     private var currentEndDate = LocalDate.now()
 
-    /*dosent define Dispatcher.IO in viewModelScope
-      since getPowerPriceUseCase switches to correct
-      Dispatcher within its class
-      */
     init {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if(!isATest){
                 settings.collect { settings ->
                     if (!settings.initialStartupCompleted) {
@@ -64,7 +58,7 @@ class ElSparViewModel(
 
     fun getPowerPrice() {
         _uiState.value = ElSparUiState.Loading
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if(!isATest) {
                 settings.collect { settings ->
                     _uiState.value = try {
@@ -113,7 +107,7 @@ class ElSparViewModel(
     private fun cache(
         buffer: PricePeriod = PricePeriod.MONTH
     ) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if(!isATest){
                 settings.collect { settings ->
                     getPowerPriceUseCase(
@@ -138,17 +132,6 @@ class ElSparViewModel(
         update()
     }
 
-    /*fun updateCoordinatesForPriceArea(priceArea: PriceArea){
-        currentCoordinates = when (priceArea){
-            PriceArea.NO1 -> "60.79" to "11.08"
-            PriceArea.NO2 -> "59.14" to "7.80"
-            PriceArea.NO3 -> "63.03" to "9.65"
-            PriceArea.NO4 -> "68.29" to "17.53"
-            else -> "60.83" to "7.61"
-        }
-        //Log.d("priceCoords",currentCoordinates.toString())
-    }*/
-
     fun dateForward() {
         currentEndDate = currentEndDate.plusDays(currentPricePeriod.days.toLong())
         update()
@@ -160,8 +143,9 @@ class ElSparViewModel(
     }
 
     fun updatePreference(priceArea: Settings.PriceArea) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             if(!isATest){
+                currentEndDate = LocalDate.now()
                 settingsRepository.updatePriceArea(priceArea)
                 settingsRepository.initialStartupCompleted()
             }else{
@@ -172,7 +156,7 @@ class ElSparViewModel(
     }
 
     fun updatePreference(activity: Settings.Activity, value: Int) {
-        viewModelScope.launch() {
+        viewModelScope.launch {
             settingsRepository.updateActivity(activity, value)
         }
     }

@@ -4,8 +4,6 @@ import android.graphics.Typeface
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,9 +28,7 @@ import com.patrykandpatrick.vico.core.axis.AxisPosition
 import com.patrykandpatrick.vico.core.axis.formatter.AxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.formatter.DecimalFormatAxisValueFormatter
 import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis
-import com.patrykandpatrick.vico.core.axis.horizontal.HorizontalAxis.TickPosition.Edge.spacing
 import com.patrykandpatrick.vico.core.axis.vertical.VerticalAxis
-import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.component.shape.ShapeComponent
 
 import com.patrykandpatrick.vico.core.component.shape.Shapes
@@ -43,7 +39,6 @@ import com.patrykandpatrick.vico.core.extension.sumOf
 import com.patrykandpatrick.vico.core.extension.transformToSpannable
 import com.patrykandpatrick.vico.core.marker.Marker
 import com.team12.ElSpar.model.PricePeriod
-import com.team12.ElSpar.ui.theme.PurpleGrey80
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import java.time.LocalDateTime
@@ -95,16 +90,16 @@ fun PriceChart(
 ) {
 
 
-    var colorArray = if (!isSystemInDarkTheme()) arrayOf(
+    val colorArray = if (!isSystemInDarkTheme()) arrayOf(
         Color(0xFFB36D6D).copy(0.6f),
         Color.Yellow.copy(0.5f),
         Color(0xFF597d4f).copy(0.4f)
     )
     else
         arrayOf(
-            Color(0x8c1d18).copy(0.6f),
-            Color(0x4a4458).copy(0.6f),
-            Color(0x4f378b).copy(0.6f)
+            Color(0x998c1d18),
+            Color(0x994a4458),
+            Color(0x994f378b)
         )
     ProvideChartStyle(chartStyle) {
         Chart(

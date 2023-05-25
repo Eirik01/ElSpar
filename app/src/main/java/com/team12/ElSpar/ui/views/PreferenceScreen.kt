@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.team12.ElSpar.Settings
 
+//Data class to easily create a new activity
 data class Activity(
     val type: Settings.Activity,
     val preference: Int,
@@ -33,24 +34,27 @@ fun PreferenceScreen(
             .fillMaxHeight(1f)
             .verticalScroll(rememberScrollState())
     ){
+
         val activities = listOf(
             Activity(Settings.Activity.SHOWER, shower,"Dusj" ,"minutter"),
             Activity(Settings.Activity.WASH, wash,"Klesvask" , "minutter" ),
             Activity(Settings.Activity.OVEN, oven,"Ovn" , "minutter" ),
             Activity(Settings.Activity.CAR, car,"Lade bil" , "KWh"))
+
+        //Card with sliders
         Card(
-            modifier = modifier
-                .padding(10.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer)
+            modifier = modifier.padding(10.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
         ){
             activities.forEach{
-                sliderElement(
+                SliderElement(
                     it,
                     onUpdatedPreference
                 )
             }
         }
+
+        //Column with text that explains the page
         Column {
             Text(
                 text = "Preferanser",
@@ -58,8 +62,9 @@ fun PreferenceScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = modifier.padding(10.dp)
             )
+
             Text(
-                text = "Her velger du hvor lenge aktivitetene i ´Strømkalkulator´-skjermen varer. For å lade" +
+                text =  "Her velger du hvor lenge aktivitetene i ´Strømkalkulator´-skjermen varer. For å lade" +
                         "bil regner vi med en fullading, og derfor velger du istedet kapasiteten til elbilen" +
                         "din sitt batteri.",
                 textAlign = TextAlign.Left,
@@ -84,11 +89,12 @@ fun PreferenceScreen(
     }
 }
 
+//Sliderelement with text and a slider
 @Composable
-fun sliderElement(
+fun SliderElement(
     activity : Activity,
-   onUpdatedPreference: (Settings.Activity, Int) -> Unit,
-   modifier: Modifier = Modifier
+    onUpdatedPreference: (Settings.Activity, Int) -> Unit,
+    modifier: Modifier = Modifier
 ){
     var preference by remember { mutableStateOf(activity.preference) }
     Text(

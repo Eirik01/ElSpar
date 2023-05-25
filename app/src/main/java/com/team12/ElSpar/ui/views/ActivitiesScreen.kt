@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -20,16 +19,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.navigation.NavHostController
-import com.team12.ElSpar.ui.chart.AveragePriceEntry
-import java.math.MathContext
 import java.math.RoundingMode
-import kotlin.math.ceil
 
+//Composable that shows the different activities and their prices
 @Composable
 fun ActivitiesScreen(
     currentPrice: Map<LocalDateTime, Double>,
@@ -40,17 +36,15 @@ fun ActivitiesScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
-    // here is the price right now instantiatied
+    // "price right now" instantiatied
     val priceNow by remember {
         mutableStateOf(            currentPrice
             .filterKeys { it.hour == LocalDateTime.now().hour }
             .values
             .first())
     }
-    // Here is the ratio betwwen the average price of today and price right now calculated
-    var cheaper : Boolean = (currentPrice.values.average() - priceNow) > 1
-
-
+    // Ratio betwwen the average price of today and price right now calculated
+    val cheaper : Boolean = (currentPrice.values.average() - priceNow) > 1
     val priceRatio = priceNow/currentPrice.values.average()
 
     Column(
@@ -68,7 +62,6 @@ fun ActivitiesScreen(
         Card_CurrentPrice(currentPrice, navController)
 
         //Two "content rows", each with 2 cards.
-
         ContentRow(
             priceRatio,
             cheaper,
@@ -80,7 +73,7 @@ fun ActivitiesScreen(
             shower,
             "$wash min klesvask",
             wash,
-            R.drawable.shower,
+            R.drawable.showericon,
             R.drawable.laundry,
             navController = navController
         )
@@ -101,7 +94,6 @@ fun ActivitiesScreen(
         )
 
         //Text on the bottom of the side.
-
         val formattedPriceRatioDiff = (priceRatio).toBigDecimal().setScale(1, RoundingMode.CEILING)
         var textString = "Strømprisen nå er $formattedPriceRatioDiff ganger dagens gjennomsnitt. "
         textString += if(cheaper){
@@ -126,6 +118,8 @@ fun ActivitiesScreen(
                 textAlign = TextAlign.Center,
                 modifier = modifier.fillMaxWidth(0.8f)
             )
+
+            //Icon that shows check when the price is low, and warning when the price is high
             if (cheaper) {
                 Icon(
                     imageVector = Icons.Default.Check,
@@ -141,7 +135,7 @@ fun ActivitiesScreen(
     }
 }
 
-/*Row with 2 cards*/
+/*Row with 2 content-cards*/
 @Composable
 fun ContentRow(
     activityRatio : Double,
@@ -183,7 +177,7 @@ fun ContentRow(
     }
 }
 
-/*Card with an activity. Has a column for */
+/*Card with an activity. */
 @Composable
 fun ContentCard(
     currentPrice: Double,
@@ -211,6 +205,8 @@ fun ContentCard(
             var activityKwhCost by remember{ mutableStateOf(0.0) }
             var activityPrice by remember { mutableStateOf(0.0) }
             var activityPriceDiff by remember { mutableStateOf(0.0)}
+
+            //Should do this with a parameter instead
             if(activity.contains("dusj")){
                 activityKwhCost = 5.0
             }
@@ -224,21 +220,21 @@ fun ContentCard(
                 activityKwhCost = 1.0
             }
 
+            // Divided by 6000 becuase the the price should be shown in kr not in øre, also because preferences are in minutes so (60*100)
             if(activityKwhCost != 1.0){
                 activityPrice = currentPrice*activityKwhCost*activityPreference/6000
             }else{
                 activityPrice = currentPrice*activityKwhCost*activityPreference/100
             }
-            // Divided by 6000 becuase the the price should be shown in kr not in øre, also because preferences are in minutes so (60*100)
 
             activityPriceDiff = activityRatio*activityPrice
 
             Image(
                 painter = painterResource(id = icon),
                 contentDescription = "My Image",
-                //Modifier.clickable { navController.navigate("PreferenceScreen") }
             )
             Text(text = activity, textAlign = TextAlign.Center)
+
             //Bottom text-row. Has activity price and price difference
             Text(
                 buildAnnotatedString {

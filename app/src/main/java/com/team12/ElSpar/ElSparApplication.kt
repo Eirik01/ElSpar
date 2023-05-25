@@ -10,4 +10,9 @@ class ElSparApplication : Application() {
         super.onCreate()
         container = DefaultAppContainer(applicationContext)
     }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        container.model.close()
+    }
 }

@@ -37,6 +37,7 @@ android {
     }
     buildFeatures {
         compose true
+        mlModelBinding true
     }
     composeOptions {
         kotlinCompilerExtensionVersion compose_compiler_version
@@ -44,6 +45,9 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            excludes += 'META-INF/INDEX.LIST'
+            excludes += 'META-INF/DEPENDENCIES'
+            excludes += 'git.properties'
         }
     }
 }
@@ -73,8 +77,6 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-client-auth:$ktor_version")
 
-    implementation 'androidx.navigation:navigation-runtime-ktx:2.5.3'
-
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("com.google.protobuf:protobuf-javalite:3.18.0")
 
@@ -84,6 +86,13 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
+
+    //TensorFlow
+    implementation("org.tensorflow:tensorflow-lite:$tf_lite_version")
+    implementation("org.tensorflow:tensorflow-lite-select-tf-ops:$tf_lite_version")
+    implementation("org.tensorflow:tensorflow-lite-support:$tf_support_version")
+    implementation("org.tensorflow:tensorflow-lite-metadata:$tf_support_version")
+    implementation("org.tensorflow:tensorflow-lite-gpu:$tf_lite_version")
 
     //Test of coroutines
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -95,12 +104,12 @@ dependencies {
 
 
     //Navigasjon
-    def nav_version = "2.5.3" //Bør flyttes
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("androidx.navigation:navigation-runtime-ktx:$nav_version")
+
 
     //Gradient colors
     implementation 'com.siddroid:holi:1.0.1'
-
 
 }
 
