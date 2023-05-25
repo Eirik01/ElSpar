@@ -1,57 +1,49 @@
 package com.team12.ElSpar.fake
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.core.DataStoreFactory
-import androidx.datastore.dataStoreFile
-import com.team12.ElSpar.Settings
 import com.team12.ElSpar.api.HvaKosterStrommenApiService
 import com.team12.ElSpar.api.MetApiService
 import com.team12.ElSpar.data.*
 import com.team12.ElSpar.domain.*
-import android.content.Context
+import com.team12.ElSpar.AppContainer
+import com.team12.ElSpar.api.SsbApiService
+import com.team12.ElSpar.ml.Model
+import io.mockk.mockk
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
-import kotlinx.coroutines.test.runTest
-import java.io.File
 
+class FakeAppContainer @OptIn(ExperimentalCoroutinesApi::class) constructor(
+    override val settingsRepository: SettingsRepository,
+    iODispatcher: TestDispatcher = StandardTestDispatcher(),
+    ) : AppContainer{
+    //mocked model since the variable is required to implement child class oAppContainer.
+    override val model: Model = mockk()
 
-
-class FakeAppContainer(
-    val iODispatcher: TestDispatcher = StandardTestDispatcher(),
-    val settingsRepository: SettingsRepository
-) {
-    //fake API that gets data from fake datasource
+    //APIs
+    private val frostApiService:  MetApiService = FakeMetApiService()
+    private val locationForecastApiService: MetApiService = FakeMetApiService()
     private val hvaKosterStrommenApiService: HvaKosterStrommenApiService =
         FakeHvaKosterStrommenApiService()
+    private val fakeSsbApiService: SsbApiService = FakeSsbApiService()
 
-    //fake API that gets data from fake datasource
-    private val metApiService : MetApiService =
-        FakeMetApiService()
-
-    val powerRepository: PowerRepository =
+    //repos
+    private val powerRepository: PowerRepository =
         DefaultPowerRepository(hvaKosterStrommenApiService)
-
     val weatherRepository: WeatherRepository =
-        DefaultWeatherRepository(metApiService)
-
-    val getTemperatureUseCase: GetTemperatureUseCase =
-        GetTemperatureUseCase(
-            weatherRepository = weatherRepository,
+        DefaultWeatherRepository(
+            frostApiService = frostApiService,
+            locationForecastApiService = locationForecastApiService,
+        )
+    val statisticsRepository: StatisticsRepository =
+        SsbStatisticsRepository(
+            ssbApiService = fakeSsbApiService
         )
 
-    private val getProjectedPowerPriceUseCase: GetProjectedPowerPriceUseCase =
-        GetProjectedPowerPriceUseCase(
-            getTemperatureUseCase = getTemperatureUseCase
-        )
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val getPowerPriceUseCase: GetPowerPriceUseCase =
+    //Usecase
+    override val getPowerPriceUseCase: GetPowerPriceUseCase =
         GetPowerPriceUseCase(
             powerRepository = powerRepository,
-            getProjectedPowerPriceUseCase = getProjectedPowerPriceUseCase,
+            getProjectedPowerPriceUseCase = null,
             iODispatcher = iODispatcher
         )
 }

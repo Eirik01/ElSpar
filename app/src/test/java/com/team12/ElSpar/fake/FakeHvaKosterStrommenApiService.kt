@@ -16,7 +16,7 @@ class FakeHvaKosterStrommenApiService: HvaKosterStrommenApiService {
             return FakePowerDataSource.priceDataListTodayFake
         }
         // Iterate over the data in FakePowerDataSource.priceDataList and add matching items to priceDataList
-        FakePowerDataSource.priceDataList.forEach { priceData ->
+        FakePowerDataSource.priceDataListJan.forEach { priceData ->
             val priceDateTime = LocalDateTime.parse(priceData.time_start.dropLast(6))
             if (priceDateTime.toLocalDate() == date
             //&& area == Settings.PriceArea.NO1
@@ -32,6 +32,4 @@ class FakeHvaKosterStrommenApiService: HvaKosterStrommenApiService {
 
         return priceDataList
     }
-
-    //return FakePowerDataSource.priceDataByDateMapMVA[date]
 }
