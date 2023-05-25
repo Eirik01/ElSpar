@@ -10,8 +10,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.unit.dp
+import com.team12.ElSpar.R
 
 //About us composable.
 @Composable
@@ -27,18 +29,17 @@ fun AboutUsScreen(modifier:Modifier = Modifier){
             ),
         ){
             Text(
-                text = "Gruppen",
+                text = stringResource(R.string.Gruppen),
                 modifier = Modifier.padding(5.dp),
                 fontWeight = Bold
             )
             Text(
-                text = "ElSpar har blitt utviklet av en gruppe på 6 informatikkstudenter fra UIO " +
-                        "i kurset IN2000 - Software Engineering gjennom et prosjektarbeid. Appen er utviklet våren 2023\n\n",
+                text = "ElSpar har blitt utviklet av en gruppe på 6 informatikkstudenter fra UIO i kurset IN2000 - Software Engineering gjennom et prosjektarbeid. Appen er utviklet våren 2023\n\n",
                 modifier = Modifier.padding(5.dp)
             )
 
             Text(
-                text = "Målet med appen",
+                text = stringResource(R.string.AppMaal),
                 modifier = Modifier.padding(5.dp),
                 fontWeight = Bold
             )

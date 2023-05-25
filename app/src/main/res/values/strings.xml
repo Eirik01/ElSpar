@@ -25,6 +25,8 @@
     <string name="Spotpris">Spotpris</string>
     <string name="Underoverskrift4">Hva bestemmer spotprisene?</string>
     <string name="Brodtekst4">\"I nord-europa har vi en kraftbørs som heter Nord Pool. Der møtes strømprodusenter og leverandører for å bestemme en strømpris. Strømprisene blir for det meste basert på etterspørsel og tilbud, altså høy etterspørsel og lavt tilbud gir dyr strøm. Man kan se svingninger i etterspørsel både i året (mye om vinter lite om sommer), og i dagen (lite midt på natten, mye på ettermiddagen). Derfor vil strømprisen du betaler variere med dette, altså høye priser om vinter og ettermiddagen. Produksjonen varierer også, når Norge og de andre landene i nord pool produserer mye strøm vil prisen være lav, og motsatt. I tillegg påvirkes den av andre faktorer som kurs og forskjellige avgifter. Prisen for en gitt dag bestemmes dagen før, rundt klokken 13-14. \"</string>
+    <string name="Gruppen">Gruppen</string>
+    <string name="AppMaal">Målet med appen</string>
 
 </resources>
 
