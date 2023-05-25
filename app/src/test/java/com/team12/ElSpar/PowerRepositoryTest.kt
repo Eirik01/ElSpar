@@ -1,7 +1,6 @@
 package com.team12.ElSpar
 
 import com.team12.ElSpar.data.DefaultPowerRepository
-import com.team12.ElSpar.data.PowerRepository
 import com.team12.ElSpar.fake.FakeHvaKosterStrommenApiService
 import com.team12.ElSpar.fake.FakePowerDataSource
 import com.team12.ElSpar.model.PriceData
@@ -10,12 +9,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Test
-import org.slf4j.MDC.put
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import javax.sql.DataSource
+
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PowerRepositoryTest {
@@ -35,8 +30,8 @@ class PowerRepositoryTest {
     @Test
     fun powerRepository_getPowerPricesByDate_cachesData() =
         runTest{
-            val date1: String = "1900-01-30T01:00:00+02:00"
-            val date2: String = "1900-01-30T02:00:00+02:00"
+            val date1 = "1900-01-30T01:00:00+02:00"
+            val date2 = "1900-01-30T02:00:00+02:00"
             val date: LocalDateTime = LocalDateTime.of(1900, 1, 30, 1, 0)
 
             val area: Settings.PriceArea = Settings.PriceArea.NO1
@@ -49,7 +44,7 @@ class PowerRepositoryTest {
             )
 
             //Add new data for DataSource
-            FakePowerDataSource.priceDataList.apply {
+            FakePowerDataSource.priceDataListJan.apply {
                 add(
                     priceData
                 )
@@ -65,7 +60,7 @@ class PowerRepositoryTest {
                 result[date]
             )
             //remove the new data from DataSource
-            FakePowerDataSource.priceDataList.apply{
+            FakePowerDataSource.priceDataListJan.apply{
                 remove(priceData)
             }
 
