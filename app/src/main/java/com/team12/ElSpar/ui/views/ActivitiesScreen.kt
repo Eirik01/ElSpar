@@ -235,21 +235,12 @@ fun ContentCard(
             )
             Text(text = activity, textAlign = TextAlign.Center)
 
-            //Bottom text-row. Has activity price and price difference
+            //Bottom text-row. Has activity price
             Text(
                 buildAnnotatedString {
                     //This string is the price
                     withStyle(style = SpanStyle(fontWeight = Bold, fontSize = 20.sp)) {
                         append(activityPrice.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr ")
-                    }
-                    
-                    //This string shows the difference
-                    withStyle(style = SpanStyle()) {
-                        if(cheaper){
-                            append("(" +"-"+ activityPriceDiff.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr)")
-                        }else{
-                            append("(" +"+"+activityPriceDiff.toBigDecimal().setScale(1, RoundingMode.CEILING).toString() + "kr)")
-                        }
                     }
                 },
                 textAlign = TextAlign.Center

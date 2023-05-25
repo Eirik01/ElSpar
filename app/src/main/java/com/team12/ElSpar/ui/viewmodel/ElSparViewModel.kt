@@ -102,7 +102,6 @@ class ElSparViewModel(
                 } catch (e: NoConnectionException) {
                     ElSparUiState.Error
                 }
-
             }
         }
     }
