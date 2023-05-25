@@ -53,7 +53,7 @@ fun SettingsScreen(
                 shape = MaterialTheme.shapes.medium,
                 modifier = modifier
                     .padding(top = 8.dp, start = 4.dp, end = 4.dp)
-                    .height(60.dp)
+                    .wrapContentHeight()
                     .fillMaxWidth()
                     .clickable(onClick = { onChangeFunction() }
                     ),
