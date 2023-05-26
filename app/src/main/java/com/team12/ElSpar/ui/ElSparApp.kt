@@ -92,10 +92,10 @@ fun ElSparApp(
                     ) {
                         ActivitiesScreen(
                             currentPrice = it.currentPrice,
-                            shower = settings.shower,
-                            wash = settings.wash,
-                            oven = settings.oven,
-                            car = settings.car,
+                            showerPref = settings.shower,
+                            laundryPref = settings.wash,
+                            ovenPref = settings.oven,
+                            carPref = settings.car,
                             navController = navController
                         )
                     }

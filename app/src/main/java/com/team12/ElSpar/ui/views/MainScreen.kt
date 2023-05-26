@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -81,6 +82,8 @@ fun CurrentPriceCard(
         .filterKeys { it.hour == LocalDateTime.now().hour }
         .values
         .first()
+
+    Log.i("Current price", "$currPrice ${LocalDateTime.now().hour}")
 
     //Making card clickable
     Card(
