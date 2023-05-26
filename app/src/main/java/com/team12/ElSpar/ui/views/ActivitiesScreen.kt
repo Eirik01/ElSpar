@@ -193,7 +193,7 @@ fun ContentCard(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
-        modifier = modifier.clickable { navController.navigate("PreferenceScreen") }
+        modifier = modifier.clickable { navController.navigate(ElSparScreen.Preference.name) }
     ){
         Column(
             modifier = Modifier

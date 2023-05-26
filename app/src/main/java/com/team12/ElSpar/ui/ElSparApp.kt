@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -8,14 +9,15 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.team12.ElSpar.R
 import com.team12.ElSpar.Settings
@@ -23,6 +25,19 @@ import com.team12.ElSpar.ui.viewmodel.ElSparUiState
 import com.team12.ElSpar.ui.viewmodel.ElSparViewModel
 import com.team12.ElSpar.ui.views.ErrorScreen
 import com.team12.ElSpar.ui.views.LoadingScreen
+
+
+
+
+enum class ElSparScreen(@StringRes val title: Int){
+    Main(title = R.string.power_overview),
+    Activities(title = R.string.power_calculator),
+    Settings(title = R.string.settings),
+    SelectArea(title = R.string.choose_pricearea),
+    Preference(title = R.string.preferences),
+    Info(title = R.string.more_about_electricity),
+    AboutUs(title = R.string.about_us)
+}
 @Composable
 fun ElSparApp(
     elSparViewModel: ElSparViewModel,
@@ -35,7 +50,10 @@ fun ElSparApp(
     by elSparViewModel.settings.collectAsState(Settings.getDefaultInstance())
 
     val navController = rememberNavController()
-    var currentScreen by remember { mutableStateOf("") }
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentScreen = ElSparScreen.valueOf(
+        backStackEntry?.destination?.route ?: ElSparScreen.Main.name
+    )
 
     // Scaffold that goes "Outside" the whole app
     // The different screens are just functions that is displyed inside this scaffold
@@ -43,12 +61,13 @@ fun ElSparApp(
         modifier = modifier.fillMaxSize(),
         topBar = {
             //Sets topbar, adn controls when the back-button is visible
-            if (elSparUiState !is ElSparUiState.SelectArea) {TopBar(currentScreen, false, navController)}
+            if (elSparUiState !is ElSparUiState.SelectArea) {TopBar(currentScreen, false, navigateUp = { navController.navigateUp() })}
             when (currentScreen) {
-                "Velg prisområde" -> TopBar(currentScreen, true, navController)
-                "Preferanser" -> TopBar(currentScreen, true, navController)
-                "Mer om strøm" -> TopBar(currentScreen, true, navController)
-                "Om oss"-> TopBar(currentScreen, true, navController)
+                ElSparScreen.SelectArea -> TopBar(currentScreen, true, navigateUp = { navController.navigateUp() })
+                ElSparScreen.Preference-> TopBar(currentScreen, true, navigateUp = { navController.navigateUp() })
+                ElSparScreen.Info -> TopBar(currentScreen, true, navigateUp = { navController.navigateUp() })
+                ElSparScreen.AboutUs-> TopBar(currentScreen, true, navigateUp =  { navController.navigateUp() })
+                else -> TopBar(currentScreen, false, navigateUp = { navController.navigateUp() } )
             }
         },
         bottomBar = {
@@ -64,9 +83,9 @@ fun ElSparApp(
             color = MaterialTheme.colorScheme.background
         ) {
             //Navbar that starts on our main screen, and contains all our different screens
-            NavHost(navController = navController, startDestination = "ElSparScreen") {
-                composable("ActivitiesScreen") {
-                    currentScreen = "Strømkalkulator"
+            NavHost(navController = navController, startDestination = ElSparScreen.Main.name) {
+                composable(ElSparScreen.Activities.name) {
+                    //currentScreen = ElSparScreen.Activities
                     DataContent(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel
@@ -82,8 +101,8 @@ fun ElSparApp(
                     }
                 }
 
-                composable("ElSparScreen") {
-                    currentScreen = "Strømoversikt"
+                composable(ElSparScreen.Main.name) {
+                    //currentScreen = ElSparScreen.Main
                     DataContent(
                         elSparUiState = elSparUiState,
                         elSparViewModel = elSparViewModel
@@ -102,17 +121,17 @@ fun ElSparApp(
                     }
                 }
 
-                composable("SettingsScreen") {
-                    currentScreen = "Instillinger"
+                composable(ElSparScreen.Settings.name) {
+                    //currentScreen = ElSparScreen.Settings
                     SettingsScreen(
-                        onChangePreferences = {navController.navigate("PreferenceScreen")},
-                        onChangePrisomraade  = {navController.navigate("SelectAreaScreen")},
-                        onChangeInfo  = {navController.navigate("InfoScreen")},
-                        onChangeAboutUs  = {navController.navigate("AboutUsScreen")},
+                        onChangePreferences = {navController.navigate(ElSparScreen.Preference.name)},
+                        onChangePrisomraade  = {navController.navigate(ElSparScreen.SelectArea.name)},
+                        onChangeInfo  = {navController.navigate(ElSparScreen.Info.name)},
+                        onChangeAboutUs  = {navController.navigate(ElSparScreen.AboutUs.name)},
                     )
                 }
-                composable("PreferenceScreen"){
-                    currentScreen = "Preferanser"
+                composable(ElSparScreen.Preference.name){
+                    //currentScreen = ElSparScreen.Preference
                     PreferenceScreen(
                         shower = settings.shower,
                         wash = settings.wash,
@@ -123,19 +142,19 @@ fun ElSparApp(
                         }
                     )
                 }
-                composable("SelectAreaScreen"){
-                    currentScreen = "Velg prisområde"
+                composable(ElSparScreen.SelectArea.name){
+                    //currentScreen = ElSparScreen.SelectArea
                     SelectAreaScreen(
                         currentPriceArea = settings.area,
                         onChangePriceArea = { elSparViewModel.updatePreference(it) }
                     )
                 }
-                composable("InfoScreen"){
-                    currentScreen = "Mer om strøm"
+                composable(ElSparScreen.Info.name){
+                    //currentScreen = ElSparScreen.Info
                     InfoScreen()
                 }
-                composable("AboutUsScreen"){
-                    currentScreen = "Om oss"
+                composable(ElSparScreen.AboutUs.name){
+                    //currentScreen = ElSparScreen.AboutUs
                     AboutUsScreen()
                 }
             }
@@ -169,11 +188,15 @@ fun DataContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //The topbar displayed in the scaffold
-fun TopBar(currScreen: String, button: Boolean, navController: NavHostController){
+fun TopBar(
+    currScreen: ElSparScreen,
+    button: Boolean,
+    navigateUp: () -> Unit
+){
     CenterAlignedTopAppBar(
         navigationIcon = {
             IconButton(
-                onClick = { navController.navigate("SettingsScreen")},
+                onClick = navigateUp,
                 //Disable the back button based on the bool
                 enabled = button,
                 colors = IconButtonDefaults.iconButtonColors(
@@ -186,7 +209,7 @@ fun TopBar(currScreen: String, button: Boolean, navController: NavHostController
                 )
             }
         },
-        title = { Text(text = currScreen, color = MaterialTheme.colorScheme.onPrimaryContainer) },
+        title = { Text(text = stringResource(currScreen.title), color = MaterialTheme.colorScheme.onPrimaryContainer) },
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         )
@@ -207,19 +230,19 @@ fun NavBar(navController: NavHostController){
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ){
-            IconButton(onClick = { navController.navigate("ActivitiesScreen")}) {
+            IconButton(onClick = { navController.navigate(ElSparScreen.Activities.name)}) {
                 Icon(
                     painter = painterResource(id = R.drawable.calculatesmall),
                     contentDescription = "Calculate Icon"
                 )
             }
-            IconButton(onClick = { navController.navigate("ElSparScreen")}) {
+            IconButton(onClick = { navController.navigate(ElSparScreen.Main.name)}) {
                 Icon(
                     imageVector = Icons.Default.Home,
                     contentDescription = "Home Icon"
                 )
             }
-            IconButton(onClick = { navController.navigate("SettingsScreen")}) {
+            IconButton(onClick = { navController.navigate(ElSparScreen.Settings.name)}) {
                 Icon(
                     imageVector = Icons.Default.List,
                     contentDescription = "List Icon"
