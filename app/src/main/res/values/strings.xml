@@ -28,6 +28,10 @@
     <string name="Gruppen">Gruppen</string>
     <string name="AppMaal">Målet med appen</string>
     <string name="retry">Prøv igjen</string>
+    <string name="price_x_above_average">Strømprisen nå er %.1f ganger dagens gjennomsnitt.</string>
+    <string name="good_idea"> Det er ikke en dårlig ide å bruke mye strøm nå.</string>
+    <string name="bad_idea"> Det er lurt å vente med strømkrevende oppgaver.</string>
+    <string name="no_cheaper_price_today">Det blir ikke noe billigere i dag.</string>
 
 </resources>
 

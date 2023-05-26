@@ -73,10 +73,10 @@ fun ElSparApp(
                     ) {
                         ActivitiesScreen(
                             currentPrice = it.currentPrice,
-                            shower = settings.shower,
-                            wash = settings.wash,
-                            oven = settings.oven,
-                            car = settings.car,
+                            showerPref = settings.shower,
+                            laundryPref = settings.wash,
+                            ovenPref = settings.oven,
+                            carPref = settings.car,
                             navController = navController
                         )
                     }
@@ -168,7 +168,6 @@ fun DataContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-//The topbar displayed in the scaffold
 fun TopBar(currScreen: String, button: Boolean, navController: NavHostController){
     CenterAlignedTopAppBar(
         navigationIcon = {
@@ -194,7 +193,6 @@ fun TopBar(currScreen: String, button: Boolean, navController: NavHostController
 }
 
 @Composable
-//Navbar displayed in scaffold
 fun NavBar(navController: NavHostController){
     BottomAppBar(
         modifier = Modifier
@@ -202,7 +200,6 @@ fun NavBar(navController: NavHostController){
             .fillMaxWidth(),
         containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
-        //Row with navigation icon-buttons
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround

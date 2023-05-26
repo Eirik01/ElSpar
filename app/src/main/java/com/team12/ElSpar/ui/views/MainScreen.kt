@@ -50,7 +50,7 @@ fun MainScreen(
         //Screen content
 
         //Card with "Current price" on top
-        Card_CurrentPrice(currentPrice, navController)
+        CurrentPriceCard(currentPrice, navController)
 
         Spacer(modifier = Modifier.size(15.dp))
 
@@ -72,7 +72,7 @@ fun MainScreen(
 
 //Card for current price. Is reused in activity-screen
 @Composable
-fun Card_CurrentPrice(
+fun CurrentPriceCard(
     currentPrice: Map<LocalDateTime, Double>,
     navController: NavHostController
 ){
