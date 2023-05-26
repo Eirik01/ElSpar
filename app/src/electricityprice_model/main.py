@@ -43,9 +43,9 @@ plt.plot(df)
 plt.show()
 
 n = len(df)
-train_df = df[0:int(n * 0.7)]
-val_df = df[int(n * 0.7):int(n * 0.9)]
-test_df = df[int(n * 0.9):]
+train_df = df[0:int(n * 0.9)]
+val_df = df[int(n * 0.9):int(n * 0.95)]
+test_df = df[int(n * 0.95):]
 
 print("DF", str(train_df))
 

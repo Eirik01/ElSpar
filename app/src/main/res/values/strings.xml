@@ -35,6 +35,10 @@
     <string name="preferences">Preferanser</string>
     <string name="more_about_electricity">Mer om strøm</string>
     <string name="about_us">Om oss</string>
+    <string name="price_x_above_average">Strømprisen nå er %.1f ganger dagens gjennomsnitt.</string>
+    <string name="good_idea"> Det er ikke en dårlig ide å bruke mye strøm nå.</string>
+    <string name="bad_idea"> Det er lurt å vente med strømkrevende oppgaver.</string>
+    <string name="no_cheaper_price_today">Det blir ikke noe billigere i dag.</string>
 
 </resources>
 

@@ -1,5 +1,6 @@
 package com.team12.ElSpar.ui
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -50,7 +51,7 @@ fun MainScreen(
         //Screen content
 
         //Card with "Current price" on top
-        Card_CurrentPrice(currentPrice, navController)
+        CurrentPriceCard(currentPrice, navController)
 
         Spacer(modifier = Modifier.size(15.dp))
 
@@ -72,7 +73,7 @@ fun MainScreen(
 
 //Card for current price. Is reused in activity-screen
 @Composable
-fun Card_CurrentPrice(
+fun CurrentPriceCard(
     currentPrice: Map<LocalDateTime, Double>,
     navController: NavHostController
 ){
@@ -81,6 +82,8 @@ fun Card_CurrentPrice(
         .filterKeys { it.hour == LocalDateTime.now().hour }
         .values
         .first()
+
+    Log.i("Current price", "$currPrice ${LocalDateTime.now().hour}")
 
     //Making card clickable
     Card(

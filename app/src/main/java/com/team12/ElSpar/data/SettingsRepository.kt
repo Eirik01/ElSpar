@@ -11,9 +11,9 @@ import kotlinx.coroutines.withContext
 
 //DEFAULT VALUES
 private const val SHOWER = 10
-private const val WASH = 60
+private const val WASH = 30
 private const val OVEN = 15
-private const val CAR = 24
+private const val CAR = 72 //Batterikapasiteten til Norges mest solgte el-bil 2022, Tesla Model Y
 
 interface SettingsRepository {
     val settingsFlow: Flow<Settings>
