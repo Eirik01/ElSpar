@@ -65,7 +65,7 @@ fun MainScreen(
         Spacer(modifier = Modifier.size(15.dp))
 
         //Pricetext bottom
-        PriceText(priceList,currentPricePeriod)
+        PriceText(priceList, currentPricePeriod)
 
     }
 }
@@ -84,7 +84,7 @@ fun CurrentPriceCard(
 
     //Making card clickable
     Card(
-        Modifier.clickable { navController.navigate("InfoScreen") },
+        Modifier.clickable { navController.navigate(ElSparScreen.Info.name) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
