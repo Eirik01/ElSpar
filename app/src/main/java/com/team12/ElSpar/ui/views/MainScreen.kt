@@ -83,8 +83,6 @@ fun CurrentPriceCard(
         .values
         .first()
 
-    Log.i("Current price", "$currPrice ${LocalDateTime.now().hour}")
-
     //Making card clickable
     Card(
         Modifier.clickable { navController.navigate(ElSparScreen.Info.name) },
