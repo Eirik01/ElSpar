@@ -28,6 +28,13 @@
     <string name="Gruppen">Gruppen</string>
     <string name="AppMaal">Målet med appen</string>
     <string name="retry">Prøv igjen</string>
+    <string name="power_overview">Strømoversikt</string>
+    <string name="power_calculator">Strømkalkulator</string>
+    <string name="settings">Innstillinger</string>
+    <string name="choose_pricearea">Velg prisområde</string>
+    <string name="preferences">Preferanser</string>
+    <string name="more_about_electricity">Mer om strøm</string>
+    <string name="about_us">Om oss</string>
 
 </resources>
 
