@@ -6,6 +6,7 @@ import com.team12.ElSpar.model.PriceData
 import com.team12.ElSpar.exceptions.NoConnectionException
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.network.sockets.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.serialization.*
@@ -36,10 +37,11 @@ class DefaultHvaKosterStrommenApiService(
                     requestTimeoutMillis = TIMEOUT
                 }
             }.body()
-        } catch (e: JsonConvertException) {
-            throw PriceNotAvailableException()
-        } catch (e: UnresolvedAddressException) {
-            throw NoConnectionException()
         }
+        catch (e: JsonConvertException) { throw PriceNotAvailableException() }
+        catch (e: UnresolvedAddressException) { throw NoConnectionException() }
+        catch (e: HttpRequestTimeoutException) { throw NoConnectionException() }
+        catch (e: ConnectTimeoutException) { throw NoConnectionException() }
+        catch (e: SocketTimeoutException) { throw NoConnectionException() }
     }
 }

@@ -5,6 +5,7 @@ import com.team12.ElSpar.data.WeatherLocation
 import com.team12.ElSpar.exceptions.NoConnectionException
 import io.ktor.client.*
 import io.ktor.client.call.*
+import io.ktor.client.network.sockets.*
 import io.ktor.client.plugins.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -102,20 +103,25 @@ class FrostApiService(
         element: WeatherElement,
         referenceTime: String
     ): HttpResponse {
-        return client.get(baseUrl + endpoint) {
-            headers { append("X-Gravitee-API-Key", API_KEY) }
-            timeout {
-                requestTimeoutMillis = TIMEOUT
-            }
-            url {
-                parameters.append("levels", "default")
-                parameters.append("timeresolutions", "PT1H")
-                parameters.append("qualities", "0")
-                parameters.append("sources", location.station)
-                parameters.append("elements", element.query)
-                parameters.append("referencetime", referenceTime)
+        return try {
+            client.get(baseUrl + endpoint) {
+                headers { append("X-Gravitee-API-Key", API_KEY) }
+                timeout {
+                    requestTimeoutMillis = TIMEOUT
+                }
+                url {
+                    parameters.append("levels", "default")
+                    parameters.append("timeresolutions", "PT1H")
+                    parameters.append("qualities", "0")
+                    parameters.append("sources", location.station)
+                    parameters.append("elements", element.query)
+                    parameters.append("referencetime", referenceTime)
+                }
             }
         }
+        catch (e: HttpRequestTimeoutException) { throw NoConnectionException() }
+        catch (e: ConnectTimeoutException) { throw NoConnectionException() }
+        catch (e: SocketTimeoutException) { throw NoConnectionException() }
     }
 }
 
@@ -139,9 +145,11 @@ class LocationForecastApiService(
                     parameters.append("lon", "${location.lon}")
                 }
             }.apply { if (status.value !in 200..299) return result }.body()
-        } catch (e: UnresolvedAddressException) {
-            throw NoConnectionException()
         }
+        catch (e: UnresolvedAddressException) { throw NoConnectionException() }
+        catch (e: HttpRequestTimeoutException) { throw NoConnectionException() }
+        catch (e: ConnectTimeoutException) { throw NoConnectionException() }
+        catch (e: SocketTimeoutException) { throw NoConnectionException() }
 
         response["properties"]?.jsonObject
             ?.get("timeseries")?.jsonArray

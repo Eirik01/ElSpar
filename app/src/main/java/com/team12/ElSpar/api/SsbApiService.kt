@@ -1,6 +1,5 @@
 package com.team12.ElSpar.api
 
-import android.util.Log
 import com.team12.ElSpar.exceptions.NoConnectionException
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -33,59 +32,50 @@ class DefaultSsbApiService(
     ): Double {
         val year = date.year.toString()
         val month = (date.monthValue-2).toString().padStart(2, '0')
-        try {
-            val response: JsonObject = try {
-                client.post(url) {
-                    timeout {
-                        requestTimeoutMillis = TIMEOUT
-                    }
-                    contentType(ContentType.Application.Json)
-                    setBody(
-                        QueryObject(
-                            listOf(
-                                Query(
-                                    code = "Leveringssektor",
-                                    selection = Selection(
-                                        values = listOf(ENERGIVARER)
-                                    )
-                                ),
-                                Query(
-                                    code = "ContentsCode",
-                                    selection = Selection(
-                                        values = listOf("KPIJustIndMnd")
-                                    )
-                                ),
-                                Query(
-                                    code = "Tid",
-                                    selection = Selection(
-                                        values = listOf(
-                                            "${year}M${month}"
-                                        )
+        val response: JsonObject = try {
+            client.post(url) {
+                timeout {
+                    requestTimeoutMillis = TIMEOUT
+                }
+                contentType(ContentType.Application.Json)
+                setBody(
+                    QueryObject(
+                        listOf(
+                            Query(
+                                code = "Leveringssektor",
+                                selection = Selection(
+                                    values = listOf(ENERGIVARER)
+                                )
+                            ),
+                            Query(
+                                code = "ContentsCode",
+                                selection = Selection(
+                                    values = listOf("KPIJustIndMnd")
+                                )
+                            ),
+                            Query(
+                                code = "Tid",
+                                selection = Selection(
+                                    values = listOf(
+                                        "${year}M${month}"
                                     )
                                 )
                             )
                         )
                     )
-                }.apply {
-                    if (status.value !in 200..299) return DEFAULT_CPI
-                }.body()
-            } catch (e: UnresolvedAddressException) {
-                throw NoConnectionException()
-            }
+                )
+            }.apply { if (status.value !in 200..299) return DEFAULT_CPI }.body() }
+        catch (e: UnresolvedAddressException) { throw NoConnectionException() }
+        catch (e: HttpRequestTimeoutException) { return DEFAULT_CPI }
+        catch (e: ConnectTimeoutException) { return DEFAULT_CPI }
+        catch (e: SocketTimeoutException) { return DEFAULT_CPI }
 
-            return response["value"]
-                ?.jsonArray
-                ?.first()
-                ?.jsonPrimitive
-                ?.doubleOrNull
-                ?: DEFAULT_CPI
-        } catch (e: HttpRequestTimeoutException) {
-            return DEFAULT_CPI
-        } catch (e: ConnectTimeoutException) {
-            return DEFAULT_CPI
-        } catch (e: SocketTimeoutException) {
-            return DEFAULT_CPI
-        }
+        return response["value"]
+            ?.jsonArray
+            ?.first()
+            ?.jsonPrimitive
+            ?.doubleOrNull
+            ?: DEFAULT_CPI
     }
 }
 
